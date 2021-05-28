@@ -1,0 +1,24 @@
+type User @model {
+  id: ID!
+  name: String!
+  email: String!
+  imageUri: String
+  status: String
+}
+
+type Game @model {
+  id: ID!
+  name: String!
+  category: String!
+  players: String!
+  highlight: String!
+  sections: [GameSection] @connection (keyName: "byGame", fields: ["id"])
+}
+
+type GameSection @model @key(name: "byGame", fields: ["gameID"]) {
+  
+  title: String!
+  data: [String]
+  gameID: ID!
+  game: Game @connection (fields: ["gameID"])
+}
