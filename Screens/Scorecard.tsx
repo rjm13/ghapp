@@ -4,10 +4,41 @@ import Feather from 'react-native-vector-icons/Feather';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
+const Footer = () => {
+    return (
+        <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
+            
+            <View style={{ width: 80}}>
+            </View>
+
+            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.score}>
+                    1050
+                </Text>
+            </View>
+            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.score}>
+                    100
+                </Text>
+            </View>
+            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.score}>
+                    10500
+                </Text>
+            </View>
+            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.score}>
+                    2050
+                </Text>
+            </View>
+        </View>
+    );
+}
+
 const HeaderRow = () => {
     return (
-        <View style={{flexDirection: 'row', height: 50}}>
-                <View style={{backgroundColor: 'blue', width: 80}}>
+        <View style={{flexDirection: 'row', height: 50, backgroundColor: '#fff'}}>
+                <View style={{backgroundColor: '#155843', width: 80}}>
 
                 </View>
 
@@ -38,7 +69,7 @@ const HeaderRow = () => {
 const ScoreRow = () => {
     return (
         <View style={{flexDirection: 'row', height: 50}}>
-            <View style={{backgroundColor: 'blue', width: 80}}>
+            <View style={{backgroundColor: '#155843', width: 80}}>
 
             </View>
             <View style={styles.scorebox}>
@@ -71,6 +102,10 @@ const Scorecard = () => {
 
     const scrollRef = useRef();
 
+    const horzScrollRef = useRef();
+
+    const horzScrollRef2 = useRef();
+
     const handleVertScroll = (event) => {
       
     	scrollRef.current?.scrollTo({
@@ -78,6 +113,23 @@ const Scorecard = () => {
           y: (event.nativeEvent.contentOffset.y),
           animated: true,
         })
+    }
+
+    const handleHorzScroll = (event) => {
+      
+    	horzScrollRef.current?.scrollTo({
+          //y: (200),
+          x: (event.nativeEvent.contentOffset.x),
+          animated: true,
+        })
+
+        horzScrollRef2.current?.scrollTo({
+            //y: (200),
+            x: (event.nativeEvent.contentOffset.x),
+            animated: true,
+          })
+
+
     }
 
     return (
@@ -125,11 +177,15 @@ const Scorecard = () => {
                             contentContainerStyle={{width: 480}}
                             stickyHeaderIndices={[]}
                             nestedScrollEnabled={true}
-                            
-                            
+                            onScroll = {(event)=>{{
+                                handleHorzScroll(event);}}}//Vertical scrolling distance 
+                  
+                            scrollEventThrottle={16}
                        >
                            <View style={{}}>
-                                <HeaderRow />
+                                <View style={{height: 50}}>
+
+                                </View>
                                 <ScoreRow />
                                 <ScoreRow />
                                 <ScoreRow />
@@ -159,9 +215,33 @@ const Scorecard = () => {
                        </ScrollView>
                </ScrollView>
 
+                <ScrollView 
+                    horizontal={true}
+                    style={{position: 'absolute', top: 0}}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{width: 480}}
+                    ref={horzScrollRef2}
+                    scrollEnabled={false}
+    
+    >
+                    <HeaderRow />
+                </ScrollView>
+
+                <ScrollView 
+                    style={{ position: 'absolute', bottom: 0}} 
+                    horizontal={true}
+                    contentContainerStyle={{width: 480}}
+                    showsHorizontalScrollIndicator={false}
+                    ref={horzScrollRef}
+                    scrollEnabled={false}
+                >
+                <Footer />
+            </ScrollView>
+               
+
                <ScrollView 
                     style={{width: 80, height: '100%', position: 'absolute', top: 0, left: 0, }}
-                    stickyHeaderIndices={[0]}
+                    stickyHeaderIndices={[0, 16]}
                     showsVerticalScrollIndicator={false}
                     onScroll = {(event)=>{{
                                handleVertScroll(event);}}}//Vertical scrolling distance 
@@ -248,11 +328,21 @@ const Scorecard = () => {
                             15
                         </Text>
                     </View>
+                    <View style={[styles.roundbox]}>
+                        
+                    </View>
+                    
                 </ScrollView>
                 
             </View>
-            
 
+            <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}>
+                        
+            </View>
+            
+            
+               
+            
             
      
         </View>
@@ -298,6 +388,7 @@ const styles = StyleSheet.create({
         borderRightWidth: 0.3,
         borderBottomWidth: 0.2,
         justifyContent: 'center',
+        borderColor: '#cccccc',
         
     },
 });
