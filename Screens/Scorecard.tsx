@@ -1,8 +1,307 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Animated } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Animated, FlatList } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
+
+const ScorecardData = 
+    {
+        id: 1,
+        name: 'Custom 1',
+        team: [
+            {
+                id: 1,
+                name: 'R & M',
+                playerID: [1, 2],
+                score: [
+                    {
+                        round: 1,
+                        score: 200
+                    },
+                    {
+                        round: 2,
+                        score: 150
+                    },
+                    {
+                        round: 3,
+                        score: 150
+                    },
+                    {
+                        round: 4,
+                        score: 150
+                    },
+                    {
+                        round: 5,
+                        score: 150
+                    },
+                    {
+                        round: 6,
+                        score: 150
+                    },
+                    {
+                        round: 7,
+                        score: 150
+                    },
+                    {
+                        round: 8,
+                        score: 150
+                    },
+                    {
+                        round: 9,
+                        score: 150
+                    },
+                    {
+                        round: 10,
+                        score: 150
+                    },
+                    {
+                        round: 11,
+                        score: 150
+                    },
+                    {
+                        round: 12,
+                        score: 150
+                    },
+                    {
+                        round: 13,
+                        score: 150
+                    },
+                    {
+                        round: 14,
+                        score: 150
+                    },
+                    {
+                        round: 15,
+                        score: 150
+                    },
+                    {
+                        round: 16,
+                        score: 150
+                    },
+                ],
+
+            },
+            {
+                id: 2,
+                name: 'T & L',
+                playerID: [3, 4],
+                score: [
+                    {
+                        round: 1,
+                        score: 200
+                    },
+                    {
+                        round: 2,
+                        score: 150
+                    },
+                    {
+                        round: 3,
+                        score: 150
+                    },
+                    {
+                        round: 4,
+                        score: 150
+                    },
+                    {
+                        round: 5,
+                        score: 150
+                    },
+                    {
+                        round: 6,
+                        score: 150
+                    },
+                    {
+                        round: 7,
+                        score: 150
+                    },
+                    {
+                        round: 8,
+                        score: 150
+                    },
+                    {
+                        round: 9,
+                        score: 150
+                    },
+                    {
+                        round: 10,
+                        score: 150
+                    },
+                    {
+                        round: 11,
+                        score: 150
+                    },
+                    {
+                        round: 12,
+                        score: 150
+                    },
+                    {
+                        round: 13,
+                        score: 150
+                    },
+                    {
+                        round: 14,
+                        score: 150
+                    },
+                    {
+                        round: 15,
+                        score: 150
+                    },
+                    {
+                        round: 16,
+                        score: 150
+                    },
+                ],
+
+            },
+            {
+                id: 3,
+                name: 'M & P',
+                playerID: [5, 6],
+                score: [
+                    {
+                        round: 1,
+                        score: 200
+                    },
+                    {
+                        round: 2,
+                        score: 150
+                    },
+                    {
+                        round: 3,
+                        score: 150
+                    },
+                    {
+                        round: 4,
+                        score: 150
+                    },
+                    {
+                        round: 5,
+                        score: 150
+                    },
+                    {
+                        round: 6,
+                        score: 150
+                    },
+                    {
+                        round: 7,
+                        score: 150
+                    },
+                    {
+                        round: 8,
+                        score: 150
+                    },
+                    {
+                        round: 9,
+                        score: 150
+                    },
+                    {
+                        round: 10,
+                        score: 150
+                    },
+                    {
+                        round: 11,
+                        score: 150
+                    },
+                    {
+                        round: 12,
+                        score: 150
+                    },
+                    {
+                        round: 13,
+                        score: 150
+                    },
+                    {
+                        round: 14,
+                        score: 150
+                    },
+                    {
+                        round: 15,
+                        score: 150
+                    },
+                    {
+                        round: 16,
+                        score: 150
+                    },
+                ],
+
+            },
+            {
+                id: 4,
+                name: 'D & J',
+                playerID: [7, 8],
+                score: [
+                    {
+                        round: 1,
+                        score: 200
+                    },
+                    {
+                        round: 2,
+                        score: 150
+                    },
+                    {
+                        round: 3,
+                        score: 150
+                    },
+                    {
+                        round: 4,
+                        score: 150
+                    },
+                    {
+                        round: 5,
+                        score: 150
+                    },
+                    {
+                        round: 6,
+                        score: 150
+                    },
+                    {
+                        round: 7,
+                        score: 150
+                    },
+                    {
+                        round: 8,
+                        score: 150
+                    },
+                    {
+                        round: 9,
+                        score: 150
+                    },
+                    {
+                        round: 10,
+                        score: 150
+                    },
+                    {
+                        round: 11,
+                        score: 150
+                    },
+                    {
+                        round: 12,
+                        score: 150
+                    },
+                    {
+                        round: 13,
+                        score: 150
+                    },
+                    {
+                        round: 14,
+                        score: 150
+                    },
+                    {
+                        round: 15,
+                        score: 150
+                    },
+                    {
+                        round: 16,
+                        score: 150
+                    },
+                ],
+
+            },
+        ]
+
+        
+    }
+
 
 const Footer = () => {
     return (
@@ -35,33 +334,16 @@ const Footer = () => {
     );
 }
 
-const HeaderRow = () => {
+const HeaderRow = ({id, name}) => {
     return (
-        <View style={{flexDirection: 'row', height: 50, backgroundColor: '#fff'}}>
-                <View style={{backgroundColor: '#155843', width: 80}}>
-
-                </View>
+        <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff'}}>
 
                 <View style={styles.headerbox}>
                     <Text style={styles.header}>
-                        Team 1
+                        {name}
                     </Text>
                 </View>
-                <View style={styles.headerbox}>
-                    <Text style={styles.header}>
-                        Team 2
-                    </Text>
-                </View>
-                <View style={styles.headerbox}>
-                    <Text style={styles.header}>
-                        Team 3
-                    </Text>
-                </View>
-                <View style={styles.headerbox}>
-                    <Text style={styles.header}>
-                        Team 4
-                    </Text>
-                </View>
+                
         </View>
     );
 }
@@ -123,14 +405,22 @@ const Scorecard = () => {
           animated: true,
         })
 
-        horzScrollRef2.current?.scrollTo({
+        horzScrollRef2.current?.scrollToOffset({
             //y: (200),
-            x: (event.nativeEvent.contentOffset.x),
+            offset: (event.nativeEvent.contentOffset.x),
             animated: true,
           })
-
-
     }
+
+    const renderItem = ({ item }) => {
+        
+        return (
+          <HeaderRow
+            id={item.id} 
+            name={item.name}
+          />
+        );
+      };
 
     return (
         <View>
@@ -215,17 +505,34 @@ const Scorecard = () => {
                        </ScrollView>
                </ScrollView>
 
-                <ScrollView 
+                {/* <ScrollView 
                     horizontal={true}
                     style={{position: 'absolute', top: 0}}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{width: 480}}
                     ref={horzScrollRef2}
                     scrollEnabled={false}
-    
-    >
-                    <HeaderRow />
-                </ScrollView>
+                >
+                        <HeaderRow />
+                </ScrollView> */}
+               
+               
+                    <FlatList 
+                        data={ScorecardData.team}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        horizontal={true}
+                        
+                        style={{position: 'absolute', top: 0, marginLeft: 80}}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{width: 400}}
+                        ref={horzScrollRef2}
+                        scrollEnabled={true}
+                        
+                    />
+                
+
+
 
                 <ScrollView 
                     style={{ position: 'absolute', bottom: 0}} 
@@ -358,7 +665,8 @@ const styles = StyleSheet.create({
     },
     headerbox: {
         width: 100,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     round: {
         fontSize: 18,
