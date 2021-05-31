@@ -1,19 +1,160 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Animated, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Animated, FlatList, TouchableOpacity } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const ScorecardData = 
-    {
-        id: 1,
-        name: 'Custom 1',
-        team: [
+
+
+
+
+
+
+const Footer = ({total}) => {
+    return (
+        <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
+            
+           
+
+            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={[styles.score, {fontFamily: 'chalkboard-bold'}]}>
+                    {total}
+                </Text>
+            </View>
+            
+        </View>
+    );
+}
+
+const HeaderRow = ({id, name}) => {
+    return (
+        <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff'}}>
+
+                <View style={styles.headerbox}>
+                    <Text style={styles.header}>
+                        {name}
+                    </Text>
+                </View>
+                
+        </View>
+    );
+}
+
+const ScoreRow = ({score}) => {
+    return (
+        <View style={{flexDirection: 'row', height: 50}}>
+            <View style={{backgroundColor: '#155843', width: 80}}>
+
+            </View>
+            <View style={styles.scorebox}>
+                <Text style={styles.score}>
+                    {score}
+                </Text>
+            </View>
+            <View style={styles.scorebox}>
+                <Text style={styles.score}>
+                    {score}
+                </Text>
+            </View>
+            <View style={styles.scorebox}>
+                <Text style={styles.score}>
+                    {score}
+                </Text>
+            </View>
+            <View style={styles.scorebox}>
+                <Text style={styles.score}>
+                    {score}
+                </Text>
+            </View>
+
+    </View>
+    );
+}
+
+
+const Scorecard = () => {
+
+    const [Totals, setTotals] = useState([0, 0, 0, 0]);
+
+    const [Scores, setScores] = useState(
+        [
+            {
+                id: 1,
+                score: 200
+            },
+            {
+                id: 2,
+                score: 150
+            },
+            {
+                id: 3,
+                score: 150
+            },
+            {
+                id: 4,
+                score: 150
+            },
+            {
+                id: 5,
+                score: 150
+            },
+            {
+                id: 6,
+                score: 150
+            },
+            {
+                id: 7,
+                score: 150
+            },
+            {
+                id: 8,
+                score: 150
+            },
+            {
+                id: 9,
+                score: 150
+            },
+            {
+                id: 10,
+                score: 150
+            },
+            {
+                id: 11,
+                score: 150
+            },
+            {
+                id: 12,
+                score: 150
+            },
+            {
+                id: 13,
+                score: 150
+            },
+            {
+                id: 14,
+                score: 150
+            },
+            {
+                id: 15,
+                score: 150
+            },
+            {
+                id: 16,
+                score: 150
+            }, 
+        ]
+    )
+
+    
+
+    const [Teams, setTeams] = useState(
+        [
             {
                 id: 1,
                 name: 'R & M',
                 playerID: [1, 2],
-                score: [
+                total: Totals [0], 
+                scores: [
                     {
                         round: 1,
                         score: 200
@@ -79,20 +220,22 @@ const ScorecardData =
                         score: 150
                     },
                 ],
+                
 
             },
             {
-                id: 2,
+                id: '2',
                 name: 'T & L',
                 playerID: [3, 4],
-                score: [
+                total: 800,
+                scores: [
                     {
                         round: 1,
                         score: 200
                     },
                     {
                         round: 2,
-                        score: 150
+                        score: 0
                     },
                     {
                         round: 3,
@@ -136,7 +279,7 @@ const ScorecardData =
                     },
                     {
                         round: 13,
-                        score: 150
+                        score: 200
                     },
                     {
                         round: 14,
@@ -154,10 +297,11 @@ const ScorecardData =
 
             },
             {
-                id: 3,
+                id: '3',
                 name: 'M & P',
                 playerID: [5, 6],
-                score: [
+                total: 1200,
+                scores: [
                     {
                         round: 1,
                         score: 200
@@ -180,11 +324,11 @@ const ScorecardData =
                     },
                     {
                         round: 6,
-                        score: 150
+                        score: 0
                     },
                     {
                         round: 7,
-                        score: 150
+                        score: 100
                     },
                     {
                         round: 8,
@@ -226,10 +370,11 @@ const ScorecardData =
 
             },
             {
-                id: 4,
+                id: '4',
                 name: 'D & J',
                 playerID: [7, 8],
-                score: [
+                total: 1500,
+                scores: [
                     {
                         round: 1,
                         score: 200
@@ -260,7 +405,7 @@ const ScorecardData =
                     },
                     {
                         round: 8,
-                        score: 150
+                        score: 0
                     },
                     {
                         round: 9,
@@ -298,89 +443,104 @@ const ScorecardData =
 
             },
         ]
+    
+    )
 
+
+
+    const [ScorecardData, setScorecardData] = useState(
+        {
+            id: '1',
+            name: 'Custom 1',
+            updated: false,
+            teams: [Teams]
+        },
+    );
+
+        const [Updated, setUpdated] = useState(true)
+
+    useEffect(() => {
+
+        // setTotals(
+        //     [
+        //         Teams[0].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+        //         Teams[1].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+        //         Teams[2].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+        //         Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+        //     ]
+            
+        // );
+        // setUpdated(!Updated)
+        // setScorecardData(
+        //     {...ScorecardData, updated: Updated, name: 'custom 2', } 
+        // )
+        // setTeams(
+        //     [
+        //         {...Teams[0], total: Totals [0], }, 
+        //         {...Teams[1], total: Totals [1], }, 
+        //         {...Teams[2], total: Totals [2], }, 
+        //         {...Teams[3], total: Totals [3], }
+        //     ]
+        // )
+        
+
+        // console.log(Updated)
+        // console.log(ScorecardData.updated)
+        // console.log(Totals)
+
+
+    }, [Totals])
+
+
+
+    const Set = () => {
+        setTotals(
+            [
+                Teams[0].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+                Teams[1].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+                Teams[2].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+                Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+            ]
+            
+        );
+        setUpdated(!Updated)
+        setScorecardData(
+            {...ScorecardData, updated: Updated, name: 'custom 2', } 
+        )
+        setTeams(
+            [
+                {...Teams[0], total: Totals [0], }, 
+                {...Teams[1], total: Totals [1], }, 
+                {...Teams[2], total: Totals [2], }, 
+                {...Teams[3], total: Totals [3], }
+            ]
+        )
+        
+
+        console.log(Updated)
+        console.log(ScorecardData.updated)
+        console.log(Totals)
+        
+        
+        // setTotal(
+        //     Teams[0].scores.reduce((a,v) =>  a = a + v.score , 0 )
+        //     //Total + 2
+        // );
+        // setUpdated(!Updated)
+        // setScorecardData(
+        //     {...ScorecardData, updated: Updated, name: 'custom 2', } 
+        // )
+        // setTeams(
+        //     [{...Teams[0], total: Total, }, {...Teams[1], total: Total + 2, }, {...Teams[2], total: Total + 2, }, {...Teams[3], total: Total + 2, }]
+        // )
+        
+
+        // console.log(Updated)
+        // console.log(ScorecardData.updated)
+        // console.log(Total)
+        // //console.log(ScorecardData.team[0].total)
         
     }
-
-
-const Footer = () => {
-    return (
-        <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
-            
-            <View style={{ width: 80}}>
-            </View>
-
-            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={styles.score}>
-                    1050
-                </Text>
-            </View>
-            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={styles.score}>
-                    100
-                </Text>
-            </View>
-            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={styles.score}>
-                    10500
-                </Text>
-            </View>
-            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={styles.score}>
-                    2050
-                </Text>
-            </View>
-        </View>
-    );
-}
-
-const HeaderRow = ({id, name}) => {
-    return (
-        <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff'}}>
-
-                <View style={styles.headerbox}>
-                    <Text style={styles.header}>
-                        {name}
-                    </Text>
-                </View>
-                
-        </View>
-    );
-}
-
-const ScoreRow = () => {
-    return (
-        <View style={{flexDirection: 'row', height: 50}}>
-            <View style={{backgroundColor: '#155843', width: 80}}>
-
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    100
-                </Text>
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    550
-                </Text>
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    1050
-                </Text>
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    1225
-                </Text>
-            </View>
-
-    </View>
-    );
-}
-
-
-const Scorecard = () => {
 
     const scrollRef = useRef();
 
@@ -399,9 +559,9 @@ const Scorecard = () => {
 
     const handleHorzScroll = (event) => {
       
-    	horzScrollRef.current?.scrollTo({
+    	horzScrollRef.current?.scrollToOffset({
           //y: (200),
-          x: (event.nativeEvent.contentOffset.x),
+          offset: (event.nativeEvent.contentOffset.x),
           animated: true,
         })
 
@@ -422,6 +582,31 @@ const Scorecard = () => {
         );
       };
 
+      const renderFooter = ({ item }) => {
+        
+        return (
+          <Footer
+            
+            total={item.total}
+          />
+        );
+      };
+
+      const renderItemScoreRow = ({ item }) => {
+        
+        return (
+          <ScoreRow
+            score={item.score}
+
+          />
+        );
+      };
+
+
+
+
+
+
     return (
         <View>
  {/* Header            */}
@@ -435,15 +620,18 @@ const Scorecard = () => {
                 </View>
                 <View style={{marginTop: 20}}>
                     <Text style={{fontSize: 18, fontFamily: 'chalkboard-regular', color: '#fff'}}>
-                        Custom Scorecard
+                        {ScorecardData.name}
                     </Text>
                 </View>
                 <View style={{marginTop: 20, marginHorizontal: 20}}>
-                    <Feather 
-                        name='settings'
-                        size={20}
-                        color='#fff'
-                    />
+                    <TouchableOpacity onPress={Set}>
+                        <Feather 
+                            name='settings'
+                            size={20}
+                            color='#fff'
+                        />
+                    </TouchableOpacity>
+                    
                 </View>
             </View>
 
@@ -452,15 +640,37 @@ const Scorecard = () => {
                 
               
                <ScrollView 
-                    style={{height: '89%', width: '100%'}}
+                    style={{height: '89%', width: '100%',}}
                     stickyHeaderIndices={[]}
-                    ref={scrollRef}
-                    scrollEnabled={false}
-                    
-                    
+                    scrollEnabled={true}
+                    nestedScrollEnabled={true}
+                    horizontal={true}
+                    onScroll = {(event)=>{{
+                        handleHorzScroll(event);}}}//Vertical scrolling distance 
+                    scrollEventThrottle={16}
                     
                 >
-                       <ScrollView
+                    
+                        <FlatList
+                            data={Scores}
+                            renderItem={renderItemScoreRow}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                            style={{ flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
+                            contentContainerStyle={{width: 480}}
+                            scrollEnabled={true}
+                            //ref={scrollRef}
+                            onScroll = {(event)=>{{
+                                handleVertScroll(event);}}}//Vertical scrolling distance 
+                            ListFooterComponent={() => (
+                                <View style={{width: 480, height: 50}}>
+
+                                </View>
+                            )}
+                            
+                        />
+                    
+                       {/* <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                             style={{ flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
@@ -502,7 +712,7 @@ const Scorecard = () => {
 
                                 
                            </View>
-                       </ScrollView>
+                       </ScrollView> */}
                </ScrollView>
 
                 {/* <ScrollView 
@@ -518,23 +728,36 @@ const Scorecard = () => {
                
                
                     <FlatList 
-                        data={ScorecardData.team}
+                        data={Teams}
                         renderItem={renderItem}
-                        keyExtractor={item => item.id}
+                        //keyExtractor={item => item.id}
                         horizontal={true}
                         
                         style={{position: 'absolute', top: 0, marginLeft: 80}}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{width: 400}}
                         ref={horzScrollRef2}
-                        scrollEnabled={true}
+                        scrollEnabled={false}
                         
                     />
                 
 
+                <FlatList 
+                    data={Teams}
+                    renderItem={renderFooter}
+                    //keyExtractor={item => item.id}
+                    
+                    horizontal={true}
+                    
+                    style={{position: 'absolute', bottom: 0, marginLeft: 80}}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{width: 400}}
+                    ref={horzScrollRef}
+                    scrollEnabled={false}
+                    extraData={Updated}
+                />
 
-
-                <ScrollView 
+                {/* <ScrollView 
                     style={{ position: 'absolute', bottom: 0}} 
                     horizontal={true}
                     contentContainerStyle={{width: 480}}
@@ -543,21 +766,23 @@ const Scorecard = () => {
                     scrollEnabled={false}
                 >
                 <Footer />
-            </ScrollView>
+            </ScrollView> */}
                
 
                <ScrollView 
                     style={{width: 80, height: '100%', position: 'absolute', top: 0, left: 0, }}
                     stickyHeaderIndices={[0, 16]}
                     showsVerticalScrollIndicator={false}
-                    onScroll = {(event)=>{{
-                               handleVertScroll(event);}}}//Vertical scrolling distance 
+                    // onScroll = {(event)=>{{
+                    //            handleVertScroll(event);}}}//Vertical scrolling distance 
+                    ref={scrollRef}
+                    scrollEnabled={false}
                  
                     scrollEventThrottle={16}
                >
                     <View style={styles.roundbox}>
                         <Text style={styles.header}>
-                            Round
+                            
                         </Text>
                     </View>
                     <View style={styles.roundbox}>
