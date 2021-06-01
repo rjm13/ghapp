@@ -40,6 +40,16 @@ const HeaderRow = ({id, name}) => {
     );
 }
 
+const RoundsColumn = ({round}) => {
+    return (
+        <View style={styles.roundbox}>
+            <Text style={styles.round}>
+                {round}
+            </Text>
+        </View>
+    );
+}
+
 const ScoreRow = ({score}) => {
     return (
         <View style={{flexDirection: 'row', height: 50}}>
@@ -48,22 +58,22 @@ const ScoreRow = ({score}) => {
             </View>
             <View style={styles.scorebox}>
                 <Text style={styles.score}>
-                    {score}
+                    {score[0]}
                 </Text>
             </View>
             <View style={styles.scorebox}>
                 <Text style={styles.score}>
-                    {score}
+                    {score [1]}
                 </Text>
             </View>
             <View style={styles.scorebox}>
                 <Text style={styles.score}>
-                    {score}
+                    {score [2]}
                 </Text>
             </View>
             <View style={styles.scorebox}>
                 <Text style={styles.score}>
-                    {score}
+                    {score [3]}
                 </Text>
             </View>
 
@@ -79,69 +89,80 @@ const Scorecard = () => {
     const [Scores, setScores] = useState(
         [
             {
-                id: 1,
-                score: 200
+                round: 1,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 2,
-                score: 150
+                round: 2,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 200, 100],
             },
             {
-                id: 3,
-                score: 150
+                round: 3,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 4,
-                score: 150
+                round: 4,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 5,
-                score: 150
+                round: 5,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 6,
-                score: 150
+                round: 6,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 7,
-                score: 150
+                round: 7,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 8,
-                score: 150
+                round: 8,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 9,
-                score: 150
+                round: 9,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 10,
-                score: 150
+                round: 10,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 11,
-                score: 150
+                round: 11,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 12,
-                score: 150
+                round: 12,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 13,
-                score: 150
+                round: 13,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 14,
-                score: 150
+                round: 14,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
             {
-                id: 15,
-                score: 150
+                round: 15,
+                team: [1, 2, 3, 4],
+                score: [50, 150, 300, 100],
             },
-            {
-                id: 16,
-                score: 150
-            }, 
         ]
     )
 
@@ -154,293 +175,28 @@ const Scorecard = () => {
                 name: 'R & M',
                 playerID: [1, 2],
                 total: Totals [0], 
-                scores: [
-                    {
-                        round: 1,
-                        score: 200
-                    },
-                    {
-                        round: 2,
-                        score: 150
-                    },
-                    {
-                        round: 3,
-                        score: 150
-                    },
-                    {
-                        round: 4,
-                        score: 150
-                    },
-                    {
-                        round: 5,
-                        score: 150
-                    },
-                    {
-                        round: 6,
-                        score: 150
-                    },
-                    {
-                        round: 7,
-                        score: 150
-                    },
-                    {
-                        round: 8,
-                        score: 150
-                    },
-                    {
-                        round: 9,
-                        score: 150
-                    },
-                    {
-                        round: 10,
-                        score: 150
-                    },
-                    {
-                        round: 11,
-                        score: 150
-                    },
-                    {
-                        round: 12,
-                        score: 150
-                    },
-                    {
-                        round: 13,
-                        score: 150
-                    },
-                    {
-                        round: 14,
-                        score: 150
-                    },
-                    {
-                        round: 15,
-                        score: 150
-                    },
-                    {
-                        round: 16,
-                        score: 150
-                    },
-                ],
                 
-
             },
             {
                 id: '2',
                 name: 'T & L',
                 playerID: [3, 4],
                 total: 800,
-                scores: [
-                    {
-                        round: 1,
-                        score: 200
-                    },
-                    {
-                        round: 2,
-                        score: 0
-                    },
-                    {
-                        round: 3,
-                        score: 150
-                    },
-                    {
-                        round: 4,
-                        score: 150
-                    },
-                    {
-                        round: 5,
-                        score: 150
-                    },
-                    {
-                        round: 6,
-                        score: 150
-                    },
-                    {
-                        round: 7,
-                        score: 150
-                    },
-                    {
-                        round: 8,
-                        score: 150
-                    },
-                    {
-                        round: 9,
-                        score: 150
-                    },
-                    {
-                        round: 10,
-                        score: 150
-                    },
-                    {
-                        round: 11,
-                        score: 150
-                    },
-                    {
-                        round: 12,
-                        score: 150
-                    },
-                    {
-                        round: 13,
-                        score: 200
-                    },
-                    {
-                        round: 14,
-                        score: 150
-                    },
-                    {
-                        round: 15,
-                        score: 150
-                    },
-                    {
-                        round: 16,
-                        score: 150
-                    },
-                ],
-
+               
             },
             {
                 id: '3',
                 name: 'M & P',
                 playerID: [5, 6],
                 total: 1200,
-                scores: [
-                    {
-                        round: 1,
-                        score: 200
-                    },
-                    {
-                        round: 2,
-                        score: 150
-                    },
-                    {
-                        round: 3,
-                        score: 150
-                    },
-                    {
-                        round: 4,
-                        score: 150
-                    },
-                    {
-                        round: 5,
-                        score: 150
-                    },
-                    {
-                        round: 6,
-                        score: 0
-                    },
-                    {
-                        round: 7,
-                        score: 100
-                    },
-                    {
-                        round: 8,
-                        score: 150
-                    },
-                    {
-                        round: 9,
-                        score: 150
-                    },
-                    {
-                        round: 10,
-                        score: 150
-                    },
-                    {
-                        round: 11,
-                        score: 150
-                    },
-                    {
-                        round: 12,
-                        score: 150
-                    },
-                    {
-                        round: 13,
-                        score: 150
-                    },
-                    {
-                        round: 14,
-                        score: 150
-                    },
-                    {
-                        round: 15,
-                        score: 150
-                    },
-                    {
-                        round: 16,
-                        score: 150
-                    },
-                ],
-
+                
             },
             {
                 id: '4',
                 name: 'D & J',
                 playerID: [7, 8],
                 total: 1500,
-                scores: [
-                    {
-                        round: 1,
-                        score: 200
-                    },
-                    {
-                        round: 2,
-                        score: 150
-                    },
-                    {
-                        round: 3,
-                        score: 150
-                    },
-                    {
-                        round: 4,
-                        score: 150
-                    },
-                    {
-                        round: 5,
-                        score: 150
-                    },
-                    {
-                        round: 6,
-                        score: 150
-                    },
-                    {
-                        round: 7,
-                        score: 150
-                    },
-                    {
-                        round: 8,
-                        score: 0
-                    },
-                    {
-                        round: 9,
-                        score: 150
-                    },
-                    {
-                        round: 10,
-                        score: 150
-                    },
-                    {
-                        round: 11,
-                        score: 150
-                    },
-                    {
-                        round: 12,
-                        score: 150
-                    },
-                    {
-                        round: 13,
-                        score: 150
-                    },
-                    {
-                        round: 14,
-                        score: 150
-                    },
-                    {
-                        round: 15,
-                        score: 150
-                    },
-                    {
-                        round: 16,
-                        score: 150
-                    },
-                ],
-
+                
             },
         ]
     
@@ -453,7 +209,8 @@ const Scorecard = () => {
             id: '1',
             name: 'Custom 1',
             updated: false,
-            teams: [Teams]
+            teams: [Teams],
+            scores: [Scores]
         },
     );
 
@@ -496,10 +253,11 @@ const Scorecard = () => {
     const Set = () => {
         setTotals(
             [
-                Teams[0].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-                Teams[1].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-                Teams[2].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-                Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+                Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ),
+                Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
+                Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
+                Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+                //Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
             ]
             
         );
@@ -550,9 +308,9 @@ const Scorecard = () => {
 
     const handleVertScroll = (event) => {
       
-    	scrollRef.current?.scrollTo({
+    	scrollRef.current?.scrollToOffset({
           //y: (200),
-          y: (event.nativeEvent.contentOffset.y),
+          offset: (event.nativeEvent.contentOffset.y),
           animated: true,
         })
     }
@@ -597,6 +355,16 @@ const Scorecard = () => {
         return (
           <ScoreRow
             score={item.score}
+
+          />
+        );
+      };
+
+      const renderRounds = ({ item }) => {
+        
+        return (
+          <RoundsColumn
+            round={item.round}
 
           />
         );
@@ -656,12 +424,17 @@ const Scorecard = () => {
                             renderItem={renderItemScoreRow}
                             keyExtractor={item => item.id}
                             showsVerticalScrollIndicator={false}
-                            style={{ flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
+                            style={{ marginTop: 0, flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
                             contentContainerStyle={{width: 480}}
                             scrollEnabled={true}
                             //ref={scrollRef}
                             onScroll = {(event)=>{{
                                 handleVertScroll(event);}}}//Vertical scrolling distance 
+                            ListHeaderComponent={() => (
+                                <View style={{width: 480, height: 50}}>
+
+                                </View>
+                            )}
                             ListFooterComponent={() => (
                                 <View style={{width: 480, height: 50}}>
 
@@ -749,7 +522,7 @@ const Scorecard = () => {
                     
                     horizontal={true}
                     
-                    style={{position: 'absolute', bottom: 0, marginLeft: 80}}
+                    style={{position: 'absolute', bottom: -2, marginLeft: 80}}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{width: 400}}
                     ref={horzScrollRef}
@@ -767,9 +540,30 @@ const Scorecard = () => {
                 >
                 <Footer />
             </ScrollView> */}
+
+                <FlatList
+                    data={Scores}
+                    renderItem={renderRounds}
+                    //keyExtractor={item => item.id}
+                    style={{width: 80, height: '100%', position: 'absolute', top: 0, left: 0, marginVertical: 0}}
+                    //contentContainerStyle={{height: 850}}
+                    showsVerticalScrollIndicator={false}
+                    ref={scrollRef}
+                    scrollEnabled={false}
+                    scrollEventThrottle={16}
+                    stickyHeaderIndices={[]}
+                    ListHeaderComponent={() => (
+                        <View style={styles.roundbox}>
+                        </View>
+                    )}
+                    ListFooterComponent={() => (
+                        <View style={styles.roundbox}>
+                        </View>
+                    )}
+                />
                
 
-               <ScrollView 
+               {/* <ScrollView 
                     style={{width: 80, height: '100%', position: 'absolute', top: 0, left: 0, }}
                     stickyHeaderIndices={[0, 16]}
                     showsVerticalScrollIndicator={false}
@@ -864,12 +658,13 @@ const Scorecard = () => {
                         
                     </View>
                     
-                </ScrollView>
+                </ScrollView> */}
                 
             </View>
 
-            <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}>
-                        
+            <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}>      
+            </View>
+            <View style={[styles.roundbox, { position: 'absolute', top: 80, left: 0}]}>      
             </View>
             
             
