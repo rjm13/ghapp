@@ -174,28 +174,28 @@ const Scorecard = () => {
                 id: 1,
                 name: 'R & M',
                 playerID: [1, 2],
-                total: Totals [0], 
+                total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ), 
                 
             },
             {
                 id: '2',
                 name: 'T & L',
                 playerID: [3, 4],
-                total: 800,
+                total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
                
             },
             {
                 id: '3',
                 name: 'M & P',
                 playerID: [5, 6],
-                total: 1200,
+                total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
                 
             },
             {
                 id: '4',
                 name: 'D & J',
                 playerID: [7, 8],
-                total: 1500,
+                total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
                 
             },
         ]
@@ -216,37 +216,7 @@ const Scorecard = () => {
 
         const [Updated, setUpdated] = useState(true)
 
-    useEffect(() => {
-
-        // setTotals(
-        //     [
-        //         Teams[0].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-        //         Teams[1].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-        //         Teams[2].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-        //         Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-        //     ]
-            
-        // );
-        // setUpdated(!Updated)
-        // setScorecardData(
-        //     {...ScorecardData, updated: Updated, name: 'custom 2', } 
-        // )
-        // setTeams(
-        //     [
-        //         {...Teams[0], total: Totals [0], }, 
-        //         {...Teams[1], total: Totals [1], }, 
-        //         {...Teams[2], total: Totals [2], }, 
-        //         {...Teams[3], total: Totals [3], }
-        //     ]
-        // )
-        
-
-        // console.log(Updated)
-        // console.log(ScorecardData.updated)
-        // console.log(Totals)
-
-
-    }, [Totals])
+    
 
 
 
@@ -258,9 +228,9 @@ const Scorecard = () => {
                 Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
                 Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
                 //Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-            ]
-            
+            ]   
         );
+
         setUpdated(!Updated)
         setScorecardData(
             {...ScorecardData, updated: Updated, name: 'custom 2', } 
