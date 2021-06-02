@@ -97,7 +97,7 @@ const Scorecard = ({navigation}) => {
             {
                 round: 1,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [100, 150, 300, 100],
             },
             {
                 round: 2,
@@ -242,7 +242,7 @@ const Scorecard = ({navigation}) => {
             {...ScorecardData, updated: Updated, name: val, } 
         )
 
-        setUpdated(!Updated)
+        //setUpdated(!Updated)
 
         // setTeams(
         //     [
@@ -420,6 +420,41 @@ const Scorecard = ({navigation}) => {
         );
     }
 
+    const [text, setText] = useState('');
+
+    const textNum = parseInt(text)
+
+    const SetScore = () => {
+
+        hideModal();
+
+        setScores(
+                [{...Scores[0], score: [textNum, Scores[0].score[1], Scores[0].score[2], Scores[0].score[3]]}, {...Scores[1]}, {...Scores[2]}]
+            ) 
+
+        // setTeams (
+        //     [
+        //         {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0) }, 
+        //         {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), }, 
+        //         {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), },
+        //         {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), },
+        //     ]
+        // )
+
+        setUpdated(!Updated)    
+    }
+
+    useEffect(() => {
+        setTeams (
+            [
+                {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0) }, 
+                {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), }, 
+                {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), },
+                {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), },
+            ]
+        )
+    },[Updated])
+
 
 
 
@@ -450,13 +485,15 @@ const Scorecard = ({navigation}) => {
                                     maxLength={6}
                                     keyboardType='number-pad'
                                     autoFocus={true}
-                                    //onChangeText={val => setData({...data, title: val})}
+                                    onChangeText={val =>setText(val)}
+                                    
+                                    
                                 /> 
                             </View>
                         </View>
 
                         <View style={{ alignItems: 'center'}}>
-                            <TouchableOpacity onPress={hideModal}>
+                            <TouchableOpacity onPress={SetScore}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
                                     <Feather 
                                         name='check'
@@ -1023,13 +1060,27 @@ const Scorecard = ({navigation}) => {
 
             
                 <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}> 
-                <View style={styles.roundbox}>
-                                 <Feather 
-                                    name='plus-circle'
-                                    color='gray'
-                                    size={22}
-                                /> 
-                            </View>
+                    <TouchableOpacity onPress={() => 
+                        {
+                        setTeams(
+                            [
+                                {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0) }, 
+                                {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), }, 
+                                {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), },
+                                {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), },
+                            ]
+                        )
+                        setUpdated(!Updated)
+                        }}>
+                        <View style={styles.roundbox}>
+                            <Feather 
+                                name='plus-circle'
+                                color='gray'
+                                size={22}
+                            /> 
+                        </View> 
+                    </TouchableOpacity>
+                
                 </View>
            
             
