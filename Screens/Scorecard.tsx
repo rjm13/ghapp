@@ -1,13 +1,16 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Animated, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Animated, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import { Modal, Portal, Provider } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
 
 
-
-
+var toRoman = require('roman-numerals').toRoman;
+[ 42, new Number(42), '42', new String('42')].forEach(function (x, i) {
+    console.log('%d: %s', i, toRoman(x));
+});
 
 
 const Footer = ({total}) => {
@@ -17,7 +20,7 @@ const Footer = ({total}) => {
            
 
             <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[styles.score, {fontFamily: 'chalkboard-bold'}]}>
+                <Text style={[styles.score, {fontFamily: 'chalkboard-bold', color: '#000'}]}>
                     {total}
                 </Text>
             </View>
@@ -44,45 +47,48 @@ const RoundsColumn = ({round}) => {
     return (
         <View style={styles.roundbox}>
             <Text style={styles.round}>
-                {round}
+                {toRoman(round)}
             </Text>
         </View>
     );
 }
 
-const ScoreRow = ({score}) => {
-    return (
-        <View style={{flexDirection: 'row', height: 50}}>
-            <View style={{backgroundColor: '#155843', width: 80}}>
+// const ScoreRow = ({score}) => {
+//     return (
+//         <View style={{flexDirection: 'row', height: 50}}>
+//             <View style={{backgroundColor: '#155843', width: 80}}>
 
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    {score[0]}
-                </Text>
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    {score [1]}
-                </Text>
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    {score [2]}
-                </Text>
-            </View>
-            <View style={styles.scorebox}>
-                <Text style={styles.score}>
-                    {score [3]}
-                </Text>
-            </View>
+//             </View>
+//             <TouchableOpacity onPress={showModal}>
+//                 <View style={styles.scorebox}>
+//                     <Text style={styles.score}>
+//                         {score[0]}
+//                     </Text>
+//                 </View>
+//             </TouchableOpacity>
+            
+//             <View style={styles.scorebox}>
+//                 <Text style={styles.score}>
+//                     {score [1]}
+//                 </Text>
+//             </View>
+//             <View style={styles.scorebox}>
+//                 <Text style={styles.score}>
+//                     {score [2]}
+//                 </Text>
+//             </View>
+//             <View style={styles.scorebox}>
+//                 <Text style={styles.score}>
+//                     {score [3]}
+//                 </Text>
+//             </View>
 
-    </View>
-    );
-}
+//     </View>
+//     );
+// }
 
 
-const Scorecard = () => {
+const Scorecard = ({navigation}) => {
 
     const [Totals, setTotals] = useState([0, 0, 0, 0]);
 
@@ -220,34 +226,32 @@ const Scorecard = () => {
 
 
 
-    const Set = () => {
-        setTotals(
-            [
-                Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ),
-                Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
-                Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
-                Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
-                //Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-            ]   
-        );
+    const Set = ({val}) => {
+        // setTotals(
+        //     [
+        //         Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ),
+        //         Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
+        //         Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
+        //         Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+        //         //Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
+        //     ]   
+        // );
+
+        
+        setScorecardData(
+            {...ScorecardData, updated: Updated, name: val, } 
+        )
 
         setUpdated(!Updated)
-        setScorecardData(
-            {...ScorecardData, updated: Updated, name: 'custom 2', } 
-        )
-        setTeams(
-            [
-                {...Teams[0], total: Totals [0], }, 
-                {...Teams[1], total: Totals [1], }, 
-                {...Teams[2], total: Totals [2], }, 
-                {...Teams[3], total: Totals [3], }
-            ]
-        )
-        
 
-        console.log(Updated)
-        console.log(ScorecardData.updated)
-        console.log(Totals)
+        // setTeams(
+        //     [
+        //         {...Teams[0], total: Totals [0], }, 
+        //         {...Teams[1], total: Totals [1], }, 
+        //         {...Teams[2], total: Totals [2], }, 
+        //         {...Teams[3], total: Totals [3], }
+        //     ]
+        // )
         
         
         // setTotal(
@@ -340,29 +344,402 @@ const Scorecard = () => {
         );
       };
 
+//Scorebox Modal
+      const [visible, setVisible] = useState(false);
+  
+      const showModal = () => setVisible(true);
 
+      const hideModal = () => setVisible(false);
+      const containerStyle = {
+          backgroundColor: 'transparent', 
+          padding: 20,
+      }; 
+
+//Scorecard Name Modal
+      const [visibleNameModal, setVisibleNameModal] = useState(false);
+  
+      const showNameModal = () => setVisibleNameModal(true);
+
+      const hideNameModal = () => setVisibleNameModal(false);
+      const nameModalContainerStyle = {
+          backgroundColor: 'transparent', 
+          padding: 20,
+      }; 
+
+//Scorecard Settings Modal
+    const [visibleSettingModal, setVisibleSettingModal] = useState(false);
+    
+    const showSettingModal = () => setVisibleSettingModal(true);
+
+    const hideSettingModal = () => setVisibleSettingModal(false);
+    const settingModalContainerStyle = {
+        backgroundColor: 'transparent', 
+        padding: 20,
+    }; 
+
+      const ScoreRow = ({score}) => {
+
+        return (
+            <View style={{flexDirection: 'row', height: 50}}>
+                <View style={{backgroundColor: '#155843', width: 80}}>
+    
+                </View>
+                <TouchableOpacity onPress={showModal}>
+                    <View style={styles.scorebox}>
+                        <Text style={styles.score}>
+                            {score[0]}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                
+                <TouchableOpacity onPress={showModal}>
+                    <View style={styles.scorebox}>
+                        <Text style={styles.score}>
+                            {score[1]}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={showModal}>
+                    <View style={styles.scorebox}>
+                        <Text style={styles.score}>
+                            {score[2]}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={showModal}>
+                    <View style={styles.scorebox}>
+                        <Text style={styles.score}>
+                            {score[3]}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+    
+        </View>
+        );
+    }
 
 
 
 
     return (
+        <Provider>
         <View>
+
+{/* Modal */}
+            <Portal>
+                <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
+                                Team Name
+                            </Text>
+                            <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
+                                Round 1
+                            </Text>
+                        </View>
+
+                        <View>
+                            <View style={{height: 200, alignItems: 'center', justifyContent: 'center'}}>
+                               <TextInput 
+                                    placeholder='--'
+                                    placeholderTextColor='#000'
+                                    style={{textAlign: 'center', height: 200, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 60}}
+                                    maxLength={6}
+                                    keyboardType='number-pad'
+                                    autoFocus={true}
+                                    //onChangeText={val => setData({...data, title: val})}
+                                /> 
+                            </View>
+                        </View>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={hideModal}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Feather 
+                                        name='check'
+                                        color='#fff'
+                                        size={30}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </Modal>
+
+                <Modal visible={visibleNameModal} onDismiss={hideNameModal} contentContainerStyle={nameModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
+                                Scorecard Name
+                            </Text>
+                        </View>
+
+                        <View>
+                            <View style={{marginVertical: 20, height: 80, alignItems: 'center', justifyContent: 'center'}}>
+                               <TextInput 
+                                    placeholder=''
+                                    placeholderTextColor='#000000a5'
+                                    style={{textAlign: 'center', height: 80, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 40}}
+                                    maxLength={20}
+                                    //keyboardType='number-pad'
+                                    autoFocus={true}
+                                    onChangeText={val => Set({val})}
+                                    //onChangeText={val => setData({...data, title: val})}
+                                /> 
+                            </View>
+                        </View>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={hideNameModal}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Feather 
+                                        name='check'
+                                        color='#fff'
+                                        size={30}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </Modal>
+        
+{/* Settings Modal */}
+                <Modal visible={visibleSettingModal} onDismiss={hideSettingModal} contentContainerStyle={settingModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+
+                        <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 20, justifyContent: 'space-around'}}>
+                            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#155843'}}>
+                                Share
+                            </Text>
+                            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#155843'}}>
+                                Frame
+                            </Text>
+                            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#155843'}}>
+                                Clear
+                            </Text>
+                            
+
+                        </View>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
+                                Scorecard Settings
+                            </Text>
+                        </View>
+
+                        <ScrollView style={{height: 400, marginVertical: 20}} showsVerticalScrollIndicator={false}>
+
+                        <View style={{marginTop: 10}}>
+                                <View>
+                                    <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                        Teams and Players
+                                    </Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Team 1
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Team 2
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Team 3
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Team 4
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                </View>  
+                            </View>
+
+                            <View style={{marginTop: 20}}>
+                                    <View>
+                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                            Counters
+                                        </Text>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Bid
+                                            </Text> 
+                                            <Feather
+                                                name='check-square'
+                                                color='#155843'
+                                                size={20}
+                                            />
+                                        </View>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Meld
+                                            </Text> 
+                                            <Feather
+                                                name='check-square'
+                                                color='#155843'
+                                                size={20}
+                                            />
+                                        </View>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Tricks
+                                            </Text> 
+                                            <Feather
+                                                name='check-square'
+                                                color='#155843'
+                                                size={20}
+                                            />
+                                        </View>
+                                    </View>  
+                                </View>
+
+                                <View style={{marginTop: 20}}>
+                                    <View>
+                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                            Options
+                                        </Text>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Use Roman Numerals
+                                            </Text> 
+                                            <Feather
+                                                name='check-square'
+                                                color='#155843'
+                                                size={20}
+                                            />
+                                        </View>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Text Size
+                                            </Text> 
+                                            <Feather
+                                                name='check-square'
+                                                color='#155843'
+                                                size={20}
+                                            />
+                                        </View>
+                                    </View>  
+                                </View>
+
+                            <View style={{marginTop: 20}}>
+                                <View>
+                                    <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                        Timer
+                                    </Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Display
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Round Length
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Warning
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Sound
+                                        </Text> 
+                                        <Feather
+                                            name='check-square'
+                                            color='#155843'
+                                            size={20}
+                                        />
+                                    </View>
+                                </View>
+
+                                
+                            </View>
+
+                            
+                        </ScrollView>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={hideSettingModal}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Feather 
+                                        name='check'
+                                        color='#fff'
+                                        size={30}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </Modal>
+            </Portal>
+
+
  {/* Header            */}
             <View style={{ width: SCREEN_WIDTH, height: 80, justifyContent: 'space-between', backgroundColor: '#155843', flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{marginTop: 20, marginHorizontal: 20}}>
-                    <Feather 
-                        name='chevron-down'
-                        size={30}
-                        color='#fff'
-                    />
-                </View>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <View style={{marginTop: 20, marginHorizontal: 20}}>
+                        <Feather 
+                            name='chevron-down'
+                            size={30}
+                            color='#fff'
+                        />
+                    </View>
+                </TouchableOpacity>
                 <View style={{marginTop: 20}}>
-                    <Text style={{fontSize: 18, fontFamily: 'chalkboard-regular', color: '#fff'}}>
-                        {ScorecardData.name}
-                    </Text>
+                    <TouchableOpacity onPress={showNameModal}>
+                        <Text style={{fontSize: 18, fontFamily: 'chalkboard-regular', color: '#fff'}}>
+                            {ScorecardData.name}
+                        </Text>
+                    </TouchableOpacity>
+                    
                 </View>
                 <View style={{marginTop: 20, marginHorizontal: 20}}>
-                    <TouchableOpacity onPress={Set}>
+                    <TouchableOpacity onPress={showSettingModal} >
                         <Feather 
                             name='settings'
                             size={20}
@@ -406,8 +783,13 @@ const Scorecard = () => {
                                 </View>
                             )}
                             ListFooterComponent={() => (
-                                <View style={{width: 480, height: 50}}>
-
+                                <View>
+                                    <View style={styles.roundbox}>
+                                         
+                                    </View>
+                                    <View style={styles.roundbox}>
+                                         
+                                    </View>
                                 </View>
                             )}
                             
@@ -482,6 +864,7 @@ const Scorecard = () => {
                         ref={horzScrollRef2}
                         scrollEnabled={false}
                         
+                        
                     />
                 
 
@@ -527,7 +910,13 @@ const Scorecard = () => {
                         </View>
                     )}
                     ListFooterComponent={() => (
-                        <View style={styles.roundbox}>
+                        <View>
+                            <View style={styles.roundbox}>
+                                 
+                            </View>
+                            <View style={styles.roundbox}>
+                                 
+                            </View>
                         </View>
                     )}
                 />
@@ -632,8 +1021,19 @@ const Scorecard = () => {
                 
             </View>
 
-            <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}>      
-            </View>
+            
+                <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}> 
+                <View style={styles.roundbox}>
+                                 <Feather 
+                                    name='plus-circle'
+                                    color='gray'
+                                    size={22}
+                                /> 
+                            </View>
+                </View>
+           
+            
+
             <View style={[styles.roundbox, { position: 'absolute', top: 80, left: 0}]}>      
             </View>
             
@@ -643,15 +1043,17 @@ const Scorecard = () => {
             
      
         </View>
+        </Provider>
     );
 }
 
 const styles = StyleSheet.create({
     header: {
         fontSize: 16,
-        fontWeight: 'bold',
+        //fontWeight: 'bold',
         color: '#000',
-        paddingVertical: 10
+        paddingVertical: 10,
+        fontFamily: 'chalkboard-bold'
     },
     headerbox: {
         width: 100,
@@ -659,13 +1061,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     round: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#000'
+        fontSize: 16,
+        //fontWeight: 'bold',
+        color: 'gray',
+        textTransform: 'lowercase',
     },
     score: {
-        fontSize: 20,
-        color: '#000',
+        fontSize: 19,
+        color: '#000000a5',
         fontFamily: 'chalkboard-regular',
     },
     roundbox: {
@@ -682,6 +1085,7 @@ const styles = StyleSheet.create({
     scorebox: {
         paddingVertical: 0, 
         width: 100, 
+        height: 50,
         alignItems: 'center', 
         borderRightWidth: 0.3,
         borderBottomWidth: 0.2,
