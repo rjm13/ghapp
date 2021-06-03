@@ -97,77 +97,77 @@ const Scorecard = ({navigation}) => {
             {
                 round: 1,
                 team: [1, 2, 3, 4],
-                score: [100, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 2,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 200, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 4,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 5,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 6,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 7,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 8,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 9,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 10,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 11,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 12,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 13,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 14,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
             {
                 round: 15,
                 team: [1, 2, 3, 4],
-                score: [50, 150, 300, 100],
+                score: [0, 0, 0, 0],
             },
         ]
     )
@@ -329,6 +329,8 @@ const Scorecard = ({navigation}) => {
         return (
           <ScoreRow
             score={item.score}
+            round={item.round}
+            team={item.team}
 
           />
         );
@@ -344,10 +346,25 @@ const Scorecard = ({navigation}) => {
         );
       };
 
+      const [roundState, setRoundState] = useState(0);
+      const [teamState, setTeamState] = useState(0);
+
 //Scorebox Modal
       const [visible, setVisible] = useState(false);
   
-      const showModal = () => setVisible(true);
+      const showModal = ({round, team1, team2, team3, team4}) => {
+
+        const team = () => {
+            if (team1) return team1;
+            else if (team2) return team2;
+            else if (team3) return team3;
+            else if (team4) return team4;
+            else return null;
+        }
+            setVisible(true);
+            setRoundState(round);
+            setTeamState(team());
+        }
 
       const hideModal = () => setVisible(false);
       const containerStyle = {
@@ -377,14 +394,19 @@ const Scorecard = ({navigation}) => {
         padding: 20,
     }; 
 
-      const ScoreRow = ({score}) => {
+      const ScoreRow = ({score, round, team}) => {
+
+        const team1 = team[0];
+        const team2 = team[1];
+        const team3 = team[2];
+        const team4 = team[3];
 
         return (
             <View style={{flexDirection: 'row', height: 50}}>
                 <View style={{backgroundColor: '#155843', width: 80}}>
     
                 </View>
-                <TouchableOpacity onPress={showModal}>
+                <TouchableOpacity onPress={() => showModal({round, team1})}>
                     <View style={styles.scorebox}>
                         <Text style={styles.score}>
                             {score[0]}
@@ -392,7 +414,7 @@ const Scorecard = ({navigation}) => {
                     </View>
                 </TouchableOpacity>
                 
-                <TouchableOpacity onPress={showModal}>
+                <TouchableOpacity onPress={() => showModal({round, team2})}>
                     <View style={styles.scorebox}>
                         <Text style={styles.score}>
                             {score[1]}
@@ -400,7 +422,7 @@ const Scorecard = ({navigation}) => {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={showModal}>
+                <TouchableOpacity onPress={() => showModal({round, team3})}>
                     <View style={styles.scorebox}>
                         <Text style={styles.score}>
                             {score[2]}
@@ -408,7 +430,7 @@ const Scorecard = ({navigation}) => {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={showModal}>
+                <TouchableOpacity onPress={() => showModal({round, team4})}>
                     <View style={styles.scorebox}>
                         <Text style={styles.score}>
                             {score[3]}
@@ -424,22 +446,13 @@ const Scorecard = ({navigation}) => {
 
     const textNum = parseInt(text)
 
-    const SetScore = () => {
+    const SetScore = () => {    
+
+        let newArray = [...Scores];
+        newArray[roundState - 1].score[teamState - 1 ] = textNum;
+        setScores(newArray);
 
         hideModal();
-
-        setScores(
-                [{...Scores[0], score: [textNum, Scores[0].score[1], Scores[0].score[2], Scores[0].score[3]]}, {...Scores[1]}, {...Scores[2]}]
-            ) 
-
-        // setTeams (
-        //     [
-        //         {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0) }, 
-        //         {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), }, 
-        //         {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), },
-        //         {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), },
-        //     ]
-        // )
 
         setUpdated(!Updated)    
     }
@@ -472,7 +485,7 @@ const Scorecard = ({navigation}) => {
                                 Team Name
                             </Text>
                             <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
-                                Round 1
+                                Round {roundState}
                             </Text>
                         </View>
 
