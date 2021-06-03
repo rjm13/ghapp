@@ -29,19 +29,6 @@ const Footer = ({total}) => {
     );
 }
 
-const HeaderRow = ({id, name}) => {
-    return (
-        <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff'}}>
-
-                <View style={styles.headerbox}>
-                    <Text style={styles.header}>
-                        {name}
-                    </Text>
-                </View>
-                
-        </View>
-    );
-}
 
 const RoundsColumn = ({round}) => {
     return (
@@ -97,77 +84,77 @@ const Scorecard = ({navigation}) => {
             {
                 round: 1,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 2,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 4,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 5,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 6,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 7,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 8,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 9,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 10,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 11,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 12,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 13,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 14,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
             {
                 round: 15,
                 team: [1, 2, 3, 4],
-                score: [0, 0, 0, 0],
+                score: [null, null, null, null],
             },
         ]
     )
@@ -393,6 +380,21 @@ const Scorecard = ({navigation}) => {
         backgroundColor: 'transparent', 
         padding: 20,
     }; 
+
+    const HeaderRow = ({id, name}) => {
+
+        return (
+            <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff'}}>
+                <TouchableOpacity onPress={showSettingModal}>
+                    <View style={styles.headerbox}>
+                        <Text style={styles.header}>
+                            {name}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
       const ScoreRow = ({score, round, team}) => {
 
