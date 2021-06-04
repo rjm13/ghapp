@@ -207,58 +207,42 @@ const Scorecard = ({navigation}) => {
         },
     );
 
-        const [Updated, setUpdated] = useState(true)
+    const [Updated, setUpdated] = useState(true)
+
+    //Scorecard Settings Modal
+    const [visibleSettingModal, setVisibleSettingModal] = useState(false);
+    
+    const showSettingModal = () => setVisibleSettingModal(true);
+
+    const hideSettingModal = () => setVisibleSettingModal(false);
+    const settingModalContainerStyle = {
+        backgroundColor: 'transparent', 
+        padding: 20,
+    }; 
 
     
+    const [TeamNames, setTeamNames] = useState(['Team 1', 'Team 2', 'Team 3', 'Team 4'])
+    
+    const ChangeSettings = () => {    
 
+        let newArray = [...Teams];
+        newArray[0].name = TeamNames[0];
+        newArray[1].name = TeamNames[1];
+        newArray[2].name = TeamNames[2];
+        newArray[3].name = TeamNames[3];
+        setTeams(newArray);
+
+        setUpdated(!Updated)  
+        hideSettingModal();  
+        console.log(TeamNames)
+    }
 
 
     const Set = ({val}) => {
-        // setTotals(
-        //     [
-        //         Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ),
-        //         Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
-        //         Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
-        //         Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
-        //         //Teams[3].scores.reduce((a,v) =>  a = a + v.score , 0 ),
-        //     ]   
-        // );
-
         
         setScorecardData(
             {...ScorecardData, updated: Updated, name: val, } 
         )
-
-        //setUpdated(!Updated)
-
-        // setTeams(
-        //     [
-        //         {...Teams[0], total: Totals [0], }, 
-        //         {...Teams[1], total: Totals [1], }, 
-        //         {...Teams[2], total: Totals [2], }, 
-        //         {...Teams[3], total: Totals [3], }
-        //     ]
-        // )
-        
-        
-        // setTotal(
-        //     Teams[0].scores.reduce((a,v) =>  a = a + v.score , 0 )
-        //     //Total + 2
-        // );
-        // setUpdated(!Updated)
-        // setScorecardData(
-        //     {...ScorecardData, updated: Updated, name: 'custom 2', } 
-        // )
-        // setTeams(
-        //     [{...Teams[0], total: Total, }, {...Teams[1], total: Total + 2, }, {...Teams[2], total: Total + 2, }, {...Teams[3], total: Total + 2, }]
-        // )
-        
-
-        // console.log(Updated)
-        // console.log(ScorecardData.updated)
-        // console.log(Total)
-        // //console.log(ScorecardData.team[0].total)
-        
     }
 
     const scrollRef = useRef();
@@ -370,16 +354,7 @@ const Scorecard = ({navigation}) => {
           padding: 20,
       }; 
 
-//Scorecard Settings Modal
-    const [visibleSettingModal, setVisibleSettingModal] = useState(false);
-    
-    const showSettingModal = () => setVisibleSettingModal(true);
 
-    const hideSettingModal = () => setVisibleSettingModal(false);
-    const settingModalContainerStyle = {
-        backgroundColor: 'transparent', 
-        padding: 20,
-    }; 
 
     const HeaderRow = ({id, name}) => {
 
@@ -468,7 +443,7 @@ const Scorecard = ({navigation}) => {
                 {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), },
             ]
         )
-    },[Updated])
+    },[Updated]);
 
 
 
@@ -521,7 +496,7 @@ const Scorecard = ({navigation}) => {
 
                     </View>
                 </Modal>
-
+{/* Scorecard title modal */}
                 <Modal visible={visibleNameModal} onDismiss={hideNameModal} contentContainerStyle={nameModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
 
@@ -592,46 +567,151 @@ const Scorecard = ({navigation}) => {
                                     <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
                                         Teams and Players
                                     </Text>
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            Team 1
-                                        </Text> 
-                                        <Feather
-                                            name='check-square'
-                                            color='#155843'
-                                            size={20}
-                                        />
+
+                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
+                                        <TextInput 
+                                            placeholder={Teams[0].name}
+                                            //defaultValue={Teams[0].name}
+                                            placeholderTextColor='#000000a5'
+                                            style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
+                                            maxLength={20}
+                                            //keyboardType='number-pad'
+                                            autoFocus={false}
+                                            //onChangeText={val => setTeamName()}
+                                            onChangeText={val => setTeamNames([
+                                                val,
+                                                TeamNames[1],
+                                                TeamNames[2],
+                                                TeamNames[3],
+                                                
+                                            ])}
+                                        /> 
+                                        <View style={{ flexDirection: 'row'}}>
+                                            <Feather
+                                                name='plus-circle'
+                                                color='#155843a5'
+                                                size={18}
+                                            />
+                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
+                                                Add Player
+                                            </Text>
+                                        </View>
                                     </View>
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            Team 2
-                                        </Text> 
-                                        <Feather
-                                            name='check-square'
-                                            color='#155843'
-                                            size={20}
-                                        />
+                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
+                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
+                                            Randy, Meghan
+                                        </Text>
                                     </View>
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            Team 3
-                                        </Text> 
-                                        <Feather
-                                            name='check-square'
-                                            color='#155843'
-                                            size={20}
-                                        />
+
+                                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 10}}>
+                                       
+                                            <TextInput 
+                                                placeholder={Teams[1].name}
+                                                placeholderTextColor='#000000a5'
+                                                style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
+                                                maxLength={20}
+                                                //keyboardType='number-pad'
+                                                autoFocus={false}
+                                                onChangeText={val => setTeamNames([
+                                                    TeamNames[0],
+                                                    val,
+                                                    TeamNames[2],
+                                                    TeamNames[3],
+                                                    
+                                                ])}
+                                            /> 
+                                       
+                                       <View style={{ flexDirection: 'row'}}>
+                                            <Feather
+                                                name='plus-circle'
+                                                color='#155843a5'
+                                                size={18}
+                                            />
+                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
+                                                Add Player
+                                            </Text>
+                                        </View>
+                                        
                                     </View>
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            Team 4
-                                        </Text> 
-                                        <Feather
-                                            name='check-square'
-                                            color='#155843'
-                                            size={20}
-                                        />
+                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
+                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
+                                            Jack, Luke
+                                        </Text>
                                     </View>
+
+                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
+                                            <TextInput 
+                                                placeholder={Teams[2].name}
+                                                placeholderTextColor='#000000a5'
+                                                style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
+                                                maxLength={20}
+                                                //keyboardType='number-pad'
+                                                autoFocus={false}
+                                                onChangeText={val => setTeamNames([
+                                                    TeamNames[0],
+                                                    TeamNames[1],
+                                                    val,
+                                                    TeamNames[3],
+                                                    
+                                                ])}
+                                            /> 
+                                        
+                                        <View style={{ flexDirection: 'row'}}>
+                                            <Feather
+                                                name='plus-circle'
+                                                color='#155843a5'
+                                                size={18}
+                                            />
+                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
+                                                Add Player
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
+                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
+                                            Mikey, Max
+                                        </Text>
+                                    </View>
+
+                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
+                                            <TextInput 
+                                                placeholder={Teams[3].name}
+                                                placeholderTextColor='#000000a5'
+                                                style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
+                                                maxLength={20}
+                                                //keyboardType='number-pad'
+                                                autoFocus={false}
+                                                //onChangeText={val => Set({val})}
+                                                //onChangeText={val => setData({...data, title: val})}
+                                                onChangeText={val => setTeamNames([
+                                                    TeamNames[0],
+                                                    TeamNames[1],
+                                                    TeamNames[2],
+                                                    val,
+                                                    
+                                                ])}
+                                            /> 
+                                        <View style={{ flexDirection: 'row'}}>
+                                            <Feather
+                                                name='plus-circle'
+                                                color='#155843a5'
+                                                size={18}
+                                            />
+                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
+                                                Add Player
+                                            </Text>
+                                        </View>
+                                        
+                                    </View>
+                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
+                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
+                                            Quinn, Bruna
+                                        </Text>
+                                    </View>
+
+                                    
+                                    
+                                    
                                 </View>  
                             </View>
 
@@ -755,7 +835,7 @@ const Scorecard = ({navigation}) => {
                         </ScrollView>
 
                         <View style={{ alignItems: 'center'}}>
-                            <TouchableOpacity onPress={hideSettingModal}>
+                            <TouchableOpacity onPress={ChangeSettings}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
                                     <Feather 
                                         name='check'
