@@ -1,7 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Animated, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, Animated, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
+import { Item } from 'react-native-paper/lib/typescript/components/List/List';
+
+import OptionsMenu from "react-native-option-menu";
+
+const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -9,18 +14,18 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 var toRoman = require('roman-numerals').toRoman;
 [ 42, new Number(42), '42', new String('42')].forEach(function (x, i) {
-    console.log('%d: %s', i, toRoman(x));
+    //console.log('%d: %s', i, toRoman(x));
 });
 
 
-const Footer = ({total}) => {
+const Footer = ({total, style}) => {
     return (
         <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
             
            
 
             <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[styles.score, {fontFamily: 'chalkboard-bold', color: '#000'}]}>
+                <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
                     {total}
                 </Text>
             </View>
@@ -78,6 +83,37 @@ const RoundsColumn = ({round}) => {
 const Scorecard = ({navigation}) => {
 
     const [Totals, setTotals] = useState([0, 0, 0, 0]);
+
+    const [isBidEnabled, setIsBidEnabled] = useState(false);
+    const toggleSwitchBid = () => setIsBidEnabled(previousState => !previousState);
+
+    const [isMeldEnabled, setIsMeldEnabled] = useState(false);
+    const toggleSwitchMeld = () => setIsMeldEnabled(previousState => !previousState);
+
+
+    const [isBonusEnabled, setIsBonusEnabled] = useState(false);
+    const toggleSwitchBonus = () => setIsBonusEnabled(previousState => !previousState);
+
+    const [isRomanEnabled, setIsRomanEnabled] = useState(false);
+    const toggleSwitchRoman = () => setIsRomanEnabled(previousState => !previousState);
+
+    const [isRoundWinnerEnabled, setIsRoundWinnerEnabled] = useState(false);
+    const toggleSwitchRoundWinner = () => setIsRoundWinnerEnabled(previousState => !previousState);
+
+    const [isRoundWinsEnabled, setIsRoundWinsEnabled] = useState(false);
+    const toggleSwitchRoundWins = () => setIsRoundWinsEnabled(previousState => !previousState);
+
+    const [isPointsEnabled, setIsPointsEnabled] = useState(false);
+    const toggleSwitchPoints = () => setIsPointsEnabled(previousState => !previousState);
+
+    const [isTimerEnabled, setIsTimerEnabled] = useState(false);
+    const toggleSwitchTimer = () => setIsTimerEnabled(previousState => !previousState);
+
+    const [isWarningEnabled, setIsWarningEnabled] = useState(false);
+    const toggleSwitchWarning = () => setIsWarningEnabled(previousState => !previousState);
+
+    const [roundLength, setRoundLength] = useState('0:00')
+
 
     const [Scores, setScores] = useState(
         [
@@ -207,7 +243,8 @@ const Scorecard = ({navigation}) => {
         },
     );
 
-    const [Updated, setUpdated] = useState(true)
+    const [Updated, setUpdated] = useState(true);
+
 
     //Scorecard Settings Modal
     const [visibleSettingModal, setVisibleSettingModal] = useState(false);
@@ -234,7 +271,7 @@ const Scorecard = ({navigation}) => {
 
         setUpdated(!Updated)  
         hideSettingModal();  
-        console.log(TeamNames)
+        
     }
 
 
@@ -275,6 +312,97 @@ const Scorecard = ({navigation}) => {
           })
     }
 
+    const [leader, setLeader] = useState(null)
+
+    useEffect(() => {
+        setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total))
+    }, [Teams])
+
+
+    // const MapTeamNames = ({val, id}) => {
+    //     if (id === 1) {setTeamNames([val, TeamNames[1], TeamNames[2], TeamNames[3]])}
+    //     else if (id === 2) {setTeamNames([TeamNames[0], val, TeamNames[2], TeamNames[3]])}
+    //     else if (id === 3) {setTeamNames([TeamNames[0], TeamNames[1], val, TeamNames[3]])}
+    //     else if (id === 4) {setTeamNames([TeamNames[0], TeamNames[1], TeamNames[2], val])}
+
+    //     console.log(val);
+    //     console.log(id)
+    //     console.log(TeamNames)
+    // }
+
+    // const inputRef = useRef(null);
+
+    // useEffect(() => {
+    //     inputRef.current.focus();
+    // }, [TeamNames])
+
+    
+
+    const MapTeamNames = ({text, id}) => {
+
+        
+
+        let newArray = [...TeamNames];
+        newArray[id - 1] = text;
+        setTeamNames(newArray);
+        
+        // if (id === 1) {setTeamNames([text, TeamNames[1], TeamNames[2], TeamNames[3]])}
+        // else if (id === 2) {setTeamNames([TeamNames[0], text, TeamNames[2], TeamNames[3]])}
+        // else if (id === 3) {setTeamNames([TeamNames[0], TeamNames[1], text, TeamNames[3]])}
+        // else if (id === 4) {setTeamNames([TeamNames[0], TeamNames[1], TeamNames[2], text])}
+        
+        console.log(text);
+        console.log(id)
+        console.log(TeamNames)
+    }
+
+
+    const TeamList = ({name, id}) => {
+
+        
+
+        return(
+            <View>
+                <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
+                    <TextInput 
+                        placeholder={name}
+                        //ref={inputRef}
+                        //defaultValue={Teams[0].name}
+                        placeholderTextColor='#000000a5'
+                        style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
+                        maxLength={20}
+                        //ref={inputRef + id}
+                        //keyboardType='number-pad'
+                     
+                        //autoFocus={false}
+                        //value={text[id-1]}
+                        //onChangeText={val => setTeamName()}
+                        //onChangeText={val => MapTeamNames({val, id})}
+                        onChangeText={text => MapTeamNames({text, id})}
+                        
+                        
+                    /> 
+                    <View style={{ flexDirection: 'row'}}>
+                        <Feather
+                            name='plus-circle'
+                            color='#155843a5'
+                            size={18}
+                        />
+                        <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
+                            Add Player
+                        </Text>
+                    </View>
+                </View>
+                <View style={{marginHorizontal: 10, marginTop: -10}}>
+                    <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
+                        Randy, Meghan
+                    </Text>
+                </View>
+            </View>
+        );
+    };
+    
+
     const renderItem = ({ item }) => {
         
         return (
@@ -286,11 +414,14 @@ const Scorecard = ({navigation}) => {
       };
 
       const renderFooter = ({ item }) => {
+
+        const color = item.total === leader ? 'green' : '#000';
+
         
         return (
           <Footer
-            
             total={item.total}
+            style={{ color }}
           />
         );
       };
@@ -316,6 +447,17 @@ const Scorecard = ({navigation}) => {
           />
         );
       };
+
+      const renderTeamList = ({item}) => {
+
+        return (
+            <TeamList 
+                name={item.name}
+                id={item.id}
+            />
+        );
+      };
+
 
       const [roundState, setRoundState] = useState(0);
       const [teamState, setTeamState] = useState(0);
@@ -359,7 +501,7 @@ const Scorecard = ({navigation}) => {
     const HeaderRow = ({id, name}) => {
 
         return (
-            <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff'}}>
+            <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff', justifyContent: 'center'}}>
                 <TouchableOpacity onPress={showSettingModal}>
                     <View style={styles.headerbox}>
                         <Text style={styles.header}>
@@ -380,7 +522,7 @@ const Scorecard = ({navigation}) => {
 
         return (
             <View style={{flexDirection: 'row', height: 50}}>
-                <View style={{backgroundColor: '#155843', width: 80}}>
+                <View style={{backgroundColor: '#155843', width: 60}}>
     
                 </View>
                 <TouchableOpacity onPress={() => showModal({round, team1})}>
@@ -444,6 +586,7 @@ const Scorecard = ({navigation}) => {
             ]
         )
     },[Updated]);
+
 
 
 
@@ -540,20 +683,6 @@ const Scorecard = ({navigation}) => {
                 <Modal visible={visibleSettingModal} onDismiss={hideSettingModal} contentContainerStyle={settingModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
 
-                        <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 20, justifyContent: 'space-around'}}>
-                            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#155843'}}>
-                                Share
-                            </Text>
-                            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#155843'}}>
-                                Frame
-                            </Text>
-                            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#155843'}}>
-                                Clear
-                            </Text>
-                            
-
-                        </View>
-
                         <View style={{ alignItems: 'center'}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
                                 Scorecard Settings
@@ -567,6 +696,16 @@ const Scorecard = ({navigation}) => {
                                     <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
                                         Teams and Players
                                     </Text>
+
+                                    {/* <FlatList 
+                                        data={Teams}
+                                        renderItem={renderTeamList}
+                                        keyExtractor={item => item.id.toString()}
+                                        showsVerticalScrollIndicator={false}
+                                        scrollEnabled={false}
+                                        //removeClippedSubviews={false}
+                                        
+                                    /> */}
 
                                     <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
                                         <TextInput 
@@ -708,12 +847,41 @@ const Scorecard = ({navigation}) => {
                                             Quinn, Bruna
                                         </Text>
                                     </View>
-
-                                    
-                                    
-                                    
                                 </View>  
                             </View>
+
+                            <View style={{marginTop: 30}}>
+                                    <View>
+                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                            Play Style
+                                        </Text>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Round Wins
+                                            </Text> 
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isRoundWinsEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchRoundWins}
+                                                value={isRoundWinsEnabled}
+                                            />
+                                        </View>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Points
+                                            </Text> 
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isPointsEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchPoints}
+                                                value={isPointsEnabled}
+                                            />
+                                        </View>
+                                        
+                                    </View>  
+                                </View>
 
                             <View style={{marginTop: 20}}>
                                     <View>
@@ -724,30 +892,36 @@ const Scorecard = ({navigation}) => {
                                             <Text style={{fontSize: 16}}>
                                                 Bid
                                             </Text> 
-                                            <Feather
-                                                name='check-square'
-                                                color='#155843'
-                                                size={20}
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isBidEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchBid}
+                                                value={isBidEnabled}
                                             />
                                         </View>
                                         <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                             <Text style={{fontSize: 16}}>
                                                 Meld
                                             </Text> 
-                                            <Feather
-                                                name='check-square'
-                                                color='#155843'
-                                                size={20}
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isMeldEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchMeld}
+                                                value={isMeldEnabled}
                                             />
                                         </View>
                                         <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                             <Text style={{fontSize: 16}}>
-                                                Tricks
+                                                Bonus +
                                             </Text> 
-                                            <Feather
-                                                name='check-square'
-                                                color='#155843'
-                                                size={20}
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isBonusEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchBonus}
+                                                value={isBonusEnabled}
                                             />
                                         </View>
                                     </View>  
@@ -762,20 +936,24 @@ const Scorecard = ({navigation}) => {
                                             <Text style={{fontSize: 16}}>
                                                 Use Roman Numerals
                                             </Text> 
-                                            <Feather
-                                                name='check-square'
-                                                color='#155843'
-                                                size={20}
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isRomanEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchRoman}
+                                                value={isRomanEnabled}
                                             />
                                         </View>
                                         <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                             <Text style={{fontSize: 16}}>
-                                                Text Size
+                                                Show Round Winners
                                             </Text> 
-                                            <Feather
-                                                name='check-square'
-                                                color='#155843'
-                                                size={20}
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isRoundWinnerEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchRoundWinner}
+                                                value={isRoundWinnerEnabled}
                                             />
                                         </View>
                                     </View>  
@@ -788,34 +966,43 @@ const Scorecard = ({navigation}) => {
                                     </Text>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
-                                            Display
+                                            Use Timer
                                         </Text> 
-                                        <Feather
-                                            name='check-square'
-                                            color='#155843'
-                                            size={20}
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isTimerEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchTimer}
+                                            value={isTimerEnabled}
                                         />
                                     </View>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
-                                            Round Length
+                                            10 Second Warning
                                         </Text> 
-                                        <Feather
-                                            name='check-square'
-                                            color='#155843'
-                                            size={20}
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isWarningEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchWarning}
+                                            value={isWarningEnabled}
                                         />
                                     </View>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
-                                            Warning
+                                            Round Length (sec)
                                         </Text> 
-                                        <Feather
-                                            name='check-square'
-                                            color='#155843'
-                                            size={20}
+                                        <TextInput 
+                                            placeholder='60'
+                                            placeholderTextColor='#000000a5'
+                                            keyboardType='number-pad'
+                                            style={{textAlign: 'right', height: 30, width: 60, fontFamily: 'chalkboard-bold', fontSize: 16}}
+                                            maxLength={5}
+                                            autoFocus={false}
+                                            onChangeText={val => setRoundLength(val)}
                                         />
                                     </View>
+                                    
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
                                             Sound
@@ -870,7 +1057,7 @@ const Scorecard = ({navigation}) => {
                     </TouchableOpacity>
                     
                 </View>
-                <View style={{marginTop: 20, marginHorizontal: 20}}>
+                <View style={{marginTop: 20, marginHorizontal: 0, flexDirection: 'row'}}>
                     <TouchableOpacity onPress={showSettingModal} >
                         <Feather 
                             name='settings'
@@ -878,6 +1065,15 @@ const Scorecard = ({navigation}) => {
                             color='#fff'
                         />
                     </TouchableOpacity>
+                    <View style={{marginHorizontal: 20}}>
+                        <OptionsMenu
+                            customButton={MoreIcon}
+                            destructiveIndex={1}
+                            options={["Save Settings", "Mark as Complete", "Share", "Save Scores"]}
+                            //actions={[editPost, deletePost]}
+                        />
+                    </View>
+                    
                     
                 </View>
             </View>
@@ -904,13 +1100,13 @@ const Scorecard = ({navigation}) => {
                             keyExtractor={item => item.id}
                             showsVerticalScrollIndicator={false}
                             style={{ marginTop: 0, flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
-                            contentContainerStyle={{width: 480}}
+                            contentContainerStyle={{width: 460}}
                             scrollEnabled={true}
                             //ref={scrollRef}
                             onScroll = {(event)=>{{
                                 handleVertScroll(event);}}}//Vertical scrolling distance 
                             ListHeaderComponent={() => (
-                                <View style={{width: 480, height: 50}}>
+                                <View style={{width: 460, height: 50}}>
 
                                 </View>
                             )}
@@ -990,7 +1186,7 @@ const Scorecard = ({navigation}) => {
                         //keyExtractor={item => item.id}
                         horizontal={true}
                         
-                        style={{position: 'absolute', top: 0, marginLeft: 80}}
+                        style={{position: 'absolute', top: 0, marginLeft: 60}}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{width: 400}}
                         ref={horzScrollRef2}
@@ -1007,7 +1203,7 @@ const Scorecard = ({navigation}) => {
                     
                     horizontal={true}
                     
-                    style={{position: 'absolute', bottom: -2, marginLeft: 80}}
+                    style={{position: 'absolute', bottom: -2, marginLeft: 60}}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{width: 400}}
                     ref={horzScrollRef}
@@ -1030,7 +1226,7 @@ const Scorecard = ({navigation}) => {
                     data={Scores}
                     renderItem={renderRounds}
                     //keyExtractor={item => item.id}
-                    style={{width: 80, height: '100%', position: 'absolute', top: 0, left: 0, marginVertical: 0}}
+                    style={{width: 60, height: '100%', position: 'absolute', top: 0, left: 0, marginVertical: 0}}
                     //contentContainerStyle={{height: 850}}
                     showsVerticalScrollIndicator={false}
                     ref={scrollRef}
@@ -1155,18 +1351,7 @@ const Scorecard = ({navigation}) => {
 
             
                 <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}> 
-                    <TouchableOpacity onPress={() => 
-                        {
-                        setTeams(
-                            [
-                                {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0) }, 
-                                {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), }, 
-                                {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), },
-                                {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), },
-                            ]
-                        )
-                        setUpdated(!Updated)
-                        }}>
+                    <TouchableOpacity>
                         <View style={styles.roundbox}>
                             <Feather 
                                 name='plus-circle'
@@ -1198,8 +1383,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         //fontWeight: 'bold',
         color: '#000',
-        paddingVertical: 10,
-        fontFamily: 'chalkboard-bold'
+        fontFamily: 'chalkboard-bold',
+        textAlign: 'center'
     },
     headerbox: {
         width: 100,
@@ -1219,12 +1404,11 @@ const styles = StyleSheet.create({
     },
     roundbox: {
         paddingVertical: 0, 
-        width: 80, 
+        width: 60, 
         height: 50,
         backgroundColor: '#fff',
         alignItems: 'center', 
         borderRightWidth: 0.3,
-        
         justifyContent: 'center',
         
     },
