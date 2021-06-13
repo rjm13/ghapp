@@ -34,6 +34,22 @@ const Footer = ({total, style}) => {
     );
 }
 
+const PointsFooter = ({total, style}) => {
+    return (
+        <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
+            
+           
+
+            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
+                    {total}
+                </Text>
+            </View>
+            
+        </View>
+    );
+}
+
 
 const RoundsColumn = ({round}) => {
     return (
@@ -103,7 +119,7 @@ const Scorecard = ({navigation}) => {
     const [isRoundWinsEnabled, setIsRoundWinsEnabled] = useState(false);
     const toggleSwitchRoundWins = () => setIsRoundWinsEnabled(previousState => !previousState);
 
-    const [isPointsEnabled, setIsPointsEnabled] = useState(false);
+    const [isPointsEnabled, setIsPointsEnabled] = useState(true);
     const toggleSwitchPoints = () => setIsPointsEnabled(previousState => !previousState);
 
     const [isTimerEnabled, setIsTimerEnabled] = useState(false);
@@ -288,6 +304,8 @@ const Scorecard = ({navigation}) => {
 
     const horzScrollRef2 = useRef();
 
+    const horzScrollRef3 = useRef();
+
     const handleVertScroll = (event) => {
       
     	scrollRef.current?.scrollToOffset({
@@ -309,7 +327,13 @@ const Scorecard = ({navigation}) => {
             //y: (200),
             offset: (event.nativeEvent.contentOffset.x),
             animated: true,
-          })
+        })
+
+        horzScrollRef3.current?.scrollToOffset({
+            //y: (200),
+            offset: (event.nativeEvent.contentOffset.x),
+            animated: true,
+        })
     }
 
     const [leader, setLeader] = useState(null)
@@ -413,18 +437,31 @@ const Scorecard = ({navigation}) => {
         );
       };
 
-      const renderFooter = ({ item }) => {
+    const renderFooter = ({ item }) => {
+
+    const color = item.total === leader ? 'green' : '#000';
+
+    
+    return (
+        <Footer
+        total={item.total}
+        style={{ color }}
+        />
+    );
+    };
+
+    const renderPointsFooter = ({ item }) => {
 
         const color = item.total === leader ? 'green' : '#000';
-
+    
         
         return (
-          <Footer
-            total={item.total}
-            style={{ color }}
-          />
+            <PointsFooter
+                total={item.total}
+                style={{ color }}
+            />
         );
-      };
+        };
 
       const renderItemScoreRow = ({ item }) => {
         
@@ -857,7 +894,7 @@ const Scorecard = ({navigation}) => {
                                         </Text>
                                         <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                             <Text style={{fontSize: 16}}>
-                                                Round Wins
+                                                Rounds
                                             </Text> 
                                             <Switch
                                                 trackColor={{ false: "#767577", true: "#B2D9BF" }}
@@ -1082,7 +1119,7 @@ const Scorecard = ({navigation}) => {
 
                 
               
-               <ScrollView 
+                <ScrollView 
                     style={{height: '89%', width: '100%',}}
                     stickyHeaderIndices={[]}
                     scrollEnabled={true}
@@ -1119,108 +1156,52 @@ const Scorecard = ({navigation}) => {
                                          
                                     </View>
                                 </View>
-                            )}
-                            
+                            )}   
                         />
                     
-                       {/* <ScrollView
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            style={{ flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
-                            contentContainerStyle={{width: 480}}
-                            stickyHeaderIndices={[]}
-                            nestedScrollEnabled={true}
-                            onScroll = {(event)=>{{
-                                handleHorzScroll(event);}}}//Vertical scrolling distance 
-                  
-                            scrollEventThrottle={16}
-                       >
-                           <View style={{}}>
-                                <View style={{height: 50}}>
-
-                                </View>
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-                                <ScoreRow />
-
-                                
-                           </View>
-                       </ScrollView> */}
                </ScrollView>
-
-                {/* <ScrollView 
-                    horizontal={true}
-                    style={{position: 'absolute', top: 0}}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{width: 480}}
-                    ref={horzScrollRef2}
-                    scrollEnabled={false}
-                >
-                        <HeaderRow />
-                </ScrollView> */}
-               
-               
-                    <FlatList 
-                        data={Teams}
-                        renderItem={renderItem}
-                        //keyExtractor={item => item.id}
-                        horizontal={true}
-                        
-                        style={{position: 'absolute', top: 0, marginLeft: 60}}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{width: 400}}
-                        ref={horzScrollRef2}
-                        scrollEnabled={false}
-                        
-                        
-                    />
-                
 
                 <FlatList 
                     data={Teams}
-                    renderItem={renderFooter}
+                    renderItem={renderItem}
                     //keyExtractor={item => item.id}
-                    
                     horizontal={true}
-                    
-                    style={{position: 'absolute', bottom: -2, marginLeft: 60}}
+                    style={{position: 'absolute', top: 0, marginLeft: 60}}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{width: 400}}
-                    ref={horzScrollRef}
+                    ref={horzScrollRef2}
                     scrollEnabled={false}
-                    extraData={Updated}
                 />
+                
+                { isRoundWinsEnabled ? (
+                    <FlatList 
+                        data={Teams}
+                        renderItem={renderPointsFooter}
+                        //keyExtractor={item => item.id}
+                        horizontal={true}
+                        style={{position: 'absolute', bottom: 50, marginLeft: 60}}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{width: 400}}
+                        ref={horzScrollRef3}
+                        scrollEnabled={false}
+                        extraData={Updated}
+                    />
+                ) : null }
 
-                {/* <ScrollView 
-                    style={{ position: 'absolute', bottom: 0}} 
-                    horizontal={true}
-                    contentContainerStyle={{width: 480}}
-                    showsHorizontalScrollIndicator={false}
-                    ref={horzScrollRef}
-                    scrollEnabled={false}
-                >
-                <Footer />
-            </ScrollView> */}
+                { isPointsEnabled ? (
+                    <FlatList 
+                        data={Teams}
+                        renderItem={renderFooter}
+                        //keyExtractor={item => item.id}
+                        horizontal={true}
+                        style={{position: 'absolute', bottom: -2, marginLeft: 60}}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{width: 400}}
+                        ref={horzScrollRef}
+                        scrollEnabled={false}
+                        extraData={Updated}
+                    />
+                ) : null }
 
                 <FlatList
                     data={Scores}
