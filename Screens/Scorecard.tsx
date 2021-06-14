@@ -34,7 +34,7 @@ const Footer = ({total, style}) => {
     );
 }
 
-const PointsFooter = ({total, style}) => {
+const WinsFooter = ({total, style}) => {
     return (
         <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
             
@@ -60,40 +60,6 @@ const RoundsColumn = ({round}) => {
         </View>
     );
 }
-
-// const ScoreRow = ({score}) => {
-//     return (
-//         <View style={{flexDirection: 'row', height: 50}}>
-//             <View style={{backgroundColor: '#155843', width: 80}}>
-
-//             </View>
-//             <TouchableOpacity onPress={showModal}>
-//                 <View style={styles.scorebox}>
-//                     <Text style={styles.score}>
-//                         {score[0]}
-//                     </Text>
-//                 </View>
-//             </TouchableOpacity>
-            
-//             <View style={styles.scorebox}>
-//                 <Text style={styles.score}>
-//                     {score [1]}
-//                 </Text>
-//             </View>
-//             <View style={styles.scorebox}>
-//                 <Text style={styles.score}>
-//                     {score [2]}
-//                 </Text>
-//             </View>
-//             <View style={styles.scorebox}>
-//                 <Text style={styles.score}>
-//                     {score [3]}
-//                 </Text>
-//             </View>
-
-//     </View>
-//     );
-// }
 
 
 const Scorecard = ({navigation}) => {
@@ -122,6 +88,9 @@ const Scorecard = ({navigation}) => {
     const [isPointsEnabled, setIsPointsEnabled] = useState(true);
     const toggleSwitchPoints = () => setIsPointsEnabled(previousState => !previousState);
 
+    const [isLowestPointsEnabled, setIsLowestPointsEnabled] = useState(false);
+    const toggleSwitchLowestPoints = () => setIsLowestPointsEnabled(previousState => !previousState);
+
     const [isTimerEnabled, setIsTimerEnabled] = useState(false);
     const toggleSwitchTimer = () => setIsTimerEnabled(previousState => !previousState);
 
@@ -136,77 +105,78 @@ const Scorecard = ({navigation}) => {
             {
                 round: 1,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [5, 10, 15, 20],
+        
             },
             {
                 round: 2,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 4,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 5,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 6,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 7,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 8,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 9,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 10,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 11,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 12,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 13,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 14,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
             {
                 round: 15,
                 team: [1, 2, 3, 4],
-                score: [null, null, null, null],
+                score: [10, 25, 30, 35],
             },
         ]
     )
@@ -217,28 +187,29 @@ const Scorecard = ({navigation}) => {
         [
             {
                 id: 1,
-                name: 'R & M',
+                name: 'Team 1',
                 playerID: [1, 2],
                 total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ), 
+                roundWins: 0,
                 
             },
             {
                 id: '2',
-                name: 'T & L',
+                name: 'Team 2',
                 playerID: [3, 4],
                 total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
                
             },
             {
                 id: '3',
-                name: 'M & P',
+                name: 'Team 3',
                 playerID: [5, 6],
                 total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
                 
             },
             {
                 id: '4',
-                name: 'D & J',
+                name: 'Team 4',
                 playerID: [7, 8],
                 total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
                 
@@ -335,6 +306,7 @@ const Scorecard = ({navigation}) => {
             animated: true,
         })
     }
+
 
     const [leader, setLeader] = useState(null)
 
@@ -450,23 +422,24 @@ const Scorecard = ({navigation}) => {
     );
     };
 
-    const renderPointsFooter = ({ item }) => {
+    const renderWinsFooter = ({ item }) => {
 
         const color = item.total === leader ? 'green' : '#000';
     
         
         return (
-            <PointsFooter
+            <WinsFooter
                 total={item.total}
                 style={{ color }}
             />
         );
-        };
+    };
 
-      const renderItemScoreRow = ({ item }) => {
+      const renderItemScoreRow = ({ item, index }) => {
         
         return (
           <ScoreRow
+            index={index}
             score={item.score}
             round={item.round}
             team={item.team}
@@ -502,18 +475,20 @@ const Scorecard = ({navigation}) => {
 //Scorebox Modal
       const [visible, setVisible] = useState(false);
   
-      const showModal = ({round, team1, team2, team3, team4}) => {
+      const showModal = ({round, index}) => {
 
-        const team = () => {
-            if (team1) return team1;
-            else if (team2) return team2;
-            else if (team3) return team3;
-            else if (team4) return team4;
-            else return null;
-        }
+        // const team = () => {
+        //     if (team1) return team1;
+        //     else if (team2) return team2;
+        //     else if (team3) return team3;
+        //     else if (team4) return team4;
+        //     else return null;
+        // }
             setVisible(true);
             setRoundState(round);
-            setTeamState(team());
+            setTeamState(index + 1);
+            console.log(round);
+            console.log(index);
         }
 
       const hideModal = () => setVisible(false);
@@ -550,49 +525,132 @@ const Scorecard = ({navigation}) => {
         );
     }
 
-      const ScoreRow = ({score, round, team}) => {
+    // const ScoreRow = ({score, round, team}) => {
 
-        const team1 = team[0];
-        const team2 = team[1];
-        const team3 = team[2];
-        const team4 = team[3];
+    //     const [roundWinner, setRoundWinner] = useState(null);
+
+    //     useEffect(() => {
+    //         setRoundWinner( Math.max(score))
+    //     }, [Teams])
+
+    //     const team1 = team[0];
+    //     const team2 = team[1];
+    //     const team3 = team[2];
+    //     const team4 = team[3];
+
+    //     return (
+    //         <View style={{flexDirection: 'row', height: 50}}>
+    //             <View style={{backgroundColor: '#155843', width: 60}}>
+    
+    //             </View>
+    //             <TouchableOpacity onPress={() => showModal({round, team1})}>
+    //                 <View style={styles.scorebox}>
+    //                     <Text style={styles.score}>
+    //                         {score[0]}
+    //                     </Text>
+    //                 </View>
+    //             </TouchableOpacity>
+                
+    //             <TouchableOpacity onPress={() => showModal({round, team2})}>
+    //                 <View style={styles.scorebox}>
+    //                     <Text style={styles.score}>
+    //                         {score[1]}
+    //                     </Text>
+    //                 </View>
+    //             </TouchableOpacity>
+
+    //             <TouchableOpacity onPress={() => showModal({round, team3})}>
+    //                 <View style={styles.scorebox}>
+    //                     <Text style={styles.score}>
+    //                         {score[2]}
+    //                     </Text>
+    //                 </View>
+    //             </TouchableOpacity>
+
+    //             <TouchableOpacity onPress={() => showModal({round, team4})}>
+    //                 <View style={styles.scorebox}>
+    //                     <Text style={styles.score}>
+    //                         {score[3]}
+    //                     </Text>
+    //                 </View>
+    //             </TouchableOpacity>
+    
+    //     </View>
+    //     );
+    // }
+
+   
+
+      const ScoreRow = ({index, round, score, team}) => {
+
+        const data = Scores[round - 1].score
+
+        const Round = round
+
+        const [roundWinner, setRoundWinner] = useState(null);
+
+        useEffect(() => {
+            setRoundWinner( Math.max(score))
+        }, [Teams])
+
+        const Row = ({item, index, score, team, style}) => {
+
+            const round = Round
+
+            return (
+                
+                  <View style={{}}>
+                      
+                      <TouchableOpacity onPress={() => showModal({index, round})}>
+                        <View style={styles.scorebox}>
+                            <Text style={styles.score}>
+                            {item}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                  </View>
+                    
+                    
+       
+               
+            )
+        }
+
+        const renderRow = ({ item, index }) => {
+
+            const color = item.score === roundWinner ? 'green' : '#000';
+
+            
+            return (
+                <Row
+                    index={index}
+                    item={item}
+                    round={item.round}
+                    score={item.score}
+                    team={item.team}
+                    style={{ color }}
+                />
+            );
+        };
+
 
         return (
             <View style={{flexDirection: 'row', height: 50}}>
                 <View style={{backgroundColor: '#155843', width: 60}}>
     
                 </View>
-                <TouchableOpacity onPress={() => showModal({round, team1})}>
-                    <View style={styles.scorebox}>
-                        <Text style={styles.score}>
-                            {score[0]}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
                 
-                <TouchableOpacity onPress={() => showModal({round, team2})}>
-                    <View style={styles.scorebox}>
-                        <Text style={styles.score}>
-                            {score[1]}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => showModal({round, team3})}>
-                    <View style={styles.scorebox}>
-                        <Text style={styles.score}>
-                            {score[2]}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => showModal({round, team4})}>
-                    <View style={styles.scorebox}>
-                        <Text style={styles.score}>
-                            {score[3]}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
+                <FlatList 
+                    data={data}
+                    renderItem={renderRow}
+                    
+                    keyExtractor={(item, index) => index.toString()}
+                    horizontal={true}
+                    //style={{position: 'absolute', top: 0, marginLeft: 60}}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{width: 400}}
+                    scrollEnabled={false}
+                />
     
         </View>
         );
@@ -916,6 +974,19 @@ const Scorecard = ({navigation}) => {
                                                 value={isPointsEnabled}
                                             />
                                         </View>
+
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Lowest Points Wins
+                                            </Text> 
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={isLowestPointsEnabled ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleSwitchLowestPoints}
+                                                value={isLowestPointsEnabled}
+                                            />
+                                        </View>
                                         
                                     </View>  
                                 </View>
@@ -1134,7 +1205,7 @@ const Scorecard = ({navigation}) => {
                         <FlatList
                             data={Scores}
                             renderItem={renderItemScoreRow}
-                            keyExtractor={item => item.id}
+                            keyExtractor={(item, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
                             style={{ marginTop: 0, flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
                             contentContainerStyle={{width: 460}}
@@ -1149,6 +1220,9 @@ const Scorecard = ({navigation}) => {
                             )}
                             ListFooterComponent={() => (
                                 <View>
+                                    <View style={styles.roundbox}>
+                                         
+                                    </View>
                                     <View style={styles.roundbox}>
                                          
                                     </View>
@@ -1176,7 +1250,7 @@ const Scorecard = ({navigation}) => {
                 { isRoundWinsEnabled ? (
                     <FlatList 
                         data={Teams}
-                        renderItem={renderPointsFooter}
+                        renderItem={renderWinsFooter}
                         //keyExtractor={item => item.id}
                         horizontal={true}
                         style={{position: 'absolute', bottom: 50, marginLeft: 60}}
@@ -1221,128 +1295,53 @@ const Scorecard = ({navigation}) => {
                     ListFooterComponent={() => (
                         <View>
                             <View style={styles.roundbox}>
-                                 
+                            <TouchableOpacity>
+                                <Feather 
+                                    name='plus-circle'
+                                    color='lightgray'
+                                    size={22}
+                                /> 
+                            </TouchableOpacity>
+                            
                             </View>
                             <View style={styles.roundbox}>
-                                 
+                            </View>
+                            <View style={styles.roundbox}>
                             </View>
                         </View>
                     )}
                 />
-               
-
-               {/* <ScrollView 
-                    style={{width: 80, height: '100%', position: 'absolute', top: 0, left: 0, }}
-                    stickyHeaderIndices={[0, 16]}
-                    showsVerticalScrollIndicator={false}
-                    // onScroll = {(event)=>{{
-                    //            handleVertScroll(event);}}}//Vertical scrolling distance 
-                    ref={scrollRef}
-                    scrollEnabled={false}
-                 
-                    scrollEventThrottle={16}
-               >
-                    <View style={styles.roundbox}>
-                        <Text style={styles.header}>
-                            
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            1
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            2
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            3
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            4
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            5
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            6
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            7
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            8
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            9
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            10
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            11
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            12
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            13
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            14
-                        </Text>
-                    </View>
-                    <View style={styles.roundbox}>
-                        <Text style={styles.round}>
-                            15
-                        </Text>
-                    </View>
-                    <View style={[styles.roundbox]}>
-                        
-                    </View>
-                    
-                </ScrollView> */}
                 
             </View>
 
-            
+            { isRoundWinsEnabled ? (
+                <View style={[styles.roundbox, { position: 'absolute', bottom: 50, left: 0}]}> 
+                    <TouchableOpacity>
+                        <View style={styles.roundbox}>
+                            {/* <Text style={[styles.round, {fontSize: 12}]}>
+                                Wins
+                            </Text> */}
+                        </View> 
+                    </TouchableOpacity>
+                </View>
+            ) : null }
+
+            { isPointsEnabled ? (
                 <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}> 
                     <TouchableOpacity>
                         <View style={styles.roundbox}>
-                            <Feather 
+                            {/* <Text style={[styles.round, {fontSize: 12}]}>
+                                Points
+                            </Text> */}
+                            {/* <Feather 
                                 name='plus-circle'
                                 color='gray'
                                 size={22}
-                            /> 
+                            />  */}
                         </View> 
                     </TouchableOpacity>
-                
                 </View>
+            ) : null }
            
             
 
