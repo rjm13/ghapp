@@ -34,7 +34,7 @@ const Footer = ({total, style}) => {
     );
 }
 
-const WinsFooter = ({total, style}) => {
+const WinsFooter = ({roundWins, style}) => {
     return (
         <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
             
@@ -42,7 +42,7 @@ const WinsFooter = ({total, style}) => {
 
             <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
                 <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
-                    {total}
+                    {roundWins}
                 </Text>
             </View>
             
@@ -82,7 +82,7 @@ const Scorecard = ({navigation}) => {
     const [isRoundWinnerEnabled, setIsRoundWinnerEnabled] = useState(false);
     const toggleSwitchRoundWinner = () => setIsRoundWinnerEnabled(previousState => !previousState);
 
-    const [isRoundWinsEnabled, setIsRoundWinsEnabled] = useState(false);
+    const [isRoundWinsEnabled, setIsRoundWinsEnabled] = useState(true);
     const toggleSwitchRoundWins = () => setIsRoundWinsEnabled(previousState => !previousState);
 
     const [isPointsEnabled, setIsPointsEnabled] = useState(true);
@@ -105,78 +105,93 @@ const Scorecard = ({navigation}) => {
             {
                 round: 1,
                 team: [1, 2, 3, 4],
-                score: [5, 10, 15, 20],
+                score: [5, 5, 5, 5],
+                winner: null,
         
             },
             {
                 round: 2,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 4,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 5,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 6,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 7,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 8,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 9,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 10,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 11,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 12,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 13,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 30, 35],
+                winner: null,
             },
             {
                 round: 14,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 95, 39, 35],
+                winner: null,
             },
             {
                 round: 15,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 30, 35],
+                score: [10, 25, 39, 35],
+                winner: null,
             },
         ]
     )
@@ -190,7 +205,7 @@ const Scorecard = ({navigation}) => {
                 name: 'Team 1',
                 playerID: [1, 2],
                 total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ), 
-                roundWins: 0,
+                roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
                 
             },
             {
@@ -198,21 +213,21 @@ const Scorecard = ({navigation}) => {
                 name: 'Team 2',
                 playerID: [3, 4],
                 total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
-               
+                roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
             },
             {
                 id: '3',
                 name: 'Team 3',
                 playerID: [5, 6],
                 total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
-                
+                roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),
             },
             {
                 id: '4',
                 name: 'Team 4',
                 playerID: [7, 8],
                 total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
-                
+                roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),
             },
         ]
     
@@ -231,6 +246,8 @@ const Scorecard = ({navigation}) => {
     );
 
     const [Updated, setUpdated] = useState(true);
+
+    const [roundUpdate, setRoundUpdate] = useState(false);
 
 
     //Scorecard Settings Modal
@@ -308,10 +325,12 @@ const Scorecard = ({navigation}) => {
     }
 
 
-    const [leader, setLeader] = useState(null)
+    const [leader, setLeader] = useState(null);
+    const [roundLeader, setRoundLeader] = useState(null);
 
     useEffect(() => {
         setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total))
+        setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins))
     }, [Teams])
 
 
@@ -347,9 +366,9 @@ const Scorecard = ({navigation}) => {
         // else if (id === 3) {setTeamNames([TeamNames[0], TeamNames[1], text, TeamNames[3]])}
         // else if (id === 4) {setTeamNames([TeamNames[0], TeamNames[1], TeamNames[2], text])}
         
-        console.log(text);
-        console.log(id)
-        console.log(TeamNames)
+        // console.log(text);
+        // console.log(id)
+        // console.log(TeamNames)
     }
 
 
@@ -424,12 +443,12 @@ const Scorecard = ({navigation}) => {
 
     const renderWinsFooter = ({ item }) => {
 
-        const color = item.total === leader ? 'green' : '#000';
+        const color = item.roundWins === roundLeader && roundLeader !== 0 ? 'green' : '#000';
     
         
         return (
             <WinsFooter
-                total={item.total}
+                roundWins={item.roundWins}
                 style={{ color }}
             />
         );
@@ -469,8 +488,9 @@ const Scorecard = ({navigation}) => {
       };
 
 
-      const [roundState, setRoundState] = useState(0);
+      const [roundState, setRoundState] = useState(null);
       const [teamState, setTeamState] = useState(0);
+      const [scoreState, setScoreState] = useState();
 
 //Scorebox Modal
       const [visible, setVisible] = useState(false);
@@ -487,8 +507,11 @@ const Scorecard = ({navigation}) => {
             setVisible(true);
             setRoundState(round);
             setTeamState(index + 1);
-            console.log(round);
-            console.log(index);
+            //setScoreState(Score);
+
+            //console.log(winnerIndex)
+            // console.log(round);
+            // console.log(index);
         }
 
       const hideModal = () => setVisible(false);
@@ -579,7 +602,29 @@ const Scorecard = ({navigation}) => {
     //     );
     // }
 
-   
+    
+    //const [winnerIndex, setWinnerIndex] = useState(0);
+    
+
+    // useEffect(() => {
+
+    //     let newArray = [...Scores];
+    //     newArray[ roundState - 1].winner = winnerIndex;
+    //     setScores(newArray);
+    //     //console.log(winnerIndex)
+
+    // }, [roundUpdate])
+
+    // const updateRoundLeader = () => {
+    //     let newArray = [...Scores];
+    //     newArray[winnerIndex].winner = winnerIndex;
+    //     setScores(newArray);
+    //     //console.log(newArray[index].roundWins)
+    //     //console.log(index)
+    // }
+
+    
+    //const [winner, setWinner] = useState(0)
 
       const ScoreRow = ({index, round, score, team}) => {
 
@@ -587,32 +632,57 @@ const Scorecard = ({navigation}) => {
 
         const Round = round
 
-        const [roundWinner, setRoundWinner] = useState(null);
+        const roundWinner = Math.max(score[0], score[1], score[2], score[3]);
+
+        // const winnerIndex = roundWinner === score[0] ? 0 : 
+        //                     roundWinner === score[1] ? 1 : 
+        //                     roundWinner === score[2] ? 2 : 
+        //                     roundWinner === score[3] ? 3 : 0
+
+        //setWinner(winnerIndex);
+
+        //console.log(winnerIndex)
+
+        //const [roundWinner, setRoundWinner] = useState(Math.max(score[0], score[1], score[2], score[3]));
+
+        //const [wIndex, setWIndex] = useState(0)
+
+        //const [winner, setWinner] = useState(Math.max(score[0], score[1], score[2], score[3]))
 
         
-        
+                
+            // if (roundWinner === score[0]) {
+            //     let newArray = [...Scores];
+            //     newArray[ roundState - 1].winner = 0;
+            //     setScores(newArray);} 
+            // if (roundWinner === score[0]) {
+            //     let newArray = [...Scores];
+            //     newArray[ roundState - 1].winner = 1;
+            //     setScores(newArray);}  
+            // if (roundWinner === score[0]) {
+            //     let newArray = [...Scores];
+            //     newArray[ roundState - 1].winner = 2;
+            //     setScores(newArray);} 
+            // if (roundWinner === score[0]) {
+            //     let newArray = [...Scores];
+            //     newArray[ roundState - 1].winner = 3;
+            //     setScores(newArray);} 
+            
+    
+
+
 
         const Row = ({item, index, style}) => {
 
             const round = Round
 
-            useEffect(() => {
-
-                const winner = Math.max(score[0], score[1], score[2], score[3]);
-                console.log(winner)
-                //const winner = Math.max(score);
-    
-                setRoundWinner(winner);
-                //console.log(winner);
-            }, [Scores[round - 1].score])
-
-            //const color = item === roundWinner ? 'green' : '#000';
+            //const Score = score
 
             return (
                 
                   <View style={{}}>
                       
-                      <TouchableOpacity onPress={() => showModal({index, round})}>
+                      <TouchableOpacity onPress={() => {showModal({index, round});}}>
                         <View style={[styles.scorebox, style]}>
                             <Text style={[styles.score]}>
                             {item}
@@ -655,6 +725,7 @@ const Scorecard = ({navigation}) => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{width: 400}}
                     scrollEnabled={false}
+                    
                 />
     
         </View>
@@ -665,26 +736,58 @@ const Scorecard = ({navigation}) => {
 
     const textNum = parseInt(text)
 
+    const [winnerState, setWinnerState] = useState(0);
+
     const SetScore = () => {    
+
+        
 
         let newArray = [...Scores];
         newArray[roundState - 1].score[teamState - 1 ] = textNum;
+        //newArray[roundState - 1].winner = winnerState;
         setScores(newArray);
+
+        // let newArray2 = [...Scores];
+        // newArray[roundState - 1].winner = winnerState;
+        // setScores(newArray2);
+
+        //console.log(winnerState)
 
         hideModal();
 
         setUpdated(!Updated)    
+        //setWinnerState(winnerIndex);
+        setRoundUpdate(!roundUpdate)
+        //updateRoundLeader();
     }
+
+    useEffect(() => {
+
+        if (roundState) {
+        let newArray = [...Scores];
+
+        const roundWinner = Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]);
+
+        const winnerIndex = roundWinner === newArray[roundState - 1].score[0] ? 0 : 
+                            roundWinner === newArray[roundState - 1].score[1] ? 1 : 
+                            roundWinner === newArray[roundState - 1].score[2] ? 2 : 
+                            roundWinner === newArray[roundState - 1].score[3] ? 3 : null
+
+
+        newArray[roundState - 1].winner = winnerIndex;
+        setScores(newArray);
+        }
+    }, [roundUpdate])
 
     useEffect(() => {
         setTeams (
             [
-                {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0) }, 
-                {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), }, 
-                {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), },
-                {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), },
+                {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0), roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0), }, 
+                {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),}, 
+                {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),},
+                {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),},
             ]
-        )
+        );
     },[Updated]);
 
 
@@ -1258,12 +1361,12 @@ const Scorecard = ({navigation}) => {
                         renderItem={renderWinsFooter}
                         //keyExtractor={item => item.id}
                         horizontal={true}
-                        style={{position: 'absolute', bottom: 50, marginLeft: 60}}
+                        style={{position: 'absolute', bottom: 48, marginLeft: 60}}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{width: 400}}
                         ref={horzScrollRef3}
                         scrollEnabled={false}
-                        extraData={Updated}
+                        //extraData={roundUpdate}
                     />
                 ) : null }
 
