@@ -589,46 +589,51 @@ const Scorecard = ({navigation}) => {
 
         const [roundWinner, setRoundWinner] = useState(null);
 
-        useEffect(() => {
-            setRoundWinner( Math.max(score))
-        }, [Teams])
+        
+        
 
-        const Row = ({item, index, score, team, style}) => {
+        const Row = ({item, index, style}) => {
 
             const round = Round
+
+            useEffect(() => {
+
+                const winner = Math.max(score[0], score[1], score[2], score[3]);
+                console.log(winner)
+                //const winner = Math.max(score);
+    
+                setRoundWinner(winner);
+                //console.log(winner);
+            }, [Scores[round - 1].score])
+
+            //const color = item === roundWinner ? 'green' : '#000';
 
             return (
                 
                   <View style={{}}>
                       
                       <TouchableOpacity onPress={() => showModal({index, round})}>
-                        <View style={styles.scorebox}>
-                            <Text style={styles.score}>
+                        <View style={[styles.scorebox, style]}>
+                            <Text style={[styles.score]}>
                             {item}
                             </Text>
                         </View>
                     </TouchableOpacity>
-                  </View>
-                    
-                    
-       
-               
+                  </View> 
             )
         }
 
         const renderRow = ({ item, index }) => {
 
-            const color = item.score === roundWinner ? 'green' : '#000';
+            //const color = item === roundWinner ? 'green' : '#000000a5';
 
-            
+            const backgroundColor = item === roundWinner ? '#f0f0f0a5' : '#fff';
+
             return (
                 <Row
                     index={index}
                     item={item}
-                    round={item.round}
-                    score={item.score}
-                    team={item.team}
-                    style={{ color }}
+                    style={{  backgroundColor }}
                 />
             );
         };
@@ -1379,7 +1384,7 @@ const styles = StyleSheet.create({
     },
     score: {
         fontSize: 19,
-        color: '#000000a5',
+        //color: '#000000a5',
         fontFamily: 'chalkboard-regular',
     },
     roundbox: {
