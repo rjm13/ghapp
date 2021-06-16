@@ -6,6 +6,8 @@ import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 
 import OptionsMenu from "react-native-option-menu";
 
+import Timer from '../Components/Timer';
+
 const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -53,15 +55,6 @@ const WinsFooter = ({roundWins, style}) => {
 }
 
 
-const RoundsColumn = ({round}) => {
-    return (
-        <View style={styles.roundbox}>
-            <Text style={styles.round}>
-                {toRoman(round)}
-            </Text>
-        </View>
-    );
-}
 
 
 const Scorecard = ({navigation}) => {
@@ -78,10 +71,10 @@ const Scorecard = ({navigation}) => {
     const [isBonusEnabled, setIsBonusEnabled] = useState(false);
     const toggleSwitchBonus = () => setIsBonusEnabled(previousState => !previousState);
 
-    const [isRomanEnabled, setIsRomanEnabled] = useState(false);
+    const [isRomanEnabled, setIsRomanEnabled] = useState(true);
     const toggleSwitchRoman = () => setIsRomanEnabled(previousState => !previousState);
 
-    const [isRoundWinnerEnabled, setIsRoundWinnerEnabled] = useState(false);
+    const [isRoundWinnerEnabled, setIsRoundWinnerEnabled] = useState(true);
     const toggleSwitchRoundWinner = () => setIsRoundWinnerEnabled(previousState => !previousState);
 
     const [isRoundWinsEnabled, setIsRoundWinsEnabled] = useState(true);
@@ -99,7 +92,24 @@ const Scorecard = ({navigation}) => {
     const [isWarningEnabled, setIsWarningEnabled] = useState(false);
     const toggleSwitchWarning = () => setIsWarningEnabled(previousState => !previousState);
 
-    const [roundLength, setRoundLength] = useState('0:00')
+    const [roundLength, setRoundLength] = useState(60000)
+
+    const ConvertToMillis = (val) => {
+        let time = parseInt(val) * 1000
+        setRoundLength(time)
+        console.log(time)
+    }
+
+
+    const RoundsColumn = ({round}) => {
+        return (
+            <View style={styles.roundbox}>
+                <Text style={styles.round}>
+                    {isRomanEnabled === true ? toRoman(round) : round}
+                </Text>
+            </View>
+        );
+    }
 
 
     const [Scores, setScores] = useState(
@@ -271,7 +281,6 @@ const Scorecard = ({navigation}) => {
             name: 'Team 1',
             playerID: [1, 2],
             total: 0 ,
-            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
             roundWins: 0,
             
         },
@@ -280,7 +289,6 @@ const Scorecard = ({navigation}) => {
             name: 'Team 2',
             playerID: [3, 4],
             total:  0 ,
-            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
             roundWins: 0,
         },
         {
@@ -288,7 +296,6 @@ const Scorecard = ({navigation}) => {
             name: 'Team 3',
             playerID: [5, 6],
             total: 0,
-            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
             roundWins: 0,
         },
         {
@@ -296,7 +303,6 @@ const Scorecard = ({navigation}) => {
             name: 'Team 4',
             playerID: [7, 8],
             total: 0,
-            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
             roundWins: 0,
         },
     ]
@@ -393,11 +399,6 @@ const Scorecard = ({navigation}) => {
             winner: null,
         },
     ];
-
-    // useEffect(() => {
-    //     let blank = [...ScorecardData];
-    //     setBlankScorecard(blank)
-    // }, [])
 
 
 
@@ -822,7 +823,7 @@ const Scorecard = ({navigation}) => {
 
             //const color = item === roundWinner ? 'green' : '#000000a5';
 
-            const backgroundColor = item === roundWinner && item !== 0 ? '#f0f0f0a5' : '#fff';
+            const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true ? '#f0f0f0a5' : '#fff';
 
             
 
@@ -1373,13 +1374,13 @@ const Scorecard = ({navigation}) => {
                                             Round Length (sec)
                                         </Text> 
                                         <TextInput 
-                                            placeholder='60'
+                                            placeholder={(roundLength / 1000).toString()}
                                             placeholderTextColor='#000000a5'
                                             keyboardType='number-pad'
                                             style={{textAlign: 'right', height: 30, width: 60, fontFamily: 'chalkboard-bold', fontSize: 16}}
                                             maxLength={5}
                                             autoFocus={false}
-                                            onChangeText={val => setRoundLength(val)}
+                                            onChangeText={val => ConvertToMillis(val)}
                                         />
                                     </View>
                                     
@@ -1502,6 +1503,18 @@ const Scorecard = ({navigation}) => {
                                     <View style={styles.roundbox}>
                                          
                                     </View>
+                                    {isTimerEnabled === true ? (
+                                        <View>
+                                            <View style={styles.roundbox}>
+                                         
+                                        </View>
+                                        <View style={styles.roundbox}>
+                                         
+                                        </View>
+                                        </View>
+                                        
+                                    ) : null}
+
                                 </View>
                             )}   
                         />
@@ -1526,7 +1539,7 @@ const Scorecard = ({navigation}) => {
                         renderItem={renderWinsFooter}
                         //keyExtractor={item => item.id}
                         horizontal={true}
-                        style={{position: 'absolute', bottom: 48, marginLeft: 60}}
+                        style={{position: 'absolute', bottom: isTimerEnabled === true ? 108 : 48, marginLeft: 60}}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{width: 400}}
                         ref={horzScrollRef3}
@@ -1541,7 +1554,7 @@ const Scorecard = ({navigation}) => {
                         renderItem={renderFooter}
                         //keyExtractor={item => item.id}
                         horizontal={true}
-                        style={{position: 'absolute', bottom: -2, marginLeft: 60}}
+                        style={{position: 'absolute', bottom: isTimerEnabled === true ? 58 : -2, marginLeft: 60}}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{width: 400}}
                         ref={horzScrollRef}
@@ -1581,6 +1594,17 @@ const Scorecard = ({navigation}) => {
                             </View>
                             <View style={styles.roundbox}>
                             </View>
+                            {isTimerEnabled === true ? (
+                                        <View>
+                                            <View style={styles.roundbox}>
+                                         
+                                        </View>
+                                        <View style={styles.roundbox}>
+                                         
+                                        </View>
+                                        </View>
+                                        
+                                    ) : null}
                         </View>
                     )}
                 />
@@ -1588,7 +1612,7 @@ const Scorecard = ({navigation}) => {
             </View>
 
             { isRoundWinsEnabled ? (
-                <View style={[styles.roundbox, { position: 'absolute', bottom: 50, left: 0}]}> 
+                <View style={[styles.roundbox, { position: 'absolute', bottom: isTimerEnabled === true ? 110 : 50, left: 0}]}> 
                     <TouchableOpacity>
                         <View style={styles.roundbox}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
@@ -1600,7 +1624,10 @@ const Scorecard = ({navigation}) => {
             ) : null }
 
             { isPointsEnabled ? (
-                <View style={[styles.roundbox, { position: 'absolute', bottom: 0, left: 0}]}> 
+                <View style={[styles.roundbox, { 
+                    position: 'absolute', 
+                    bottom: isTimerEnabled === true ? 60 : 0, 
+                    left: 0}]}> 
                     <TouchableOpacity>
                         <View style={styles.roundbox}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
@@ -1613,6 +1640,15 @@ const Scorecard = ({navigation}) => {
                             />  */}
                         </View> 
                     </TouchableOpacity>
+                </View>
+            ) : null }
+
+            { isTimerEnabled ? (
+                <View style={{position: 'absolute', bottom: 0, left: 0}}> 
+                    <Timer 
+                        warning={isWarningEnabled}
+                        length={roundLength}
+                    />
                 </View>
             ) : null }
            
