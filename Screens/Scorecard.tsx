@@ -19,6 +19,8 @@ var toRoman = require('roman-numerals').toRoman;
 
 
 const Footer = ({total, style}) => {
+
+
     return (
         <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
             
@@ -105,92 +107,92 @@ const Scorecard = ({navigation}) => {
             {
                 round: 1,
                 team: [1, 2, 3, 4],
-                score: [5, 5, 5, 5],
+                score: ['', '', '', ''],
                 winner: null,
         
             },
             {
                 round: 2,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 4,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 5,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 6,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 7,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 8,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 9,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 10,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 11,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 12,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 13,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 30, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 14,
                 team: [1, 2, 3, 4],
-                score: [10, 95, 39, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 15,
                 team: [1, 2, 3, 4],
-                score: [10, 25, 39, 35],
+                score: ['', '', '', ''],
                 winner: null,
             },
         ]
@@ -204,7 +206,7 @@ const Scorecard = ({navigation}) => {
                 id: 1,
                 name: 'Team 1',
                 playerID: [1, 2],
-                total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0 ), 
+                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
                 
             },
@@ -212,21 +214,24 @@ const Scorecard = ({navigation}) => {
                 id: '2',
                 name: 'Team 2',
                 playerID: [3, 4],
-                total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
+                //total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
+                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
             },
             {
                 id: '3',
                 name: 'Team 3',
                 playerID: [5, 6],
-                total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
+                //total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
+                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),
             },
             {
                 id: '4',
                 name: 'Team 4',
                 playerID: [7, 8],
-                total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+                //total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),
             },
         ]
@@ -329,7 +334,7 @@ const Scorecard = ({navigation}) => {
     const [roundLeader, setRoundLeader] = useState(null);
 
     useEffect(() => {
-        setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total))
+        setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total).toString())
         setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins))
     }, [Teams])
 
@@ -431,6 +436,11 @@ const Scorecard = ({navigation}) => {
     const renderFooter = ({ item }) => {
 
     const color = item.total === leader ? 'green' : '#000';
+
+    console.log('test2')
+    console.log(item.total)
+    console.log(leader)
+    console.log(color)
 
     
     return (
@@ -634,57 +644,18 @@ const Scorecard = ({navigation}) => {
 
         const roundWinner = Math.max(score[0], score[1], score[2], score[3]);
 
-        // const winnerIndex = roundWinner === score[0] ? 0 : 
-        //                     roundWinner === score[1] ? 1 : 
-        //                     roundWinner === score[2] ? 2 : 
-        //                     roundWinner === score[3] ? 3 : 0
-
-        //setWinner(winnerIndex);
-
-        //console.log(winnerIndex)
-
-        //const [roundWinner, setRoundWinner] = useState(Math.max(score[0], score[1], score[2], score[3]));
-
-        //const [wIndex, setWIndex] = useState(0)
-
-        //const [winner, setWinner] = useState(Math.max(score[0], score[1], score[2], score[3]))
-
-        
-                
-            // if (roundWinner === score[0]) {
-            //     let newArray = [...Scores];
-            //     newArray[ roundState - 1].winner = 0;
-            //     setScores(newArray);} 
-            // if (roundWinner === score[0]) {
-            //     let newArray = [...Scores];
-            //     newArray[ roundState - 1].winner = 1;
-            //     setScores(newArray);}  
-            // if (roundWinner === score[0]) {
-            //     let newArray = [...Scores];
-            //     newArray[ roundState - 1].winner = 2;
-            //     setScores(newArray);} 
-            // if (roundWinner === score[0]) {
-            //     let newArray = [...Scores];
-            //     newArray[ roundState - 1].winner = 3;
-            //     setScores(newArray);} 
-            
-    
-
-
 
         const Row = ({item, index, style}) => {
 
             const round = Round
 
-            //const Score = score
-
             return (
-                
                   <View style={{}}>
-                      
                       <TouchableOpacity onPress={() => {showModal({index, round});}}>
                         <View style={[styles.scorebox, style]}>
-                            <Text style={[styles.score]}>
+                            <Text style={[styles.score, 
+                                //{color: item === 0 ? '#fff' : '#000000a5'}
+                            ]}>
                             {item}
                             </Text>
                         </View>
@@ -697,7 +668,7 @@ const Scorecard = ({navigation}) => {
 
             //const color = item === roundWinner ? 'green' : '#000000a5';
 
-            const backgroundColor = item === roundWinner ? '#f0f0f0a5' : '#fff';
+            const backgroundColor = item === roundWinner && item !== 0 ? '#f0f0f0a5' : '#fff';
 
             return (
                 <Row
@@ -1487,7 +1458,7 @@ const styles = StyleSheet.create({
     },
     score: {
         fontSize: 19,
-        //color: '#000000a5',
+        color: '#000000a5',
         fontFamily: 'chalkboard-regular',
     },
     roundbox: {
