@@ -206,7 +206,8 @@ const Scorecard = ({navigation}) => {
                 id: 1,
                 name: 'Team 1',
                 playerID: [1, 2],
-                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
+                total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
                 
             },
@@ -214,24 +215,24 @@ const Scorecard = ({navigation}) => {
                 id: '2',
                 name: 'Team 2',
                 playerID: [3, 4],
-                //total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
-                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
+                total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
+                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
             },
             {
                 id: '3',
                 name: 'Team 3',
                 playerID: [5, 6],
-                //total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
-                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
+                total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
+                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),
             },
             {
                 id: '4',
                 name: 'Team 4',
                 playerID: [7, 8],
-                //total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
-                total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
+                total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),
             },
         ]
@@ -250,9 +251,154 @@ const Scorecard = ({navigation}) => {
         },
     );
 
+// State controllers
     const [Updated, setUpdated] = useState(true);
-
     const [roundUpdate, setRoundUpdate] = useState(false);
+
+//clear scorecard
+
+    const blankScorecard = {
+        id: '1',
+        name: 'Custom 1',
+        updated: false,
+        teams: [Teams],
+        scores: [Scores]
+    }
+
+    const blankTeams = [
+        {
+            id: 1,
+            name: 'Team 1',
+            playerID: [1, 2],
+            total: 0 ,
+            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
+            roundWins: 0,
+            
+        },
+        {
+            id: '2',
+            name: 'Team 2',
+            playerID: [3, 4],
+            total:  0 ,
+            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
+            roundWins: 0,
+        },
+        {
+            id: '3',
+            name: 'Team 3',
+            playerID: [5, 6],
+            total: 0,
+            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
+            roundWins: 0,
+        },
+        {
+            id: '4',
+            name: 'Team 4',
+            playerID: [7, 8],
+            total: 0,
+            //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
+            roundWins: 0,
+        },
+    ]
+    const blankScores = [
+        {
+            round: 1,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+    
+        },
+        {
+            round: 2,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 3,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 4,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 5,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 6,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 7,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 8,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 9,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 10,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 11,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 12,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 13,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 14,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+        {
+            round: 15,
+            team: [1, 2, 3, 4],
+            score: ['', '', '', ''],
+            winner: null,
+        },
+    ];
+
+    // useEffect(() => {
+    //     let blank = [...ScorecardData];
+    //     setBlankScorecard(blank)
+    // }, [])
+
 
 
     //Scorecard Settings Modal
@@ -437,11 +583,6 @@ const Scorecard = ({navigation}) => {
 
     const color = item.total === leader ? 'green' : '#000';
 
-    console.log('test2')
-    console.log(item.total)
-    console.log(leader)
-    console.log(color)
-
     
     return (
         <Footer
@@ -541,6 +682,17 @@ const Scorecard = ({navigation}) => {
           padding: 20,
       }; 
 
+//New Scorecard  Modal
+        const [visibleClearModal, setVisibleClearModal] = useState(false);
+        
+        const showClearModal = () => setVisibleClearModal(true);
+
+        const hideClearModal = () => setVisibleClearModal(false);
+        const clearModalContainerStyle = {
+            backgroundColor: 'transparent', 
+            padding: 20,
+        }; 
+
 
 
     const HeaderRow = ({id, name}) => {
@@ -636,9 +788,11 @@ const Scorecard = ({navigation}) => {
     
     //const [winner, setWinner] = useState(0)
 
+    const [updateScores, setUpdateScores] = useState(false);
+
       const ScoreRow = ({index, round, score, team}) => {
 
-        const data = Scores[round - 1].score
+        //const data = Scores[round - 1].score
 
         const Round = round
 
@@ -670,6 +824,8 @@ const Scorecard = ({navigation}) => {
 
             const backgroundColor = item === roundWinner && item !== 0 ? '#f0f0f0a5' : '#fff';
 
+            
+
             return (
                 <Row
                     index={index}
@@ -687,7 +843,7 @@ const Scorecard = ({navigation}) => {
                 </View>
                 
                 <FlatList 
-                    data={data}
+                    data={Scores[round - 1].score}
                     renderItem={renderRow}
                     
                     keyExtractor={(item, index) => index.toString()}
@@ -696,6 +852,8 @@ const Scorecard = ({navigation}) => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{width: 400}}
                     scrollEnabled={false}
+                    extraData={updateScores}
+                    
                     
                 />
     
@@ -762,8 +920,20 @@ const Scorecard = ({navigation}) => {
     },[Updated]);
 
 
+//clear scorecard function
+    const clearScorecard = () => {
+        
+        setScores(blankScores);
+        setTeams(blankTeams);
+        setScorecardData(blankScorecard);
+        setUpdateScores(!updateScores);    
+        
+        //setUpdated(!Updated);
+        //setRoundUpdate(!roundUpdate)
+        hideClearModal();
 
-
+            
+    }
 
     return (
         <Provider>
@@ -846,6 +1016,29 @@ const Scorecard = ({navigation}) => {
                                         color='#fff'
                                         size={30}
                                     />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </Modal>
+
+{/* New Scorecard Modal */}
+                <Modal visible={visibleClearModal} onDismiss={hideClearModal} contentContainerStyle={clearModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Are you sure you want to erase this scorecard?
+                            </Text>
+                        </View>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={clearScorecard}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#d92121', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{color: '#fff', fontSize: 22, textAlign: 'center', fontWeight: 'bold'}}>
+                                        Erase
+                                    </Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -1256,8 +1449,8 @@ const Scorecard = ({navigation}) => {
                         <OptionsMenu
                             customButton={MoreIcon}
                             destructiveIndex={1}
-                            options={["Save Settings", "Mark as Complete", "Share", "Save Scores"]}
-                            //actions={[editPost, deletePost]}
+                            options={["New","Save Settings", "Mark as Complete", "Share", "Save Scores"]}
+                            actions={[showClearModal]}
                         />
                     </View>
                     
@@ -1289,6 +1482,7 @@ const Scorecard = ({navigation}) => {
                             style={{ marginTop: 0, flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
                             contentContainerStyle={{width: 460}}
                             scrollEnabled={true}
+                            extraData={updateScores}
                             //ref={scrollRef}
                             onScroll = {(event)=>{{
                                 handleVertScroll(event);}}}//Vertical scrolling distance 
@@ -1337,7 +1531,7 @@ const Scorecard = ({navigation}) => {
                         contentContainerStyle={{width: 400}}
                         ref={horzScrollRef3}
                         scrollEnabled={false}
-                        //extraData={roundUpdate}
+                        extraData={roundUpdate}
                     />
                 ) : null }
 
