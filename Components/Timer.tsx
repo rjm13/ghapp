@@ -1,8 +1,26 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { Audio } from 'expo-av';
 
-const Timer = ({warning, length}) => {
+
+
+
+
+
+const Timer = ({warning, length, ticker}) => {
+
+    const [sound, setSound] = useState();
+    const [AudioUri, setAudioUri] = useState('../assets/sounds/Zelda.mp3');
+
+    useEffect(() => {
+        if (ticker === '3') {setAudioUri('../assets/sounds/Jeopardy.mp3')}
+        console.log('this first')
+        console.log(ticker)
+    },[])
+
+
+  
 
     const [isWarning, setWarning] = useState(warning);
 
@@ -43,9 +61,27 @@ const Timer = ({warning, length}) => {
             }
           }, 1000);
 
-    const StartStopTimer = () => {
+    async function StartStopTimer () {
+        
+
         setPlayPause(!PlayPause);
-        setIsTimerRunning(!isTimerRunning);
+        //setIsTimerRunning(!isTimerRunning);
+
+        const { sound } = await Audio.Sound.createAsync(
+            require('../assets/sounds/Jeopardy.mp3'),
+            {shouldPlay: true}
+        );
+        setSound(sound);
+
+        if (isTimerRunning === false) {
+            console.log('Playing Sound');
+            setIsTimerRunning(true);
+            await sound.playAsync(); 
+        } 
+        if (isTimerRunning === true) {
+            setIsTimerRunning(false);     
+            await sound.pauseAsync();
+        }
     }
 
     const ResetTimer = () => {
@@ -60,6 +96,14 @@ const Timer = ({warning, length}) => {
             setIsTimerRunning(false);
         }
     })
+
+    useEffect(() => {
+        return sound
+        ? () => {
+            console.log('Unloading Sound');
+            sound.unloadAsync(); }
+        : undefined;
+    }, [sound]);
 
     return (
         <View style={[styles.container, {
