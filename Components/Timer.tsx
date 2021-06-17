@@ -12,6 +12,8 @@ const Timer = ({warning, length, ticker}) => {
 
     const [sound, setSound] = useState();
     const [AudioUri, setAudioUri] = useState('../assets/sounds/Zelda.mp3');
+    const [soundLength, setSoundLength] = useState(0);
+    const [position, setPosition] = useState(0)
 
     useEffect(() => {
         if (ticker === '3') {setAudioUri('../assets/sounds/Jeopardy.mp3')}
@@ -47,53 +49,69 @@ const Timer = ({warning, length, ticker}) => {
             }, delay);
             return () => clearInterval(id);
         }, [delay]);
+    }
+
+    function millisToMinutesAndSeconds () {
+        let minutes = Math.floor(timerPosition / 60000);
+        let seconds = ((timerPosition % 60000) / 1000);
+        return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+    } 
+
+    useInterval(() => {
+        if (isTimerRunning === true) {
+        setTimerPosition(timerPosition - 1000);
+        setPosition(position + 1000);
         }
-
-        function millisToMinutesAndSeconds () {
-            let minutes = Math.floor(timerPosition / 60000);
-            let seconds = ((timerPosition % 60000) / 1000);
-            return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
-        } 
-
-        useInterval(() => {
-            if (isTimerRunning === true) {
-            setTimerPosition(timerPosition - 1000);
-            }
-          }, 1000);
+        }, 1000);
 
     async function StartStopTimer () {
-        
-
+    
         setPlayPause(!PlayPause);
-        //setIsTimerRunning(!isTimerRunning);
 
         const { sound } = await Audio.Sound.createAsync(
             require('../assets/sounds/Jeopardy.mp3'),
-            {shouldPlay: true}
+            {shouldPlay: true, isLooping: true}
         );
         setSound(sound);
+
+        let time = await sound.getStatusAsync();
+        setSoundLength(time.durationMillis);
 
         if (isTimerRunning === false) {
             console.log('Playing Sound');
             setIsTimerRunning(true);
             await sound.playAsync(); 
+            //await sound.setPositionAsync(position);
+            console.log(position) 
         } 
+        if (isTimerRunning === false && position < soundLength) {
+            await sound.setPositionAsync(position);
+        } 
+
         if (isTimerRunning === true) {
             setIsTimerRunning(false);     
             await sound.pauseAsync();
         }
     }
 
+    useEffect(() => {
+        if (isTimerRunning === true && position >= soundLength) {
+            setPosition (0)
+        }
+    },[position])
+
     const ResetTimer = () => {
         setPlayPause(false);
         setIsTimerRunning(false);
         setTimerPosition(length);
+        setPosition(0);
     }
 
     useEffect(() => {
         if (timerPosition === 0) {
             setPlayPause(false);
             setIsTimerRunning(false);
+            sound.unloadAsync();
         }
     })
 
