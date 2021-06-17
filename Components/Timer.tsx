@@ -11,18 +11,23 @@ import { Audio } from 'expo-av';
 const Timer = ({warning, length, ticker}) => {
 
     const [sound, setSound] = useState();
-    const [AudioUri, setAudioUri] = useState('../assets/sounds/Zelda.mp3');
+
+    const [AudioUri, setAudioUri] = useState(
+        ticker === '1' ? require('../assets/sounds/Zelda.mp3') :
+        ticker === '2' ? require('../assets/sounds/Jeopardy.mp3') :
+        ticker === '3' ? require('../assets/sounds/Jeopardy.mp3') : require('../assets/sounds/Zelda.mp3')
+    );
+
+    //const [AudioUri, setAudioUri] = useState();
+
     const [soundLength, setSoundLength] = useState(0);
-    const [position, setPosition] = useState(0)
+    const [position, setPosition] = useState(0);
 
-    useEffect(() => {
-        if (ticker === '3') {setAudioUri('../assets/sounds/Jeopardy.mp3')}
-        console.log('this first')
-        console.log(ticker)
-    },[])
-
-
-  
+        const SetSound = () => {
+            ticker === '1' ? setAudioUri(require('../assets/sounds/Zelda.mp3')) :
+            ticker === '2' ? setAudioUri(require('../assets/sounds/Jeopardy.mp3')) :
+            ticker === '3' ? setAudioUri(require('../assets/sounds/Jeopardy.mp3')) : setAudioUri(require('../assets/sounds/Zelda.mp3'))
+        }
 
     const [isWarning, setWarning] = useState(warning);
 
@@ -64,33 +69,42 @@ const Timer = ({warning, length, ticker}) => {
         }
         }, 1000);
 
-    async function StartStopTimer () {
     
-        setPlayPause(!PlayPause);
 
-        const { sound } = await Audio.Sound.createAsync(
-            require('../assets/sounds/Jeopardy.mp3'),
-            {shouldPlay: true, isLooping: true}
-        );
-        setSound(sound);
+    async function StartStopTimer () {
 
-        let time = await sound.getStatusAsync();
-        setSoundLength(time.durationMillis);
+        if (ticker === '0') {
+            setPlayPause(!PlayPause);
+            setIsTimerRunning(!isTimerRunning);
+        } else {
+            setPlayPause(!PlayPause);
+            console.log(ticker); 
+        
+            const { sound } = await Audio.Sound.createAsync(
+                AudioUri,
+                {shouldPlay: true, isLooping: true}
+            );
 
-        if (isTimerRunning === false) {
-            console.log('Playing Sound');
-            setIsTimerRunning(true);
-            await sound.playAsync(); 
-            //await sound.setPositionAsync(position);
-            console.log(position) 
-        } 
-        if (isTimerRunning === false && position < soundLength) {
-            await sound.setPositionAsync(position);
-        } 
+            setSound(sound);
 
-        if (isTimerRunning === true) {
-            setIsTimerRunning(false);     
-            await sound.pauseAsync();
+            let time = await sound.getStatusAsync();
+            setSoundLength(time.durationMillis);
+            
+            if (isTimerRunning === false) {
+                console.log('Playing Sound');
+                setIsTimerRunning(true);
+                await sound.playAsync(); 
+                //await sound.setPositionAsync(position);
+                //console.log(position) 
+            } 
+            if (isTimerRunning === false && position < soundLength) {
+                await sound.setPositionAsync(position);
+            } 
+
+            if (isTimerRunning === true) {
+                setIsTimerRunning(false);     
+                await sound.pauseAsync();
+            }
         }
     }
 
@@ -105,6 +119,7 @@ const Timer = ({warning, length, ticker}) => {
         setIsTimerRunning(false);
         setTimerPosition(length);
         setPosition(0);
+        SetSound();
     }
 
     useEffect(() => {
