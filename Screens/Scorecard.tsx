@@ -13,9 +13,9 @@ const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const Sounds = ['None', 'Ding', 'Beep', 'Time Up!', 'Siren', 'Whistle']
+const Sounds = ['none', 'ding', 'beep', 'time Up!', 'siren', 'whistle']
 
-const Ticker = ['None', 'Soft', 'Suspense', 'Jepordy']
+const Ticker = ['none', 'soft', 'suspense', 'jepordy']
 
 
 
@@ -1727,6 +1727,7 @@ const Scorecard = ({navigation}) => {
                     <Timer 
                         warning={isWarningEnabled}
                         length={roundLength}
+                        ticker={ticker}
                     />
                 </View>
             ) : null }
