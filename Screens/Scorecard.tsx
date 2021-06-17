@@ -1374,7 +1374,8 @@ const Scorecard = ({navigation}) => {
                                             Round Length (sec)
                                         </Text> 
                                         <TextInput 
-                                            placeholder={(roundLength / 1000).toString()}
+                                            //placeholder={(roundLength / 1000).toString()}
+                                            placeholder='---'
                                             placeholderTextColor='#000000a5'
                                             keyboardType='number-pad'
                                             style={{textAlign: 'right', height: 30, width: 60, fontFamily: 'chalkboard-bold', fontSize: 16}}
@@ -1539,7 +1540,13 @@ const Scorecard = ({navigation}) => {
                         renderItem={renderWinsFooter}
                         //keyExtractor={item => item.id}
                         horizontal={true}
-                        style={{position: 'absolute', bottom: isTimerEnabled === true ? 108 : 48, marginLeft: 60}}
+                        style={{position: 'absolute', marginLeft: 60,
+                            bottom: 
+                                isTimerEnabled === true && isPointsEnabled === true ? 108 : 
+                                isTimerEnabled === true && isPointsEnabled === false ? 60 : 
+                                isTimerEnabled === false && isPointsEnabled === true ? 48 :
+                                isTimerEnabled === false && isPointsEnabled === false ? -2 : 48
+                            }}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{width: 400}}
                         ref={horzScrollRef3}
@@ -1612,7 +1619,9 @@ const Scorecard = ({navigation}) => {
             </View>
 
             { isRoundWinsEnabled ? (
-                <View style={[styles.roundbox, { position: 'absolute', bottom: isTimerEnabled === true ? 110 : 50, left: 0}]}> 
+                <View style={[styles.roundbox, { position: 'absolute', 
+                    bottom: isTimerEnabled === true ? 110 : isPointsEnabled === false ? 0 : 50
+                    , left: 0}]}> 
                     <TouchableOpacity>
                         <View style={styles.roundbox}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>

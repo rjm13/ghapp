@@ -52,12 +52,22 @@ const Timer = ({warning, length}) => {
         setPlayPause(false);
         setIsTimerRunning(false);
         setTimerPosition(length);
-
     }
 
+    useEffect(() => {
+        if (timerPosition === 0) {
+            setPlayPause(false);
+            setIsTimerRunning(false);
+        }
+    })
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {
+            backgroundColor: 
+                isTimerRunning === true && timerPosition > 10000 ? '#41a661' : 
+                isTimerRunning === true && timerPosition <= 10000 ? '#cc1616' :
+                '#212121'
+        }]}>
             <TouchableOpacity onPress={ResetTimer}>
                 <View>
                     <FontAwesome5 
@@ -69,7 +79,7 @@ const Timer = ({warning, length}) => {
             </TouchableOpacity>
             
             <View>
-                <Text style={{ color: isTimerRunning === true ? 'red' : '#fff', fontFamily: 'chalkboard-regular', fontSize: 25}}>
+                <Text style={{ color: '#fff', fontFamily: 'chalkboard-regular', fontSize: 25}}>
                     {millisToMinutesAndSeconds()}
                 </Text>
             </View>
@@ -93,7 +103,6 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width, 
         height: 60,
         flexDirection: 'row',
-        backgroundColor: '#363636',
         alignItems: 'center',
         justifyContent: 'space-around',
         borderTopRightRadius: 15,
