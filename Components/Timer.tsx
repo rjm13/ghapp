@@ -13,9 +13,15 @@ const Timer = ({warning, length, ticker}) => {
     const [sound, setSound] = useState();
 
     const [AudioUri, setAudioUri] = useState(
-        ticker === '1' ? require('../assets/sounds/Zelda.mp3') :
-        ticker === '2' ? require('../assets/sounds/Jeopardy.mp3') :
-        ticker === '3' ? require('../assets/sounds/Jeopardy.mp3') : require('../assets/sounds/Zelda.mp3')
+        ticker === '1' ? require('../assets/sounds/Clock.mp3') :
+        ticker === '2' ? require('../assets/sounds/Stopwatch.mp3') :
+        ticker === '3' ? require('../assets/sounds/Grandfather.mp3') : 
+        ticker === '4' ? require('../assets/sounds/WaterTap.mp3') : 
+        ticker === '5' ? require('../assets/sounds/Blood.mp3') : 
+        ticker === '6' ? require('../assets/sounds/WarDrums.mp3') : 
+        ticker === '7' ? require('../assets/sounds/Jumanji.mp3') : 
+        ticker === '8' ? require('../assets/sounds/Jepordy.mp3') : 
+        require('../assets/sounds/Clock.mp3')
     );
 
     //const [AudioUri, setAudioUri] = useState();
@@ -24,9 +30,15 @@ const Timer = ({warning, length, ticker}) => {
     const [position, setPosition] = useState(0);
 
         const SetSound = () => {
-            ticker === '1' ? setAudioUri(require('../assets/sounds/Zelda.mp3')) :
-            ticker === '2' ? setAudioUri(require('../assets/sounds/Jeopardy.mp3')) :
-            ticker === '3' ? setAudioUri(require('../assets/sounds/Jeopardy.mp3')) : setAudioUri(require('../assets/sounds/Zelda.mp3'))
+            ticker === '1' ? setAudioUri(require('../assets/sounds/Clock.mp3')) :
+            ticker === '2' ? setAudioUri(require('../assets/sounds/Stopwatch.mp3')) :
+            ticker === '3' ? setAudioUri(require('../assets/sounds/Grandfather.mp3')) : 
+            ticker === '4' ? setAudioUri(require('../assets/sounds/WaterTap.mp3')) : 
+            ticker === '5' ? setAudioUri(require('../assets/sounds/Blood.mp3')) : 
+            ticker === '6' ? setAudioUri(require('../assets/sounds/WarDrums.mp3')) : 
+            ticker === '7' ? setAudioUri(require('../assets/sounds/Jumanji.mp3')) : 
+            ticker === '8' ? setAudioUri(require('../assets/sounds/Jepordy.mp3')) : 
+            setAudioUri(require('../assets/sounds/Clock.mp3'))
         }
 
     const [isWarning, setWarning] = useState(warning);

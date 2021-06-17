@@ -15,7 +15,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 const Sounds = ['none', 'ding', 'beep', 'time Up!', 'siren', 'whistle']
 
-const Ticker = ['none', 'soft', 'suspense', 'jepordy']
+const Ticker = ['none', 'clock', 'stopwatch', 'grandfather clock', 'water tap', 'blood', 'war drums', 'jumanji', 'jepordy']
 
 
 
@@ -944,6 +944,7 @@ const Scorecard = ({navigation}) => {
     }
 
     const [timePlaceholder, setTimePlaceholder] = useState('');
+    const [TickerPlaceholder, setTickerPlaceholder] = useState('None');
 
     return (
         <Provider>
@@ -1436,9 +1437,9 @@ const Scorecard = ({navigation}) => {
                                         </Text> 
                                         <ModalDropdown 
                                             options={Ticker}
-                                            defaultValue='None'
+                                            defaultValue={TickerPlaceholder}
                                             defaultTextStyle={{ color: '#155843'}}
-                                            onSelect={(val) => setTicker(val.toString())}
+                                            onSelect={(val) => {setTicker(val.toString()); setTickerPlaceholder(Ticker[val])}}
                                             style={{ 
                                             }}
                                             textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
@@ -1447,7 +1448,7 @@ const Scorecard = ({navigation}) => {
                                                 width: 200, 
                                                 borderWidth: 0,
                                                 borderRadius: 15,
-                                                height: 220,
+                                                height: 320,
                                                 marginTop: 10
                                             }}
                                             dropdownTextStyle={{ 
