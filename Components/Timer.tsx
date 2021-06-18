@@ -8,7 +8,9 @@ import { Audio } from 'expo-av';
 
 
 
-const Timer = ({warning, length, ticker, donesound}) => {
+const Timer = ({warning, length, ticker, donesound, settingchange}) => {
+
+    const [settingChange, setSettingChange] = useState(settingchange);
 
     const [sound, setSound] = useState();
 
@@ -23,6 +25,7 @@ const Timer = ({warning, length, ticker, donesound}) => {
         donesound === '6' ? require('../assets/donesounds/Trombone.mp3') : 
         donesound === '7' ? require('../assets/donesounds/MeepMeep.mp3') : 
         donesound === '8' ? require('../assets/donesounds/Ticktock.mp3') : 
+        donesound === '9' ? require('../assets/donesounds/Bomb.mp3') :
         require('../assets/donesounds/Ting.mp3')
     );
 
@@ -64,10 +67,13 @@ const Timer = ({warning, length, ticker, donesound}) => {
         donesound === '6' ? setDoneSoundUri(require('../assets/donesounds/Trombone.mp3')) : 
         donesound === '7' ? setDoneSoundUri(require('../assets/donesounds/MeepMeep.mp3')) : 
         donesound === '8' ? setDoneSoundUri(require('../assets/donesounds/Ticktock.mp3')) : 
+        donesound === '9' ? setDoneSoundUri(require('../assets/donesounds/Bomb.mp3')) : 
         setDoneSoundUri(require('../assets/donesounds/Ting.mp3'))
     }
 
     const [isWarning, setWarning] = useState(warning);
+
+    const [warningSound, setWarningSound] = useState();
 
     const [timerPosition, setTimerPosition] = useState(length);
 
@@ -158,16 +164,20 @@ const Timer = ({warning, length, ticker, donesound}) => {
                     doneSoundUri,
                     {shouldPlay: true, isLooping: false}
                 );
-    
                 setDoneSound(sound);
-
-                await doneSound.playAsync(); 
-
+                await sound.playAsync(); 
+            }
+            if (timerPosition <= 15000 && timerPosition >= 14000 && isWarning === true) {
+                const { sound } = await Audio.Sound.createAsync(
+                    require('../assets/warning/DingDing.mp3'),
+                    {shouldPlay: true, isLooping: false}
+                );
+                setWarningSound(sound);
+                await sound.playAsync(); 
             }
         }
 
         PlayTone();
-
         
     },[timerPosition])
 
@@ -189,6 +199,10 @@ const Timer = ({warning, length, ticker, donesound}) => {
     })
 
     useEffect(() => {
+        ResetTimer();
+    }, [settingchange])
+
+    useEffect(() => {
         return sound
         ? () => {
             console.log('Unloading Sound');
@@ -199,8 +213,8 @@ const Timer = ({warning, length, ticker, donesound}) => {
     return (
         <View style={[styles.container, {
             backgroundColor: 
-                isTimerRunning === true && timerPosition > 10000 ? '#41a661' : 
-                isTimerRunning === true && timerPosition <= 10000 ? '#cc1616' :
+                isTimerRunning === true && timerPosition > 15000 ? '#41a661' : 
+                isTimerRunning === true && timerPosition <= 15000 ? '#cc1616' :
                 '#212121'
         }]}>
             <TouchableOpacity onPress={ResetTimer}>

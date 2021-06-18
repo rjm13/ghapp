@@ -13,7 +13,7 @@ const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const DoneSound = ['none', 'ting', 'rooster', 'whistle', 'doorbell', 'air horn', 'trombone', 'meep meep','tick tock!',]
+const DoneSound = ['none', 'ting', 'rooster', 'whistle', 'doorbell', 'air horn', 'trombone', 'meep meep','tick tock!', 'bomb']
 
 const Ticker = ['none', 'clock', 'stopwatch', 'grandfather clock', 'water tap', 'blood', 'war drums', 'jumanji', 'jeopordy']
 
@@ -102,6 +102,8 @@ const Scorecard = ({navigation}) => {
     const [sound, setSound] = useState('');
 
     const [ticker, setTicker] = useState('');
+
+    const [newSetting, setNewSetting] = useState(false);
 
     const ConvertToMillis = (val) => {
         let time = parseInt(val) * 1000
@@ -434,8 +436,10 @@ const Scorecard = ({navigation}) => {
         newArray[3].name = TeamNames[3];
         setTeams(newArray);
 
-        setUpdated(!Updated);  
+        setUpdated(!Updated);
+        setNewSetting(!newSetting);
         hideSettingModal();  
+        
         
     }
 
@@ -1370,7 +1374,7 @@ const Scorecard = ({navigation}) => {
                                     </View>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
-                                            10 Second Warning
+                                            15 Second Warning
                                         </Text> 
                                         <Switch
                                             trackColor={{ false: "#767577", true: "#B2D9BF" }}
@@ -1737,6 +1741,7 @@ const Scorecard = ({navigation}) => {
                         length={roundLength}
                         ticker={ticker}
                         donesound={sound}
+                        settingchange={newSetting}
                     />
                 </View>
             ) : null }
