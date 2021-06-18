@@ -8,9 +8,23 @@ import { Audio } from 'expo-av';
 
 
 
-const Timer = ({warning, length, ticker}) => {
+const Timer = ({warning, length, ticker, donesound}) => {
 
     const [sound, setSound] = useState();
+
+    const[doneSound, setDoneSound] = useState();
+
+    const[doneSoundUri, setDoneSoundUri] = useState(
+        donesound === '1' ? require('../assets/donesounds/Ting.mp3') :
+        donesound === '2' ? require('../assets/donesounds/Rooster.mp3') :
+        donesound === '3' ? require('../assets/donesounds/Whistle.mp3') : 
+        donesound === '4' ? require('../assets/donesounds/Doorbell.mp3') : 
+        donesound === '5' ? require('../assets/donesounds/AirHorn.mp3') : 
+        donesound === '6' ? require('../assets/donesounds/Trombone.mp3') : 
+        donesound === '7' ? require('../assets/donesounds/MeepMeep.mp3') : 
+        donesound === '8' ? require('../assets/donesounds/Ticktock.mp3') : 
+        require('../assets/donesounds/Ting.mp3')
+    );
 
     const [AudioUri, setAudioUri] = useState(
         ticker === '1' ? require('../assets/sounds/Clock.mp3') :
@@ -29,21 +43,31 @@ const Timer = ({warning, length, ticker}) => {
     const [soundLength, setSoundLength] = useState(0);
     const [position, setPosition] = useState(0);
 
-        const SetSound = () => {
-            ticker === '1' ? setAudioUri(require('../assets/sounds/Clock.mp3')) :
-            ticker === '2' ? setAudioUri(require('../assets/sounds/Stopwatch.mp3')) :
-            ticker === '3' ? setAudioUri(require('../assets/sounds/Grandfather.mp3')) : 
-            ticker === '4' ? setAudioUri(require('../assets/sounds/WaterTap.mp3')) : 
-            ticker === '5' ? setAudioUri(require('../assets/sounds/Blood.mp3')) : 
-            ticker === '6' ? setAudioUri(require('../assets/sounds/WarDrums.mp3')) : 
-            ticker === '7' ? setAudioUri(require('../assets/sounds/Jumanji.mp3')) : 
-            ticker === '8' ? setAudioUri(require('../assets/sounds/Jepordy.mp3')) : 
-            setAudioUri(require('../assets/sounds/Clock.mp3'))
-        }
+    const SetSound = () => {
+        ticker === '1' ? setAudioUri(require('../assets/sounds/Clock.mp3')) :
+        ticker === '2' ? setAudioUri(require('../assets/sounds/Stopwatch.mp3')) :
+        ticker === '3' ? setAudioUri(require('../assets/sounds/Grandfather.mp3')) : 
+        ticker === '4' ? setAudioUri(require('../assets/sounds/WaterTap.mp3')) : 
+        ticker === '5' ? setAudioUri(require('../assets/sounds/Blood.mp3')) : 
+        ticker === '6' ? setAudioUri(require('../assets/sounds/WarDrums.mp3')) : 
+        ticker === '7' ? setAudioUri(require('../assets/sounds/Jumanji.mp3')) : 
+        ticker === '8' ? setAudioUri(require('../assets/sounds/Jepordy.mp3')) : 
+        setAudioUri(require('../assets/sounds/Clock.mp3'))
+    }
+
+    const SetdDoneSound = () => {
+        donesound === '1' ? setDoneSoundUri(require('../assets/donesounds/Ting.mp3')) :
+        donesound === '2' ? setDoneSoundUri(require('../assets/donesounds/Rooster.mp3')) :
+        donesound === '3' ? setDoneSoundUri(require('../assets/donesounds/Whistle.mp3')) : 
+        donesound === '4' ? setDoneSoundUri(require('../assets/donesounds/Doorbell.mp3')) : 
+        donesound === '5' ? setDoneSoundUri(require('../assets/donesounds/AirHorn.mp3')) : 
+        donesound === '6' ? setDoneSoundUri(require('../assets/donesounds/Trombone.mp3')) : 
+        donesound === '7' ? setDoneSoundUri(require('../assets/donesounds/MeepMeep.mp3')) : 
+        donesound === '8' ? setDoneSoundUri(require('../assets/donesounds/Ticktock.mp3')) : 
+        setDoneSoundUri(require('../assets/donesounds/Ting.mp3'))
+    }
 
     const [isWarning, setWarning] = useState(warning);
-
-    const [timerLength, setTimerLength] = useState(length);
 
     const [timerPosition, setTimerPosition] = useState(length);
 
@@ -126,12 +150,34 @@ const Timer = ({warning, length, ticker}) => {
         }
     },[position])
 
+    useEffect(() => {
+
+        async function PlayTone () {
+            if (timerPosition === 0) {
+                const { sound } = await Audio.Sound.createAsync(
+                    doneSoundUri,
+                    {shouldPlay: true, isLooping: false}
+                );
+    
+                setDoneSound(sound);
+
+                await doneSound.playAsync(); 
+
+            }
+        }
+
+        PlayTone();
+
+        
+    },[timerPosition])
+
     const ResetTimer = () => {
         setPlayPause(false);
         setIsTimerRunning(false);
         setTimerPosition(length);
         setPosition(0);
         SetSound();
+        SetdDoneSound();
     }
 
     useEffect(() => {

@@ -13,9 +13,9 @@ const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const Sounds = ['none', 'ding', 'beep', 'time Up!', 'siren', 'whistle']
+const DoneSound = ['none', 'ting', 'rooster', 'whistle', 'doorbell', 'air horn', 'trombone', 'meep meep','tick tock!',]
 
-const Ticker = ['none', 'clock', 'stopwatch', 'grandfather clock', 'water tap', 'blood', 'war drums', 'jumanji', 'jepordy']
+const Ticker = ['none', 'clock', 'stopwatch', 'grandfather clock', 'water tap', 'blood', 'war drums', 'jumanji', 'jeopordy']
 
 
 
@@ -945,6 +945,7 @@ const Scorecard = ({navigation}) => {
 
     const [timePlaceholder, setTimePlaceholder] = useState('');
     const [TickerPlaceholder, setTickerPlaceholder] = useState('None');
+    const [DoneSoundPlaceholder, setDoneSoundPlaceholder] = useState('None');
 
     return (
         <Provider>
@@ -1380,9 +1381,15 @@ const Scorecard = ({navigation}) => {
                                         />
                                     </View>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            Round Length (sec)
-                                        </Text> 
+                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Length
+                                            </Text> 
+                                            <Text style={{ fontSize: 12, color: 'gray', marginLeft: 6}}>
+                                                (in seconds)
+                                            </Text>
+                                        </View>
+                                        
                                         <TextInput 
                                             //placeholder={(roundLength / 1000).toString()}
                                             placeholder={timePlaceholder}
@@ -1397,13 +1404,13 @@ const Scorecard = ({navigation}) => {
                                     
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
-                                            Sound
+                                            Ding
                                         </Text> 
                                         <ModalDropdown 
-                                            options={Sounds}
-                                            defaultValue='None'
+                                            options={DoneSound}
+                                            defaultValue={DoneSoundPlaceholder}
                                             defaultTextStyle={{ color: '#155843'}}
-                                            onSelect={(val) => setSound(val.toString())}
+                                            onSelect={(val) => {setSound(val.toString()); setDoneSoundPlaceholder(DoneSound[val])}}
                                             style={{ 
                                             }}
                                             textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
@@ -1729,6 +1736,7 @@ const Scorecard = ({navigation}) => {
                         warning={isWarningEnabled}
                         length={roundLength}
                         ticker={ticker}
+                        donesound={sound}
                     />
                 </View>
             ) : null }
