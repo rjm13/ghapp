@@ -494,8 +494,14 @@ const Scorecard = ({navigation}) => {
     const [roundLeader, setRoundLeader] = useState(null);
 
     useEffect(() => {
-        setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total).toString())
-        setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins))
+        if (isLowestPointsEnabled === false) {
+            setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total).toString());
+            setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins));
+        }
+        if (isLowestPointsEnabled === true) {
+            setLeader( Math.min(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total).toString());
+            setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins));
+        }
     }, [Teams])
 
 
@@ -810,7 +816,9 @@ const Scorecard = ({navigation}) => {
 
         const Round = round
 
-        const roundWinner = Math.max(score[0], score[1], score[2], score[3]);
+        const roundWinner =
+            isLowestPointsEnabled === false ? Math.max(score[0], score[1], score[2], score[3]) :
+            isLowestPointsEnabled === true ? Math.min(score[0], score[1], score[2], score[3]) : Math.max(score[0], score[1], score[2], score[3])
 
 
         const Row = ({item, index, style}) => {
@@ -909,7 +917,10 @@ const Scorecard = ({navigation}) => {
         if (roundState) {
         let newArray = [...Scores];
 
-        const roundWinner = Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]);
+        const roundWinner = isLowestPointsEnabled === false ? Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
+                            isLowestPointsEnabled === true ? Math.min(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
+                            Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3])
+        
 
         const winnerIndex = roundWinner === newArray[roundState - 1].score[0] ? 0 : 
                             roundWinner === newArray[roundState - 1].score[1] ? 1 : 
