@@ -25,42 +25,6 @@ var toRoman = require('roman-numerals').toRoman;
 });
 
 
-const Footer = ({total, style}) => {
-
-
-    return (
-        <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
-            
-           
-
-            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
-                    {total}
-                </Text>
-            </View>
-            
-        </View>
-    );
-}
-
-const WinsFooter = ({roundWins, style}) => {
-    return (
-        <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
-            
-           
-
-            <View style={{ width: 100, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
-                    {roundWins}
-                </Text>
-            </View>
-            
-        </View>
-    );
-}
-
-
-
 
 const Scorecard = ({navigation}) => {
 
@@ -71,7 +35,6 @@ const Scorecard = ({navigation}) => {
 
     const [isMeldEnabled, setIsMeldEnabled] = useState(false);
     const toggleSwitchMeld = () => setIsMeldEnabled(previousState => !previousState);
-
 
     const [isBonusEnabled, setIsBonusEnabled] = useState(false);
     const toggleSwitchBonus = () => setIsBonusEnabled(previousState => !previousState);
@@ -105,6 +68,45 @@ const Scorecard = ({navigation}) => {
 
     const [newSetting, setNewSetting] = useState(false);
 
+    const CELL_WIDTH = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 150 : 100
+
+    const CELL_HEIGHT = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 100 : 50
+
+
+    const Footer = ({total, style}) => {
+
+
+        return (
+            <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
+                
+               
+    
+                <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
+                        {total}
+                    </Text>
+                </View>
+                
+            </View>
+        );
+    }
+    
+    const WinsFooter = ({roundWins, style}) => {
+        return (
+            <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
+                
+               
+    
+                <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
+                        {roundWins}
+                    </Text>
+                </View>
+                
+            </View>
+        );
+    }
+
     const ConvertToMillis = (val) => {
         let time = parseInt(val) * 1000
         setRoundLength(time)
@@ -114,7 +116,7 @@ const Scorecard = ({navigation}) => {
 
     const RoundsColumn = ({round}) => {
         return (
-            <View style={styles.roundbox}>
+            <View style={[styles.roundbox, {height: CELL_HEIGHT}]}>
                 <Text style={styles.round}>
                     {isRomanEnabled === true ? toRoman(round) : round}
                 </Text>
@@ -129,6 +131,9 @@ const Scorecard = ({navigation}) => {
                 round: 1,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
         
             },
@@ -136,84 +141,126 @@ const Scorecard = ({navigation}) => {
                 round: 2,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 4,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 5,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 6,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 7,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 8,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 9,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 10,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 11,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 12,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 13,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 14,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
             {
                 round: 15,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                bid: ['', '', '', ''],
+                meld: ['', '', '', ''],
+                bonus: ['', '', '', ''],
                 winner: null,
             },
         ]
@@ -713,6 +760,21 @@ const Scorecard = ({navigation}) => {
             padding: 20,
         }; 
 
+//Extras Modal
+        const [visibleExtrasModal, setVisibleExtrasModal] = useState(false);
+                
+        const showExtrasModal = ({ index, round}) => {
+            setVisibleExtrasModal(true);
+            setRoundState(round);
+            setTeamState(index + 1);
+        }
+
+        const hideExtrasModal = () => setVisibleExtrasModal(false);
+        const extrasModalContainerStyle = {
+            backgroundColor: 'transparent', 
+            padding: 20,
+        }; 
+
 
 
     const HeaderRow = ({id, name}) => {
@@ -720,7 +782,7 @@ const Scorecard = ({navigation}) => {
         return (
             <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff', justifyContent: 'center'}}>
                 <TouchableOpacity onPress={showSettingModal}>
-                    <View style={styles.headerbox}>
+                    <View style={[styles.headerbox, {width: CELL_WIDTH}]}>
                         <Text style={styles.header}>
                             {name}
                         </Text>
@@ -729,84 +791,6 @@ const Scorecard = ({navigation}) => {
             </View>
         );
     }
-
-    // const ScoreRow = ({score, round, team}) => {
-
-    //     const [roundWinner, setRoundWinner] = useState(null);
-
-    //     useEffect(() => {
-    //         setRoundWinner( Math.max(score))
-    //     }, [Teams])
-
-    //     const team1 = team[0];
-    //     const team2 = team[1];
-    //     const team3 = team[2];
-    //     const team4 = team[3];
-
-    //     return (
-    //         <View style={{flexDirection: 'row', height: 50}}>
-    //             <View style={{backgroundColor: '#155843', width: 60}}>
-    
-    //             </View>
-    //             <TouchableOpacity onPress={() => showModal({round, team1})}>
-    //                 <View style={styles.scorebox}>
-    //                     <Text style={styles.score}>
-    //                         {score[0]}
-    //                     </Text>
-    //                 </View>
-    //             </TouchableOpacity>
-                
-    //             <TouchableOpacity onPress={() => showModal({round, team2})}>
-    //                 <View style={styles.scorebox}>
-    //                     <Text style={styles.score}>
-    //                         {score[1]}
-    //                     </Text>
-    //                 </View>
-    //             </TouchableOpacity>
-
-    //             <TouchableOpacity onPress={() => showModal({round, team3})}>
-    //                 <View style={styles.scorebox}>
-    //                     <Text style={styles.score}>
-    //                         {score[2]}
-    //                     </Text>
-    //                 </View>
-    //             </TouchableOpacity>
-
-    //             <TouchableOpacity onPress={() => showModal({round, team4})}>
-    //                 <View style={styles.scorebox}>
-    //                     <Text style={styles.score}>
-    //                         {score[3]}
-    //                     </Text>
-    //                 </View>
-    //             </TouchableOpacity>
-    
-    //     </View>
-    //     );
-    // }
-
-    
-    //const [winnerIndex, setWinnerIndex] = useState(0);
-    
-
-    // useEffect(() => {
-
-    //     let newArray = [...Scores];
-    //     newArray[ roundState - 1].winner = winnerIndex;
-    //     setScores(newArray);
-    //     //console.log(winnerIndex)
-
-    // }, [roundUpdate])
-
-    // const updateRoundLeader = () => {
-    //     let newArray = [...Scores];
-    //     newArray[winnerIndex].winner = winnerIndex;
-    //     setScores(newArray);
-    //     //console.log(newArray[index].roundWins)
-    //     //console.log(index)
-    // }
-
-    
-    //const [winner, setWinner] = useState(0)
 
     const [updateScores, setUpdateScores] = useState(false);
 
@@ -827,15 +811,69 @@ const Scorecard = ({navigation}) => {
 
             return (
                   <View style={{}}>
-                      <TouchableOpacity onPress={() => {showModal({index, round});}}>
-                        <View style={[styles.scorebox, style]}>
-                            <Text style={[styles.score, 
-                                //{color: item === 0 ? '#fff' : '#000000a5'}
-                            ]}>
-                            {item}
-                            </Text>
+                        <View style={[styles.scorebox, style, {width: CELL_WIDTH, height: CELL_HEIGHT}]}>
+                            { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
+                                <TouchableOpacity style={{opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
+                                
+                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH - 10}}>
+                                        {isBidEnabled === true ? (
+                                            <View style={{ width: 50, alignItems: 'center'}}>
+                                                <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                                    Bid
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                        {isMeldEnabled === true ? (
+                                            <View style={{ width: 50, alignItems: 'center'}}>
+                                                <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                                    Meld
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                        {isBonusEnabled === true ? (
+                                            <View style={{ width: 50, alignItems: 'center'}}>
+                                                <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                                    Bonus
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                    </View>
+
+                                    <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH - 10}}>
+                                        {isBidEnabled === true ? (
+                                            <View style={{ width: 50, alignItems: 'center'}}>
+                                                <Text style={{fontFamily: 'chalkboard-light'}}>
+                                                    15
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                        {isMeldEnabled === true ? (
+                                            <View style={{ width: 50, alignItems: 'center'}}>
+                                                <Text style={{fontFamily: 'chalkboard-light'}}>
+                                                    15
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                        {isBonusEnabled === true ? (
+                                            <View style={{ width: 50, alignItems: 'center'}}>
+                                                <Text style={{fontFamily: 'chalkboard-light'}}>
+                                                    15
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                    </View> 
+                                
+                                </TouchableOpacity>
+                            ) : null }
+                            
+                            <TouchableOpacity onPress={() => {showModal({index, round});}}>
+                                <View style={{width: CELL_WIDTH, height: 32, alignItems: 'center'}}>
+                                    <Text style={[styles.score,]}>
+                                        {item}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                    </TouchableOpacity>
                   </View> 
             )
         }
@@ -859,7 +897,7 @@ const Scorecard = ({navigation}) => {
 
 
         return (
-            <View style={{flexDirection: 'row', height: 50}}>
+            <View style={{flexDirection: 'row', height: CELL_HEIGHT}}>
                 <View style={{backgroundColor: '#155843', width: 60}}>
     
                 </View>
@@ -872,7 +910,7 @@ const Scorecard = ({navigation}) => {
                     horizontal={true}
                     //style={{position: 'absolute', top: 0, marginLeft: 60}}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{width: 400}}
+                    contentContainerStyle={{width: CELL_WIDTH * 4}}
                     scrollEnabled={false}
                     extraData={updateScores}
                     
@@ -1066,6 +1104,31 @@ const Scorecard = ({navigation}) => {
                                     <Text style={{color: '#fff', fontSize: 22, textAlign: 'center', fontWeight: 'bold'}}>
                                         Erase
                                     </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </Modal>
+
+{/* Extras Modal */}
+                <Modal visible={visibleExtrasModal} onDismiss={hideExtrasModal} contentContainerStyle={extrasModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Are you sure you want to erase this scorecard?
+                            </Text>
+                        </View>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={clearScorecard}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Feather 
+                                        name='check'
+                                        color='#fff'
+                                        size={30}
+                                    />
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -1575,34 +1638,34 @@ const Scorecard = ({navigation}) => {
                             keyExtractor={(item, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
                             style={{ marginTop: 0, flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
-                            contentContainerStyle={{width: 460}}
+                            contentContainerStyle={{width: CELL_WIDTH * 4 + 60}}
                             scrollEnabled={true}
                             extraData={updateScores}
                             //ref={scrollRef}
                             onScroll = {(event)=>{{
                                 handleVertScroll(event);}}}//Vertical scrolling distance 
                             ListHeaderComponent={() => (
-                                <View style={{width: 460, height: 50}}>
+                                <View style={{width: CELL_WIDTH * 4 + 60, height: 50}}>
 
                                 </View>
                             )}
                             ListFooterComponent={() => (
                                 <View>
-                                    <View style={styles.roundbox}>
+                                    <View style={[styles.roundbox, {height: 50}]}>
                                          
                                     </View>
-                                    <View style={styles.roundbox}>
+                                    <View style={[styles.roundbox, {height: 50}]}>
                                          
                                     </View>
-                                    <View style={styles.roundbox}>
+                                    <View style={[styles.roundbox, {height: 50}]}>
                                          
                                     </View>
                                     {isTimerEnabled === true ? (
                                         <View>
-                                            <View style={styles.roundbox}>
+                                            <View style={[styles.roundbox, {height: 50}]}>
                                          
                                         </View>
-                                        <View style={styles.roundbox}>
+                                        <View style={[styles.roundbox, {height: 50}]}>
                                          
                                         </View>
                                         </View>
@@ -1622,7 +1685,7 @@ const Scorecard = ({navigation}) => {
                     horizontal={true}
                     style={{position: 'absolute', top: 0, marginLeft: 60}}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{width: 400}}
+                    contentContainerStyle={{width: CELL_WIDTH * 4}}
                     ref={horzScrollRef2}
                     scrollEnabled={false}
                 />
@@ -1641,7 +1704,7 @@ const Scorecard = ({navigation}) => {
                                 isTimerEnabled === false && isPointsEnabled === false ? -2 : 48
                             }}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{width: 400}}
+                        contentContainerStyle={{width: CELL_WIDTH * 4}}
                         ref={horzScrollRef3}
                         scrollEnabled={false}
                         extraData={roundUpdate}
@@ -1656,7 +1719,7 @@ const Scorecard = ({navigation}) => {
                         horizontal={true}
                         style={{position: 'absolute', bottom: isTimerEnabled === true ? 58 : -2, marginLeft: 60}}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{width: 400}}
+                        contentContainerStyle={{width: CELL_WIDTH * 4}}
                         ref={horzScrollRef}
                         scrollEnabled={false}
                         extraData={Updated}
@@ -1675,12 +1738,12 @@ const Scorecard = ({navigation}) => {
                     scrollEventThrottle={16}
                     stickyHeaderIndices={[]}
                     ListHeaderComponent={() => (
-                        <View style={styles.roundbox}>
+                        <View style={[styles.roundbox, {height: 50}]}>
                         </View>
                     )}
                     ListFooterComponent={() => (
                         <View>
-                            <View style={styles.roundbox}>
+                            <View style={[styles.roundbox, {height: 50}]}>
                             <TouchableOpacity>
                                 <Feather 
                                     name='plus-circle'
@@ -1690,16 +1753,16 @@ const Scorecard = ({navigation}) => {
                             </TouchableOpacity>
                             
                             </View>
-                            <View style={styles.roundbox}>
+                            <View style={[styles.roundbox, {height: 50}]}>
                             </View>
-                            <View style={styles.roundbox}>
+                            <View style={[styles.roundbox, {height: 50}]}>
                             </View>
                             {isTimerEnabled === true ? (
                                         <View>
-                                            <View style={styles.roundbox}>
+                                            <View style={[styles.roundbox, {height: 50}]}>
                                          
                                         </View>
-                                        <View style={styles.roundbox}>
+                                        <View style={[styles.roundbox, {height: 50}]}>
                                          
                                         </View>
                                         </View>
@@ -1714,9 +1777,9 @@ const Scorecard = ({navigation}) => {
             { isRoundWinsEnabled ? (
                 <View style={[styles.roundbox, { position: 'absolute', 
                     bottom: isTimerEnabled === true ? 110 : isPointsEnabled === false ? 0 : 50
-                    , left: 0}]}> 
+                    , left: 0, height: 50}]}> 
                     <TouchableOpacity>
-                        <View style={styles.roundbox}>
+                        <View style={[styles.roundbox, {height: 50}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
                                 Wins
                             </Text> */}
@@ -1729,9 +1792,9 @@ const Scorecard = ({navigation}) => {
                 <View style={[styles.roundbox, { 
                     position: 'absolute', 
                     bottom: isTimerEnabled === true ? 60 : 0, 
-                    left: 0}]}> 
+                    left: 0, height: 50}]}> 
                     <TouchableOpacity>
-                        <View style={styles.roundbox}>
+                        <View style={[styles.roundbox, {height: 50}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
                                 Points
                             </Text> */}
@@ -1759,7 +1822,7 @@ const Scorecard = ({navigation}) => {
            
             
 
-            <View style={[styles.roundbox, { position: 'absolute', top: 80, left: 0}]}>      
+            <View style={[styles.roundbox, { position: 'absolute', top: 80, left: 0, height: 50, width: 60}]}>      
             </View>
             
             
@@ -1781,7 +1844,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     headerbox: {
-        width: 100,
+        //width: 100,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -1799,7 +1862,7 @@ const styles = StyleSheet.create({
     roundbox: {
         paddingVertical: 0, 
         width: 60, 
-        height: 50,
+        //height: 50,
         backgroundColor: '#fff',
         alignItems: 'center', 
         borderRightWidth: 0.3,
@@ -1808,8 +1871,8 @@ const styles = StyleSheet.create({
     },
     scorebox: {
         paddingVertical: 0, 
-        width: 100, 
-        height: 50,
+        //width: CELL_WIDTH, 
+        //height: 50,
         alignItems: 'center', 
         borderRightWidth: 0.3,
         borderBottomWidth: 0.2,
