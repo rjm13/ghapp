@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, Animated, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
+import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -131,9 +131,9 @@ const Scorecard = ({navigation}) => {
                 round: 1,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                bid: ['1', '2', '3', '4'],
+                meld: ['1', '2', '3', '4'],
+                bonus: ['1', '2', '3', '4'],
                 winner: null,
         
             },
@@ -141,16 +141,16 @@ const Scorecard = ({navigation}) => {
                 round: 2,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                bid: ['5', '6', '7', '8'],
+                meld: ['5', '6', '7', '8'],
+                bonus: ['5', '6', '7', '8'],
                 winner: null,
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
+                bid: ['9', '', '', ''],
                 meld: ['', '', '', ''],
                 bonus: ['', '', '', ''],
                 winner: null,
@@ -805,14 +805,88 @@ const Scorecard = ({navigation}) => {
             isLowestPointsEnabled === true ? Math.min(score[0], score[1], score[2], score[3]) : Math.max(score[0], score[1], score[2], score[3])
 
 
+            const ExtraItem = ({index, item, bid, meld, bonus}) => {
+
+                return (
+                    <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH }}>
+                    <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
+                    
+                        <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH}}>
+                            {isBidEnabled === true ? (
+                                <View style={{ width: 50, alignItems: 'center'}}>
+                                    <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                        Bid
+                                    </Text>
+                                </View>
+                            ) : null}
+                            {isMeldEnabled === true ? (
+                                <View style={{ width: 50, alignItems: 'center'}}>
+                                    <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                        Meld
+                                    </Text>
+                                </View>
+                            ) : null}
+                            {isBonusEnabled === true ? (
+                                <View style={{ width: 50, alignItems: 'center'}}>
+                                    <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                        Bonus
+                                    </Text>
+                                </View>
+                            ) : null}
+                        </View>
+
+                        <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH}}>
+                            {isBidEnabled === true ? (
+                                <View style={{ width: 50, alignItems: 'center'}}>
+                                    <Text style={{fontFamily: 'chalkboard-light'}}>
+                                        {item}
+                                    </Text>
+                                </View>
+                            ) : null}
+                            {isMeldEnabled === true ? (
+                                <View style={{ width: 50, alignItems: 'center'}}>
+                                    <Text style={{fontFamily: 'chalkboard-light'}}>
+                                        {meld}
+                                    </Text>
+                                </View>
+                            ) : null}
+                            {isBonusEnabled === true ? (
+                                <View style={{ width: 50, alignItems: 'center'}}>
+                                    <Text style={{fontFamily: 'chalkboard-light'}}>
+                                        {bonus}
+                                    </Text>
+                                </View>
+                            ) : null}
+                        </View> 
+                    
+                    </TouchableOpacity>
+                </View>
+                );
+                
+            }
+
         const Row = ({item, index, style}) => {
+
+            
+
+            
 
             const round = Round
 
+            
+
+            
+
+
+
             return (
                   <View style={{}}>
-                        <View style={[styles.scorebox, style, {width: CELL_WIDTH, height: CELL_HEIGHT}]}>
-                            { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
+                        <View style={[styles.scorebox, style, { width: CELL_WIDTH, height: 50}]}>
+                            
+                        
+
+
+                            {/* { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
                                 <TouchableOpacity style={{opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
                                 
                                     <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH - 10}}>
@@ -864,11 +938,11 @@ const Scorecard = ({navigation}) => {
                                     </View> 
                                 
                                 </TouchableOpacity>
-                            ) : null }
+                            ) : null } */}
                             
                             <TouchableOpacity onPress={() => {showModal({index, round});}}>
-                                <View style={{width: CELL_WIDTH, height: 32, alignItems: 'center'}}>
-                                    <Text style={[styles.score,]}>
+                                <View style={{width: CELL_WIDTH, height: 50, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={[styles.score]}>
                                         {item}
                                     </Text>
                                 </View>
@@ -895,12 +969,45 @@ const Scorecard = ({navigation}) => {
             );
         };
 
+        const renderExtraItem = ({ item, index }) => {
+
+
+                return (
+
+                    <ExtraItem
+                        index={index}
+                        item={item}
+                        bid={item.bid}
+                        meld={item.meld}
+                        bonus={item.bonus}
+                    />
+
+                );
+            };
+
 
         return (
             <View style={{flexDirection: 'row', height: CELL_HEIGHT}}>
                 <View style={{backgroundColor: '#155843', width: 60}}>
     
                 </View>
+
+                <View style={{ }}>
+                { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
+                <FlatList 
+                    data={Scores[round - 1 ].bid}
+                    renderItem={renderExtraItem}
+                    
+                    //keyExtractor={(item, index) => item.id.toString()}
+                    keyExtractor={(item, index) => index.toString()}
+                    horizontal={true}
+                    //style={{position: 'absolute'}}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{width: CELL_WIDTH * 4, height: 70}}
+                    scrollEnabled={false}
+                    extraData={updateScores}
+                />
+            ) : null }
                 
                 <FlatList 
                     data={Scores[round - 1].score}
@@ -910,13 +1017,13 @@ const Scorecard = ({navigation}) => {
                     horizontal={true}
                     //style={{position: 'absolute', top: 0, marginLeft: 60}}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{width: CELL_WIDTH * 4}}
+                    contentContainerStyle={{width: CELL_WIDTH * 4, height: 70}}
                     scrollEnabled={false}
                     extraData={updateScores}
                     
                     
                 />
-    
+                </View>
         </View>
         );
     }
@@ -925,7 +1032,15 @@ const Scorecard = ({navigation}) => {
 
     const textNum = parseInt(text)
 
+    const [bidText, setBidText] = useState('');
+
+    const textBid = parseInt(bidText)
+
     const [winnerState, setWinnerState] = useState(0);
+
+    const UpdateExtra = () => {
+        hideExtrasModal();
+    }
 
     const SetScore = () => {    
 
@@ -1115,15 +1230,37 @@ const Scorecard = ({navigation}) => {
                 <Modal visible={visibleExtrasModal} onDismiss={hideExtrasModal} contentContainerStyle={extrasModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
 
-                        <View style={{ alignItems: 'center', marginVertical: 40}}>
-                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
-                                Are you sure you want to erase this scorecard?
+                        <View style={{ alignItems: 'center', marginVertical: 20}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
+                                Team Name
+                            </Text>
+                            <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
+                                Round {roundState}
                             </Text>
                         </View>
 
+                        <View>
+                            <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+                               <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                   Bid
+                               </Text>
+                               
+                               <TextInput 
+                                    placeholder=''
+                                    placeholderTextColor='#000000a5'
+                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 80, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
+                                    maxLength={20}
+                                    keyboardType='number-pad'
+                                    autoFocus={false}
+                                    //onChangeText={val => Set({val})}
+                                    //onChangeText={val => setData({...data, title: val})}
+                                /> 
+                            </View>
+                        </View>
+
                         <View style={{ alignItems: 'center'}}>
-                            <TouchableOpacity onPress={clearScorecard}>
-                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                            <TouchableOpacity onPress={UpdateExtra}>
+                                <View style={{ marginTop: 20, width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
                                     <Feather 
                                         name='check'
                                         color='#fff'
@@ -1874,7 +2011,7 @@ const styles = StyleSheet.create({
         //width: CELL_WIDTH, 
         //height: 50,
         alignItems: 'center', 
-        borderRightWidth: 0.3,
+        borderRightWidth: 0.2,
         borderBottomWidth: 0.2,
         justifyContent: 'center',
         borderColor: '#cccccc',
