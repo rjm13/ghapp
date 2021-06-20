@@ -1039,6 +1039,14 @@ const Scorecard = ({navigation}) => {
     const [winnerState, setWinnerState] = useState(0);
 
     const UpdateExtra = () => {
+
+        let newArray = [...Scores];
+        newArray[roundState - 1].bid[teamState - 1 ] = textBid;
+
+        setScores(newArray);
+        setUpdated(!Updated)    
+        setRoundUpdate(!roundUpdate)
+
         hideExtrasModal();
     }
 
@@ -1119,7 +1127,7 @@ const Scorecard = ({navigation}) => {
         <Provider>
         <View>
 
-{/* Modal */}
+{/*Score Modal */}
             <Portal>
                 <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
@@ -1252,8 +1260,7 @@ const Scorecard = ({navigation}) => {
                                     maxLength={20}
                                     keyboardType='number-pad'
                                     autoFocus={false}
-                                    //onChangeText={val => Set({val})}
-                                    //onChangeText={val => setData({...data, title: val})}
+                                    onChangeText={val =>setBidText(val)}
                                 /> 
                             </View>
                         </View>
