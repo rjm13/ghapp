@@ -131,9 +131,9 @@ const Scorecard = ({navigation}) => {
                 round: 1,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['1', '2', '3', '4'],
-                meld: ['1', '2', '3', '4'],
-                bonus: ['1', '2', '3', '4'],
+                bid: ['', '', '', ''],
+                meld: ['0', '0', '0', '0'],
+                bonus: ['0', '0', '0', '0'],
                 winner: null,
         
             },
@@ -141,16 +141,16 @@ const Scorecard = ({navigation}) => {
                 round: 2,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['5', '6', '7', '8'],
-                meld: ['5', '6', '7', '8'],
-                bonus: ['5', '6', '7', '8'],
+                bid: ['', '', '', ''],
+                meld: ['0', '0', '0', '0'],
+                bonus: ['0', '0', '0', '0'],
                 winner: null,
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['9', '', '', ''],
+                bid: ['', '', '', ''],
                 meld: ['', '', '', ''],
                 bonus: ['', '', '', ''],
                 winner: null,
@@ -369,6 +369,9 @@ const Scorecard = ({navigation}) => {
             round: 1,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
     
         },
@@ -376,84 +379,126 @@ const Scorecard = ({navigation}) => {
             round: 2,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 3,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 4,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 5,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 6,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 7,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 8,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 9,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 10,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 11,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 12,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 13,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 14,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
         {
             round: 15,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
+            bid: ['', '', '', ''],
+            meld: ['0', '0', '0', '0'],
+            bonus: ['0', '0', '0', '0'],
             winner: null,
         },
     ];
@@ -1134,7 +1179,10 @@ const Scorecard = ({navigation}) => {
 
                         <View style={{ alignItems: 'center'}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
-                                Team Name
+                                {   teamState === 1 ? Teams[0].name :
+                                    teamState === 2 ? Teams[1].name :
+                                    teamState === 3 ? Teams[2].name :
+                                    teamState === 4 ? Teams[3].name : 'Some Team'}
                             </Text>
                             <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
                                 Round {roundState}
@@ -1259,7 +1307,7 @@ const Scorecard = ({navigation}) => {
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 80, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
                                     maxLength={20}
                                     keyboardType='number-pad'
-                                    autoFocus={false}
+                                    autoFocus={true}
                                     onChangeText={val =>setBidText(val)}
                                 /> 
                             </View>

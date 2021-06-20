@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight,  ScrollView, Dimensions } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MatericalCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -19,7 +19,7 @@ const ScorecardMenu = ({navigation}) => {
             </View>
             <View style={{flexDirection: 'row', margin: 20, width: SCREEN_WIDTH, justifyContent: 'space-around', alignSelf: 'center'}}>
                 <View style={{ alignItems: 'center'}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Scorecard')}>
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Scorecard')}>
                         <View style={styles.quickbutton}>
                                 <Ionicons 
                                     name='md-add-circle'
@@ -27,7 +27,7 @@ const ScorecardMenu = ({navigation}) => {
                                     color='#D9D1B2'
                                 />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableWithoutFeedback>
                     <Text style={styles.quickbuttontext}>
                         New
                     </Text>

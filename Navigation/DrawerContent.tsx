@@ -5,6 +5,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Avatar, Caption, Paragraph, Drawer, Text } from 'react-native-paper';
 
+
 import { getUser } from '../src/graphql/queries'
 import { API, graphqlOperation, Auth } from "aws-amplify";
 
@@ -132,7 +133,7 @@ export function DrawerContent(props) {
                     )}
                         label='Current Game'
                         labelStyle={ styles.itemText}
-                        //onPress={handleSignOut}
+                        onPress={() => props.navigation.navigate('Scorecard')}
                 />
             </Drawer.Section>
         </View>

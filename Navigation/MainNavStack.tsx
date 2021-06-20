@@ -34,6 +34,8 @@ const HomeStack = createStackNavigator();
 
 const MainNavStack = ({ navigation }) => {
 
+    const [selectedId, setSelectedId] = useState(2)
+
 
     return (
         <HomeStack.Navigator
@@ -71,23 +73,26 @@ const MainNavStack = ({ navigation }) => {
                         <MatericalCommunityIcons.Button 
                             name='magnify'
                             size={20}
+                            color={selectedId === 0 ? 'gold' : '#fff'}
                             backgroundColor='#155843'
-                            style={{ paddingRight: 15 }}
-                            onPress={() => { navigation.navigate('SearchScreen') }}
+                            style={{ paddingHorizontal: 8 }}
+                            onPress={() => { navigation.navigate('SearchScreen'); setSelectedId(0) }}
                         />
                         <MatericalCommunityIcons.Button 
                             name='grid'
                             size={20}
+                            color={selectedId === 1 ? 'gold' : '#fff'}
                             backgroundColor='#155843'
-                            style={{ paddingRight: 15 }}
-                            onPress={() => navigation.navigate('ScoresHome')}
+                            style={{ paddingHorizontal: 8 }}
+                            onPress={() => { navigation.navigate('ScoresHome'); setSelectedId(1) }}
                         />
                         <MatericalCommunityIcons.Button 
                             name='cards-playing-outline'
                             size={20}
+                            color={selectedId === 2 ? 'gold' : '#fff'}
                             backgroundColor='#155843'
-                            style={{ paddingRight: 15 }}
-                            onPress={() => navigation.navigate('Home')}
+                            style={{ paddingHorizontal: 8 }}
+                            onPress={() => { navigation.navigate('Home'); setSelectedId(2) }}
                         />           
                     </View>
                 ),   

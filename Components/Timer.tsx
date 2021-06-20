@@ -71,7 +71,7 @@ const Timer = ({warning, length, ticker, donesound, settingchange}) => {
         setDoneSoundUri(require('../assets/donesounds/Ting.mp3'))
     }
 
-    const [isWarning, setWarning] = useState(warning);
+    const [isWarning, setIsWarning] = useState(warning);
 
     const [warningSound, setWarningSound] = useState();
 
@@ -186,6 +186,7 @@ const Timer = ({warning, length, ticker, donesound, settingchange}) => {
         setIsTimerRunning(false);
         setTimerPosition(length);
         setPosition(0);
+        setIsWarning(warning);
         SetSound();
         SetdDoneSound();
     }
