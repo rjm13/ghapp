@@ -73,6 +73,7 @@ const Scorecard = ({navigation}) => {
     const CELL_HEIGHT = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 100 : 50
 
 
+
     const Footer = ({total, style}) => {
 
 
@@ -132,13 +133,9 @@ const Scorecard = ({navigation}) => {
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
                 extra: [
-                    ['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], ['10', '11', '12']
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
                 ],
-                bid: ['', '', '', ''],
-                meld: ['0', '0', '0', '0'],
-                bonus: ['0', '0', '0', '0'],
                 winner: null,
-        
             },
             {
                 round: 2,
@@ -315,8 +312,9 @@ const Scorecard = ({navigation}) => {
     const [ScorecardData, setScorecardData] = useState(
         {
             id: '1',
-            name: 'Custom 1',
+            name: new Date().toDateString(),
             updated: false,
+            dateCreated: new Date().toDateString(),
             teams: [Teams],
             scores: [Scores]
         },
@@ -330,8 +328,9 @@ const Scorecard = ({navigation}) => {
 
     const blankScorecard = {
         id: '1',
-        name: 'Custom 1',
+        name: new Date().toDateString(),
         updated: false,
+        dateCreated: new Date().toDateString(),
         teams: [Teams],
         scores: [Scores]
     }
@@ -372,9 +371,9 @@ const Scorecard = ({navigation}) => {
             round: 1,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
     
         },
@@ -382,126 +381,126 @@ const Scorecard = ({navigation}) => {
             round: 2,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 3,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 4,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 5,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 6,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 7,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 8,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 9,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 10,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 11,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 12,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 13,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 14,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
         {
             round: 15,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            bid: ['', '', '', ''],
-            meld: ['0', '0', '0', '0'],
-            bonus: ['0', '0', '0', '0'],
+            extra: [
+                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+            ],
             winner: null,
         },
     ];
@@ -532,6 +531,7 @@ const Scorecard = ({navigation}) => {
         setTeams(newArray);
 
         setUpdated(!Updated);
+        setRoundUpdate(!roundUpdate)
         setNewSetting(!newSetting);
         hideSettingModal();  
         
@@ -1278,10 +1278,13 @@ const Scorecard = ({navigation}) => {
 
 //clear scorecard function
     const clearScorecard = () => {
+
+        let array = {...blankScorecard};
+        array.name = new Date().toDateString();
         
         setScores(blankScores);
         setTeams(blankTeams);
-        setScorecardData(blankScorecard);
+        setScorecardData(array);
         setUpdateScores(!updateScores);    
         
         //setUpdated(!Updated);
@@ -1430,7 +1433,7 @@ const Scorecard = ({navigation}) => {
                                </Text>
                                
                                <TextInput 
-                                    placeholder={Scores[roundState - 1].extra[teamState - 1][0]}
+                                    placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][0] : '0'}
                                     placeholderTextColor='#000000a5'
                                     //defaultValue={Scores[roundState - 1].extra[teamState - 1][0]}
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
@@ -1448,7 +1451,7 @@ const Scorecard = ({navigation}) => {
                                </Text>
                                
                                <TextInput 
-                                    placeholder={Scores[roundState - 1].extra[teamState - 1][1]}
+                                    placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][1] : '0'}
                                     placeholderTextColor='#000000a5'
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
                                     maxLength={20}
@@ -1463,7 +1466,7 @@ const Scorecard = ({navigation}) => {
                                </Text>
                                
                                <TextInput 
-                                    placeholder={Scores[roundState - 1].extra[teamState - 1][2]}
+                                    placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][2] : '0'}
                                     placeholderTextColor='#000000a5'
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
                                     maxLength={20}
@@ -1500,6 +1503,24 @@ const Scorecard = ({navigation}) => {
                                     Scorecard Settings
                                 </Text>
                             </View>
+
+                            <View>
+                                <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                    Card Title
+                                </Text>
+
+                                <View style={{ marginVertical: 10, marginHorizontal: 5}}>
+                                    <TextInput 
+                                        placeholder={ScorecardData.name}
+                                        placeholderTextColor='#000000a5'
+                                        style={{height: 40, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 18}}
+                                        maxLength={20}
+                                        autoFocus={true}
+                                        onChangeText={val => Set({val})}
+                                    /> 
+                                </View>
+                            </View>
+
 
                         <View style={{marginTop: 10}}>
                                 <View>
