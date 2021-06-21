@@ -131,6 +131,9 @@ const Scorecard = ({navigation}) => {
                 round: 1,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
+                extra: [
+                    ['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], ['10', '11', '12']
+                ],
                 bid: ['', '', '', ''],
                 meld: ['0', '0', '0', '0'],
                 bonus: ['0', '0', '0', '0'],
@@ -141,126 +144,126 @@ const Scorecard = ({navigation}) => {
                 round: 2,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['0', '0', '0', '0'],
-                bonus: ['0', '0', '0', '0'],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 3,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 4,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 5,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 6,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 7,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 8,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 9,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 10,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 11,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 12,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 13,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 14,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
             {
                 round: 15,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                bid: ['', '', '', ''],
-                meld: ['', '', '', ''],
-                bonus: ['', '', '', ''],
+                extra: [
+                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
+                ],
                 winner: null,
             },
         ]
@@ -850,141 +853,179 @@ const Scorecard = ({navigation}) => {
             isLowestPointsEnabled === true ? Math.min(score[0], score[1], score[2], score[3]) : Math.max(score[0], score[1], score[2], score[3])
 
 
-            const ExtraItem = ({index, item, bid, meld, bonus}) => {
+            const ExtraItemSingle = ({index, item}) => {
 
                 return (
                     <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH }}>
-                    <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
-                    
-                        <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH}}>
-                            {isBidEnabled === true ? (
-                                <View style={{ width: 50, alignItems: 'center'}}>
-                                    <Text style={{fontWeight: 'bold', fontSize: 11}}>
-                                        Bid
-                                    </Text>
-                                </View>
-                            ) : null}
-                            {isMeldEnabled === true ? (
-                                <View style={{ width: 50, alignItems: 'center'}}>
-                                    <Text style={{fontWeight: 'bold', fontSize: 11}}>
-                                        Meld
-                                    </Text>
-                                </View>
-                            ) : null}
-                            {isBonusEnabled === true ? (
-                                <View style={{ width: 50, alignItems: 'center'}}>
-                                    <Text style={{fontWeight: 'bold', fontSize: 11}}>
-                                        Bonus
-                                    </Text>
-                                </View>
-                            ) : null}
-                        </View>
+                        <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
 
-                        <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH}}>
-                            {isBidEnabled === true ? (
-                                <View style={{ width: 50, alignItems: 'center'}}>
-                                    <Text style={{fontFamily: 'chalkboard-light'}}>
-                                        {item}
-                                    </Text>
-                                </View>
-                            ) : null}
-                            {isMeldEnabled === true ? (
-                                <View style={{ width: 50, alignItems: 'center'}}>
-                                    <Text style={{fontFamily: 'chalkboard-light'}}>
-                                        {meld}
-                                    </Text>
-                                </View>
-                            ) : null}
-                            {isBonusEnabled === true ? (
-                                <View style={{ width: 50, alignItems: 'center'}}>
-                                    <Text style={{fontFamily: 'chalkboard-light'}}>
-                                        {bonus}
-                                    </Text>
-                                </View>
-                            ) : null}
-                        </View> 
-                    
-                    </TouchableOpacity>
-                </View>
-                );
-                
-            }
-
-        const Row = ({item, index, style}) => {
-
-            
-
-            
-
-            const round = Round
-
-            
-
-            
-
-
-
-            return (
-                  <View style={{}}>
-                        <View style={[styles.scorebox, style, { width: CELL_WIDTH, height: 50}]}>
-                            
-                        
-
-
-                            {/* { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
-                                <TouchableOpacity style={{opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
-                                
-                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH - 10}}>
-                                        {isBidEnabled === true ? (
+                                { isBidEnabled === true ? (
+                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
                                             <View style={{ width: 50, alignItems: 'center'}}>
                                                 <Text style={{fontWeight: 'bold', fontSize: 11}}>
                                                     Bid
                                                 </Text>
-                                            </View>
-                                        ) : null}
-                                        {isMeldEnabled === true ? (
+                                            </View>   
+                                    </View>
+                                ) : null}
+
+                                { isMeldEnabled === true ? (
+                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
                                             <View style={{ width: 50, alignItems: 'center'}}>
                                                 <Text style={{fontWeight: 'bold', fontSize: 11}}>
                                                     Meld
                                                 </Text>
                                             </View>
-                                        ) : null}
-                                        {isBonusEnabled === true ? (
+                                    </View>
+                                ) : null}
+
+                                { isBonusEnabled === true ? (
+                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
                                             <View style={{ width: 50, alignItems: 'center'}}>
                                                 <Text style={{fontWeight: 'bold', fontSize: 11}}>
                                                     Bonus
                                                 </Text>
                                             </View>
-                                        ) : null}
                                     </View>
+                                ) : null}
 
-                                    <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH - 10}}>
-                                        {isBidEnabled === true ? (
-                                            <View style={{ width: 50, alignItems: 'center'}}>
-                                                <Text style={{fontFamily: 'chalkboard-light'}}>
-                                                    15
-                                                </Text>
-                                            </View>
-                                        ) : null}
-                                        {isMeldEnabled === true ? (
-                                            <View style={{ width: 50, alignItems: 'center'}}>
-                                                <Text style={{fontFamily: 'chalkboard-light'}}>
-                                                    15
-                                                </Text>
-                                            </View>
-                                        ) : null}
-                                        {isBonusEnabled === true ? (
-                                            <View style={{ width: 50, alignItems: 'center'}}>
-                                                <Text style={{fontFamily: 'chalkboard-light'}}>
-                                                    15
-                                                </Text>
-                                            </View>
-                                        ) : null}
-                                    </View> 
-                                
-                                </TouchableOpacity>
-                            ) : null } */}
+                            </View>
+
+                            <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH}}>
+                               
+                                    {/* <View style={{ width: 50, alignItems: 'center'}}> */}
+                                    { isBidEnabled === true ? (
+                                        <Text style={{fontFamily: 'chalkboard-light'}}>
+                                            {item[0]}
+                                        </Text>
+                                    ) : null}
+                                        { isMeldEnabled === true ? (
+                                        <Text style={{fontFamily: 'chalkboard-light'}}>
+                                            {item[1]}
+                                        </Text>
+                                    ) : null}
+                                        { isBonusEnabled === true ? (
+                                        <Text style={{fontFamily: 'chalkboard-light'}}>
+                                            {item[2]}
+                                        </Text>
+                                    ) : null}
+                                    {/* </View> */}
+                             
+                            </View> 
                             
+                        
+                        </TouchableOpacity>
+                </View>
+                );
+                
+            }
+
+
+            // const ExtraItem = ({index, item}) => {
+
+            //     return (
+            //         <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH/3, backgroundColor: 'cyan'  }}>
+            //             <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
+                        
+            //                 <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                                
+            //                         <View style={{ width: 50, alignItems: 'center'}}>
+            //                             <Text style={{fontWeight: 'bold', fontSize: 11}}>
+            //                                 Bid
+            //                             </Text>
+            //                         </View>
+                                
+            //                 </View>
+
+            //                 <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                               
+            //                         <View style={{ width: 50, alignItems: 'center'}}>
+            //                             <Text style={{fontFamily: 'chalkboard-light'}}>
+            //                                 {item}
+            //                             </Text>
+            //                         </View>
+                             
+            //                 </View> 
+                        
+            //             </TouchableOpacity>
+            //     </View>
+            //     );
+                
+            // }
+
+            // const MeldItem = ({index, item}) => {
+
+            //     return (
+            //         <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH/3, backgroundColor: 'yellow'}}>
+            //         <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
+                    
+            //             <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                            
+                           
+            //                     <View style={{ width: 50, alignItems: 'center'}}>
+            //                         <Text style={{fontWeight: 'bold', fontSize: 11}}>
+            //                             Meld
+            //                         </Text>
+            //                     </View>
+                          
+            //             </View>
+
+            //             <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                         
+            //                     <View style={{ width: 50, alignItems: 'center'}}>
+            //                         <Text style={{fontFamily: 'chalkboard-light'}}>
+            //                             {item}
+            //                         </Text>
+            //                     </View>
+                        
+            //             </View> 
+                    
+            //         </TouchableOpacity>
+            //     </View>
+            //     );
+                
+            // }
+
+            // const BonusItem = ({index, item}) => {
+
+            //     return (
+            //         <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH/3, backgroundColor: 'lime' }}>
+            //         <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
+                    
+            //             <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                          
+            //                     <View style={{ width: 50, alignItems: 'center'}}>
+            //                         <Text style={{fontWeight: 'bold', fontSize: 11}}>
+            //                             Bonus
+            //                         </Text>
+            //                     </View>
+                          
+            //             </View>
+
+            //             <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                       
+            //                     <View style={{ width: 50, alignItems: 'center'}}>
+            //                         <Text style={{fontFamily: 'chalkboard-light'}}>
+            //                             {item}
+            //                         </Text>
+            //                     </View>
+                    
+            //             </View> 
+                    
+            //         </TouchableOpacity>
+            //     </View>
+            //     );
+                
+            // }
+
+        const Row = ({item, index, style}) => {
+
+            const round = Round
+
+            return (
+                  <View style={{}}>
+                        <View style={[styles.scorebox, style, { width: CELL_WIDTH, height: 50}]}>
                             <TouchableOpacity onPress={() => {showModal({index, round});}}>
                                 <View style={{width: CELL_WIDTH, height: 50, justifyContent: 'center', alignItems: 'center'}}>
                                     <Text style={[styles.score]}>
@@ -999,11 +1040,7 @@ const Scorecard = ({navigation}) => {
 
         const renderRow = ({ item, index }) => {
 
-            //const color = item === roundWinner ? 'green' : '#000000a5';
-
             const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true ? '#f0f0f0a5' : '#fff';
-
-            
 
             return (
                 <Row
@@ -1014,21 +1051,42 @@ const Scorecard = ({navigation}) => {
             );
         };
 
-        const renderExtraItem = ({ item, index }) => {
+        const renderExtraItemSingle = ({ item, index }) => {
+            return (
+                <ExtraItemSingle
+                    index={index}
+                    item={item}
+                />
+            );
+        };
 
+        // const renderExtraItem = ({ item, index }) => {
+        //     return (
+        //         <ExtraItem
+        //             index={index}
+        //             item={item}
+        //         />
+        //     );
+        // };
 
-                return (
+        // const renderMeldItem = ({ item, index }) => {
+        //     return (
+        //         <MeldItem
+        //             index={index}
+        //             item={item}
+        //         />
+        //     );
+        // };
 
-                    <ExtraItem
-                        index={index}
-                        item={item}
-                        bid={item.bid}
-                        meld={item.meld}
-                        bonus={item.bonus}
-                    />
+        // const renderBonusItem = ({ item, index }) => {
+        //     return (
+        //         <BonusItem
+        //             index={index}
+        //             item={item}
+        //         />
+        //     );
+        // };
 
-                );
-            };
 
 
         return (
@@ -1038,21 +1096,69 @@ const Scorecard = ({navigation}) => {
                 </View>
 
                 <View style={{ }}>
-                { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
-                <FlatList 
-                    data={Scores[round - 1 ].bid}
-                    renderItem={renderExtraItem}
-                    
-                    //keyExtractor={(item, index) => item.id.toString()}
-                    keyExtractor={(item, index) => index.toString()}
-                    horizontal={true}
-                    //style={{position: 'absolute'}}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{width: CELL_WIDTH * 4, height: 70}}
-                    scrollEnabled={false}
-                    extraData={updateScores}
-                />
-            ) : null }
+
+                    { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
+                    <View>
+                        <FlatList 
+                            data={Scores[round - 1 ].extra}
+                            renderItem={renderExtraItemSingle}
+                            //keyExtractor={(item, index) => item.id.toString()}
+                            keyExtractor={(item, index) => index.toString()}
+                            horizontal={true}
+                            //style={{position: 'absolute'}}
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
+                            scrollEnabled={false}
+                            extraData={updateScores}
+                        />
+                    </View>
+                    ) : null}
+
+                    {/* <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
+                        { isBidEnabled === true ? (
+                        <FlatList 
+                            data={Scores[round - 1 ].bid}
+                            renderItem={renderExtraItem}
+                            //keyExtractor={(item, index) => item.id.toString()}
+                            keyExtractor={(item, index) => index.toString()}
+                            horizontal={true}
+                            //style={{position: 'absolute'}}
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
+                            scrollEnabled={false}
+                            extraData={updateScores}
+                        />
+                        ) : null }
+                        { isMeldEnabled === true ? (
+                            <FlatList 
+                                data={Scores[round - 1 ].meld}
+                                renderItem={renderMeldItem}
+                                //keyExtractor={(item, index) => item.id.toString()}
+                                keyExtractor={(item, index) => index.toString()}
+                                horizontal={true}
+                                //style={{position: 'absolute'}}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
+                                scrollEnabled={false}
+                                extraData={updateScores}
+                            />
+                        ) : null }
+                        { isBonusEnabled === true ? (
+                            <FlatList 
+                                data={Scores[round - 1 ].bonus}
+                                renderItem={renderBonusItem} 
+                                //keyExtractor={(item, index) => item.id.toString()}
+                                keyExtractor={(item, index) => index.toString()}
+                                horizontal={true}
+                                //style={{position: 'absolute'}}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
+                                scrollEnabled={false}
+                                extraData={updateScores}
+                            />
+                        ) : null }
+                    </View> */}
+
                 
                 <FlatList 
                     data={Scores[round - 1].score}
@@ -1075,22 +1181,41 @@ const Scorecard = ({navigation}) => {
 
     const [text, setText] = useState('');
 
-    const textNum = parseInt(text)
+    const textNum = parseInt(text);
 
     const [bidText, setBidText] = useState('');
 
-    const textBid = parseInt(bidText)
+    const textBid = parseInt(bidText);
+
+    const [meldText, setMeldText] = useState('');
+
+    const textMeld = parseInt(meldText);
+
+    const [bonusText, setBonusText] = useState('');
+
+    const textBonus = parseInt(bonusText);
 
     const [winnerState, setWinnerState] = useState(0);
 
     const UpdateExtra = () => {
 
+        let prev = Scores[roundState - 1].extra[teamState - 1][0]
+
         let newArray = [...Scores];
-        newArray[roundState - 1].bid[teamState - 1 ] = textBid;
+        newArray[roundState - 1].extra[teamState - 1 ] = [
+            bidText === '' ? Scores[roundState - 1].extra[teamState - 1][0] : bidText, 
+            meldText === '' ? Scores[roundState - 1].extra[teamState - 1][1] : meldText, 
+            bonusText === '' ? Scores[roundState - 1].extra[teamState - 1][2] : bonusText
+        ];
+        //if (meldText !== '') {newArray[roundState - 1].meld[teamState - 1 ][1] = textMeld;}
+        //if (bonusText !== '') {newArray[roundState - 1].bonus[teamState - 1 ][2] = textBonus;}
 
         setScores(newArray);
         setUpdated(!Updated)    
-        setRoundUpdate(!roundUpdate)
+        setRoundUpdate(!roundUpdate);
+        setBidText('');
+        setMeldText('');
+        setBonusText('');
 
         hideExtrasModal();
     }
@@ -1286,29 +1411,65 @@ const Scorecard = ({navigation}) => {
                 <Modal visible={visibleExtrasModal} onDismiss={hideExtrasModal} contentContainerStyle={extrasModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
 
-                        <View style={{ alignItems: 'center', marginVertical: 20}}>
+                    <View style={{ alignItems: 'center', marginVertical: 20}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
-                                Team Name
+                                {   teamState === 1 ? Teams[0].name :
+                                    teamState === 2 ? Teams[1].name :
+                                    teamState === 3 ? Teams[2].name :
+                                    teamState === 4 ? Teams[3].name : 'Some Team'}
                             </Text>
                             <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
                                 Round {roundState}
                             </Text>
                         </View>
 
-                        <View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 20}}>
                             <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
                                <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
                                    Bid
                                </Text>
                                
                                <TextInput 
-                                    placeholder=''
+                                    placeholder={Scores[roundState - 1].extra[teamState - 1][0]}
                                     placeholderTextColor='#000000a5'
-                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 80, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
+                                    //defaultValue={Scores[roundState - 1].extra[teamState - 1][0]}
+                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
                                     maxLength={20}
                                     keyboardType='number-pad'
-                                    autoFocus={true}
-                                    onChangeText={val =>setBidText(val)}
+                                    autoFocus={false}
+                                    //value={bidText}
+                                    //onChangeText={text =>setBidText(text)}
+                                    onChangeText={text => setBidText(text)}
+                                /> 
+                            </View>
+                            <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+                               <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                   Meld
+                               </Text>
+                               
+                               <TextInput 
+                                    placeholder={Scores[roundState - 1].extra[teamState - 1][1]}
+                                    placeholderTextColor='#000000a5'
+                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
+                                    maxLength={20}
+                                    keyboardType='number-pad'
+                                    autoFocus={false}
+                                    onChangeText={val =>setMeldText(val)}
+                                /> 
+                            </View>
+                            <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+                               <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                   Bonus
+                               </Text>
+                               
+                               <TextInput 
+                                    placeholder={Scores[roundState - 1].extra[teamState - 1][2]}
+                                    placeholderTextColor='#000000a5'
+                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
+                                    maxLength={20}
+                                    keyboardType='number-pad'
+                                    autoFocus={false}
+                                    onChangeText={val =>setBonusText(val)}
                                 /> 
                             </View>
                         </View>
