@@ -8,6 +8,7 @@ import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 import OptionsMenu from "react-native-option-menu";
 
 import Timer from '../Components/Timer';
+import { FULLSCREEN_UPDATE_PLAYER_DID_PRESENT } from 'expo-av/build/Video';
 
 const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
@@ -273,6 +274,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: 1,
                 name: 'Team 1',
+                playerNames: [''],
                 playerID: [1, 2],
                 total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
@@ -282,6 +284,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: '2',
                 name: 'Team 2',
+                playerNames: [''],
                 playerID: [3, 4],
                 total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
@@ -290,6 +293,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: '3',
                 name: 'Team 3',
+                playerNames: [''],
                 playerID: [5, 6],
                 total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
@@ -298,6 +302,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: '4',
                 name: 'Team 4',
+                playerNames: [''],
                 playerID: [7, 8],
                 total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
@@ -518,9 +523,32 @@ const Scorecard = ({navigation}) => {
         padding: 20,
     }; 
 
-    
-    const [TeamNames, setTeamNames] = useState(['Team 1', 'Team 2', 'Team 3', 'Team 4'])
-    
+    const addPlayerRef = useRef();
+
+    const [teamPlayer, setTeamPlayer] = useState('');
+
+    const [players, setPlayers] = useState([])
+
+    const [TeamName, setTeamName] = useState('Some Team');
+
+    const [TeamNames, setTeamNames] = useState(['Team 1', 'Team 2', 'Team 3', 'Team 4']);
+
+    const [TeamSettingId, setTeamSettingId] = useState(0)
+
+    const AddTeam = () => {
+
+        let newArray = [...TeamNames];
+        newArray[TeamSettingId - 1] = TeamName;
+        setTeamNames(newArray);
+
+        let teamArray = [...Teams];
+        teamArray[TeamSettingId - 1].playerNames = players;
+        setTeams(teamArray)
+
+        hideTeamModal();
+
+    }
+
     const ChangeSettings = () => {    
 
         let newArray = [...Teams];
@@ -640,45 +668,38 @@ const Scorecard = ({navigation}) => {
 
     const TeamList = ({name, id}) => {
 
-        
 
         return(
             <View>
-                <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
-                    <TextInput 
-                        placeholder={name}
-                        //ref={inputRef}
-                        //defaultValue={Teams[0].name}
-                        placeholderTextColor='#000000a5'
-                        style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
-                        maxLength={20}
-                        //ref={inputRef + id}
-                        //keyboardType='number-pad'
-                     
-                        //autoFocus={false}
-                        //value={text[id-1]}
-                        //onChangeText={val => setTeamName()}
-                        //onChangeText={val => MapTeamNames({val, id})}
-                        onChangeText={text => MapTeamNames({text, id})}
+                <TouchableOpacity onPress={() => showTeamModal({name, id})}>
+                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
+                        <Text style={{fontFamily: 'chalkboard-bold', fontSize: 16, color: '#000000a5'}}>
+                            {TeamNames[id - 1]}
+                        </Text>
                         
                         
-                    /> 
-                    <View style={{ flexDirection: 'row'}}>
-                        <Feather
-                            name='plus-circle'
-                            color='#155843a5'
-                            size={18}
-                        />
-                        <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
-                            Add Player
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            
+                            {/* <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
+                                EDIT
+                            </Text> */}
+                            
+                                <Feather 
+                                    name='edit'
+                                    color='#155843a5'
+                                    size={18}
+                                    style={{marginHorizontal: 5}}
+                                />
+                            
+                            
+                        </View>
+                    </View>
+                    <View style={{marginHorizontal: 10, marginTop: -10}}>
+                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
+                            {Teams[id - 1].playerNames.join(', ')}
                         </Text>
                     </View>
-                </View>
-                <View style={{marginHorizontal: 10, marginTop: -10}}>
-                    <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
-                        Randy, Meghan
-                    </Text>
-                </View>
+                </TouchableOpacity>
             </View>
         );
     };
@@ -758,6 +779,8 @@ const Scorecard = ({navigation}) => {
       const [teamState, setTeamState] = useState(0);
       const [scoreState, setScoreState] = useState();
 
+    
+
 //Scorebox Modal
       const [visible, setVisible] = useState(false);
   
@@ -797,6 +820,8 @@ const Scorecard = ({navigation}) => {
           padding: 20,
       }; 
 
+      
+
 //New Scorecard  Modal
         const [visibleClearModal, setVisibleClearModal] = useState(false);
         
@@ -822,6 +847,24 @@ const Scorecard = ({navigation}) => {
             backgroundColor: 'transparent', 
             padding: 20,
         }; 
+
+//Team  Modal
+
+    const [visibleTeamModal, setVisibleTeamModal] = useState(false);
+        
+    const showTeamModal = ({id, name}) => {
+
+        setTeamSettingId(id);
+        setVisibleTeamModal(true);
+        console.log(id);
+    
+    }
+
+    const hideTeamModal = () => setVisibleTeamModal(false);
+    const teamModalContainerStyle = {
+        backgroundColor: 'transparent', 
+        padding: 20,
+    }; 
 
 
 
@@ -1410,6 +1453,8 @@ const Scorecard = ({navigation}) => {
                     </View>
                 </Modal>
 
+
+
 {/* Extras Modal */}
                 <Modal visible={visibleExtrasModal} onDismiss={hideExtrasModal} contentContainerStyle={extrasModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
@@ -1511,7 +1556,8 @@ const Scorecard = ({navigation}) => {
 
                                 <View style={{ marginVertical: 10, marginHorizontal: 5}}>
                                     <TextInput 
-                                        placeholder={ScorecardData.name}
+                                        //placeholder={ScorecardData.name}
+                                        placeholder='----'
                                         placeholderTextColor='#000000a5'
                                         style={{height: 40, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 18}}
                                         maxLength={20}
@@ -1528,17 +1574,29 @@ const Scorecard = ({navigation}) => {
                                         Teams and Players
                                     </Text>
 
-                                    {/* <FlatList 
+                                    <FlatList 
                                         data={Teams}
                                         renderItem={renderTeamList}
                                         keyExtractor={item => item.id.toString()}
                                         showsVerticalScrollIndicator={false}
                                         scrollEnabled={false}
-                                        //removeClippedSubviews={false}
-                                        
-                                    /> */}
+                                        ListFooterComponent={() => 
+                                            <View style={{flexDirection: 'row', marginHorizontal: 10, marginTop: 30}}>
+                                                <Feather
+                                                name='plus-circle'
+                                                color='#155843a5'
+                                                size={18}
+                                                />
+                                                <Text style={{color: 'gray', fontSize: 12, marginLeft: 10}}>
+                                                    Add Team
+                                                </Text>
+                                            </View>
+                                        }
+                                    />
+                                </View>
+                        </View>
 
-                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
+                                    {/* <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
                                         <TextInput 
                                             placeholder={Teams[0].name}
                                             //defaultValue={Teams[0].name}
@@ -1557,13 +1615,9 @@ const Scorecard = ({navigation}) => {
                                             ])}
                                         /> 
                                         <View style={{ flexDirection: 'row'}}>
-                                            <Feather
-                                                name='plus-circle'
-                                                color='#155843a5'
-                                                size={18}
-                                            />
+                                            
                                             <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
-                                                Add Player
+                                                EDIT TEAM
                                             </Text>
                                         </View>
                                     </View>
@@ -1679,7 +1733,8 @@ const Scorecard = ({navigation}) => {
                                         </Text>
                                     </View>
                                 </View>  
-                            </View>
+                            </View> */}
+
 
                             <View style={{marginTop: 30}}>
                                     <View>
@@ -1947,8 +2002,82 @@ const Scorecard = ({navigation}) => {
 
                     </View>
                 </Modal>
-            </Portal>
 
+{/* Team Modal */}
+                <Modal visible={visibleTeamModal} onDismiss={hideTeamModal} contentContainerStyle={teamModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Team Name:
+                            </Text>
+                            <TextInput 
+                                placeholder={'Enter a team name'}
+                                placeholderTextColor='lightgray'
+                                style={{textAlign: 'center', borderBottomWidth: 0.5, borderColor: 'gray', height: 50, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 20}}
+                                maxLength={20}
+                                onChangeText={val => setTeamName(val)}
+                                    
+                            /> 
+                        </View>
+
+                        <View style={{ alignItems: 'center', marginBottom: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center', marginBottom: 10}}>
+                                Add Player:
+                            </Text>
+                                      
+                            <FlatList 
+                                data={players}
+                                scrollEnabled={false}
+                                numColumns={3}
+                                style={{}}
+                                contentContainerStyle={{width: '100%'}}
+                                renderItem={({item}) => 
+                                    <View style={{ backgroundColor: '#e0e0e0', paddingVertical: 4, paddingHorizontal: 14, margin: 6, borderRadius: 20}}>
+                                        <Text style={{textTransform: 'capitalize', fontSize: 17, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                            {item}
+                                        </Text>
+                                    </View>
+                                }
+                            />
+                            
+                            <View style={{marginTop: 10, flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between'}}>
+                                <TextInput 
+                                    placeholder='Enter a player name'
+                                    placeholderTextColor='lightgray'
+                                    style={{textAlign: 'center', borderBottomWidth: 0.5, borderColor: 'gray', height: 50, width: 220, fontFamily: 'chalkboard-bold', fontSize: 20}}
+                                    maxLength={20}
+                                    onChangeText={val => setTeamPlayer(val)}  
+                                    ref={addPlayerRef}
+                                /> 
+                                <TouchableOpacity onPress={() =>  {setPlayers([...players, teamPlayer]); addPlayerRef.current.clear(); }}>
+                                    <View style={{alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 15, backgroundColor: '#155843a5'}}>
+                                        <Feather 
+                                            name='corner-right-up'
+                                            color='#fff'
+                                            size={24}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+                                
+                            </View>
+                            
+                        </View>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={AddTeam}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{color: '#fff', fontSize: 18, textAlign: 'center', fontFamily: 'chalkboard-bold'}}>
+                                        Create Team
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </Modal>
+
+            </Portal>
 
  {/* Header            */}
             <View style={{ width: SCREEN_WIDTH, height: 80, justifyContent: 'space-between', backgroundColor: '#155843', flexDirection: 'row', alignItems: 'center' }}>
