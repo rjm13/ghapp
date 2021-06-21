@@ -1515,7 +1515,7 @@ const Scorecard = ({navigation}) => {
                                         placeholderTextColor='#000000a5'
                                         style={{height: 40, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 18}}
                                         maxLength={20}
-                                        autoFocus={true}
+                                        autoFocus={false}
                                         onChangeText={val => Set({val})}
                                     /> 
                                 </View>
