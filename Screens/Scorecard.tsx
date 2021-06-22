@@ -276,7 +276,7 @@ const Scorecard = ({navigation}) => {
                 name: 'Team 1',
                 playerNames: [],
                 playerID: [1, 2],
-                total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+                total: 0 ,
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
                 
@@ -286,7 +286,7 @@ const Scorecard = ({navigation}) => {
                 name: 'Team 2',
                 playerNames: [],
                 playerID: [3, 4],
-                total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
+                total: 0,
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
             },
@@ -295,7 +295,7 @@ const Scorecard = ({navigation}) => {
                 name: 'Team 3',
                 playerNames: [],
                 playerID: [5, 6],
-                total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
+                total: 0,
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),
             },
@@ -304,7 +304,7 @@ const Scorecard = ({navigation}) => {
                 name: 'Team 4',
                 playerNames: [],
                 playerID: [7, 8],
-                total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
+                total: 0,
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),
             },
@@ -339,6 +339,7 @@ const Scorecard = ({navigation}) => {
         teams: [Teams],
         scores: [Scores]
     }
+
 
     const blankTeams = [
         {
@@ -860,7 +861,11 @@ const Scorecard = ({navigation}) => {
 
 //Team  Modal
 
+    
+
     const [visibleTeamModal, setVisibleTeamModal] = useState(false);
+
+    const [newTeam, setNewTeam] = useState(false)
         
     const showTeamModal = ({id, name}) => {
 
@@ -869,6 +874,27 @@ const Scorecard = ({navigation}) => {
         setVisibleTeamModal(true);
         setPlayers(Teams[id - 1].playerNames);
     
+    }
+
+    const SetShowTeamModal = () => {
+
+        let teams = Teams.length
+
+        let id = teams + 1;
+        let name = 'Team' + ' ' + id.toString();
+
+        setTeams([...Teams, {
+            id: id,
+            name: name,
+            playerNames: [],
+            playerID: [],
+            total: 0,
+            roundWins: 0,
+        }]);
+
+        setTeamNames([...TeamNames, name])
+
+        console.log(Teams);
     }
 
     const hideTeamModal = () => setVisibleTeamModal(false);
@@ -1557,20 +1583,21 @@ const Scorecard = ({navigation}) => {
                                         keyExtractor={item => item.id.toString()}
                                         showsVerticalScrollIndicator={false}
                                         scrollEnabled={false}
+                                        extraData={Teams}
                                         ListFooterComponent={() => 
-                                            <TouchableOpacity onPress={showTeamModal}>
-                                                <View style={{flexDirection: 'row', marginHorizontal: 10, marginTop: 20}}>
+                                            <TouchableOpacity onPress={SetShowTeamModal}>
+                                                <View style={{width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginHorizontal: 10, marginTop: 20}}>
                                                     <Feather
                                                         name='plus-circle'
                                                         color='#155843a5'
                                                         size={18}
                                                     />
-                                                    <Text style={{color: '#155843a5', fontSize: 12, marginLeft: 10}}>
+                                                    <Text style={{color: '#155843a5', fontSize: 12, marginLeft: 10, marginRight: 10}}>
                                                         Add Team
                                                     </Text>
                                                 </View>
                                             </TouchableOpacity>
-                                            
+                                        
                                         }
                                     />
                                 </View>
@@ -2048,7 +2075,7 @@ const Scorecard = ({navigation}) => {
                                 Team Name:
                             </Text>
                             <TextInput 
-                                placeholder={Teams[TeamSettingId - 1].name}
+                                placeholder={Teams[TeamSettingId - 1]?.name}
                                 placeholderTextColor='lightgray'
                                 style={{textAlign: 'center', borderBottomWidth: 0.5, borderColor: 'gray', height: 50, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 20}}
                                 maxLength={20}
