@@ -138,132 +138,7 @@ const Scorecard = ({navigation}) => {
                 ],
                 winner: null,
             },
-            {
-                round: 2,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 3,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 4,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 5,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 6,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 7,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 8,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 9,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 10,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 11,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 12,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 13,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 14,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
-            {
-                round: 15,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
-                winner: null,
-            },
+            
         ]
     )
 
@@ -377,136 +252,7 @@ const Scorecard = ({navigation}) => {
             round: 1,
             team: [1, 2, 3, 4],
             score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-    
-        },
-        {
-            round: 2,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 3,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 4,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 5,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 6,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 7,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 8,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 9,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 10,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 11,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 12,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 13,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 14,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
-            winner: null,
-        },
-        {
-            round: 15,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [
-                ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-            ],
+            extra: [ ['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''] ],
             winner: null,
         },
     ];
@@ -629,11 +375,11 @@ const Scorecard = ({navigation}) => {
 
     useEffect(() => {
         if (isLowestPointsEnabled === false) {
-            setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total).toString());
+            setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total));
             setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins));
         }
         if (isLowestPointsEnabled === true) {
-            setLeader( Math.min(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total).toString());
+            setLeader( Math.min(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total));
             setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins));
         }
     }, [Teams])
@@ -707,7 +453,7 @@ const Scorecard = ({navigation}) => {
                     </View>
                     <View style={{marginHorizontal: 10, marginTop: -10}}>
                         <Text style={{fontSize: 14, textTransform: 'capitalize', fontFamily: 'chalkboard-light', color: '#000000a5'}}>
-                            {Teams[id - 1].playerNames.join(' - ')}
+                            {Teams[id - 1].playerNames?.join(' - ')}
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -728,8 +474,11 @@ const Scorecard = ({navigation}) => {
 
     const renderFooter = ({ item }) => {
 
-    const color = item.total === leader ? 'green' : '#000';
+    const color = item.total === leader ? 'green' : '#000'
 
+    // console.log(item.total)
+    // console.log(leader)
+    // console.log('test')
     
     return (
         <Footer
@@ -1294,7 +1043,9 @@ const Scorecard = ({navigation}) => {
 
     const UpdateExtra = () => {
 
-        let prev = Scores[roundState - 1].extra[teamState - 1][0]
+        //let prev = Scores[roundState - 1].extra[teamState - 1][0]
+        console.log('roundstate')
+        console.log(roundState)
 
         let newArray = [...Scores];
         newArray[roundState - 1].extra[teamState - 1 ] = [
@@ -1304,6 +1055,8 @@ const Scorecard = ({navigation}) => {
         ];
         //if (meldText !== '') {newArray[roundState - 1].meld[teamState - 1 ][1] = textMeld;}
         //if (bonusText !== '') {newArray[roundState - 1].bonus[teamState - 1 ][2] = textBonus;}
+
+
 
         setScores(newArray);
         setUpdated(!Updated)    
@@ -1380,11 +1133,14 @@ const Scorecard = ({navigation}) => {
         setScores(blankScores);
         setTeams(blankTeams);
         setScorecardData(array);
-        setUpdateScores(!updateScores);    
+        setUpdateScores(!updateScores);  
+        setRoundState(null);  
         
         //setUpdated(!Updated);
         //setRoundUpdate(!roundUpdate)
         hideClearModal(); 
+
+        
     }
 
     const [timePlaceholder, setTimePlaceholder] = useState('');
