@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
+import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -28,6 +28,10 @@ var toRoman = require('roman-numerals').toRoman;
 
 
 const Scorecard = ({navigation}) => {
+
+
+    const [darkTheme, setDarkTheme] = useState(false);
+    const toggleDarkTheme = () => setDarkTheme(previousState => !previousState);
 
     const [Totals, setTotals] = useState([0, 0, 0, 0]);
 
@@ -79,12 +83,12 @@ const Scorecard = ({navigation}) => {
 
 
         return (
-            <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
+            <View style={{ height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000', flexDirection: 'row'}}>
                 
                
     
                 <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
+                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
                         {total}
                     </Text>
                 </View>
@@ -95,12 +99,12 @@ const Scorecard = ({navigation}) => {
     
     const WinsFooter = ({roundWins, style}) => {
         return (
-            <View style={{ height: 50, backgroundColor: '#fff', flexDirection: 'row'}}>
+            <View style={{ height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000', flexDirection: 'row'}}>
                 
                
     
                 <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22}]}>
+                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
                         {roundWins}
                     </Text>
                 </View>
@@ -118,7 +122,7 @@ const Scorecard = ({navigation}) => {
 
     const RoundsColumn = ({round}) => {
         return (
-            <View style={[styles.roundbox, {height: CELL_HEIGHT}]}>
+            <View style={[styles.roundbox, {height: CELL_HEIGHT, backgroundColor: darkTheme === false ? '#fff' : '#000000'}]}>
                 <Text style={styles.round}>
                     {isRomanEnabled === true ? toRoman(round) : round}
                 </Text>
@@ -474,7 +478,11 @@ const Scorecard = ({navigation}) => {
 
     const renderFooter = ({ item }) => {
 
-    const color = item.total === leader ? 'green' : '#000'
+    const color = item.total === leader && darkTheme === false ? 'green' :
+                  item.total === leader && darkTheme === true ? 'green' :
+                  item.total !== leader && darkTheme === true ? '#fff' :
+                  '#000'
+
 
     // console.log(item.total)
     // console.log(leader)
@@ -490,7 +498,10 @@ const Scorecard = ({navigation}) => {
 
     const renderWinsFooter = ({ item }) => {
 
-        const color = item.roundWins === roundLeader && roundLeader !== 0 ? 'green' : '#000';
+        const color = item.roundWins === roundLeader && darkTheme === false ? 'green' :
+                      item.roundWins === roundLeader && darkTheme === true ? 'green' :
+                      item.roundWins !== roundLeader && darkTheme === true ? '#fff' :
+                      '#000';
     
         
         return (
@@ -672,10 +683,10 @@ const Scorecard = ({navigation}) => {
     const HeaderRow = ({id, name}) => {
 
         return (
-            <View style={{flexDirection: 'column', height: 50, backgroundColor: '#fff', justifyContent: 'center'}}>
+            <View style={{flexDirection: 'column', height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000', justifyContent: 'center'}}>
                 <TouchableOpacity onPress={showSettingModal}>
                     <View style={[styles.headerbox, {width: CELL_WIDTH}]}>
-                        <Text style={styles.header}>
+                        <Text style={[styles.header, {color: darkTheme === false ? '#000' : '#fff'}]}>
                             {name}
                         </Text>
                     </View>
@@ -872,7 +883,7 @@ const Scorecard = ({navigation}) => {
                         <View style={[styles.scorebox, style, { width: CELL_WIDTH, height: 50}]}>
                             <TouchableOpacity onPress={() => {showModal({index, round});}}>
                                 <View style={{width: CELL_WIDTH, height: 50, justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={[styles.score]}>
+                                    <Text style={[styles.score, {color: darkTheme === false ? '#000000a5' : '#ffffffa5'}]}>
                                         {item}
                                     </Text>
                                 </View>
@@ -884,7 +895,7 @@ const Scorecard = ({navigation}) => {
 
         const renderRow = ({ item, index }) => {
 
-            const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true ? '#f0f0f0a5' : '#fff';
+            const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true ? '#f0f0f0a5' : 'transparent';
 
             return (
                 <Row
@@ -935,7 +946,7 @@ const Scorecard = ({navigation}) => {
 
         return (
             <View style={{flexDirection: 'row', height: CELL_HEIGHT}}>
-                <View style={{backgroundColor: '#155843', width: 60}}>
+                <View style={{backgroundColor: darkTheme === false ? '#fff' : 'transparent', width: 60}}>
     
                 </View>
 
@@ -1150,6 +1161,12 @@ const Scorecard = ({navigation}) => {
     return (
         <Provider>
         <View>
+
+        <ImageBackground 
+                source={require('../assets/chalkboard.jpg')}
+                imageStyle={{resizeMode: 'cover', width: SCREEN_WIDTH, height: Dimensions.get('window').height + 30}}
+                style={{position: 'absolute', justifyContent: 'center'}}
+            />
 
 {/*Score Modal */}
             <Portal>
@@ -1636,6 +1653,27 @@ const Scorecard = ({navigation}) => {
                                     </View>  
                                 </View>
 
+                                <View style={{marginTop: 20}}>
+                                    <View>
+                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                            Theme
+                                        </Text>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                            <Text style={{fontSize: 16}}>
+                                                Chalkboard
+                                            </Text> 
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                thumbColor={darkTheme ? "#155843" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={toggleDarkTheme}
+                                                value={darkTheme}
+                                            />
+                                        </View>
+                                        
+                                    </View>  
+                                </View>
+
                             <View style={{marginTop: 20}}>
                                 <View>
                                     <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
@@ -1981,7 +2019,7 @@ const Scorecard = ({navigation}) => {
                             renderItem={renderItemScoreRow}
                             keyExtractor={(item, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
-                            style={{ marginTop: 0, flexDirection: 'column', backgroundColor: '#fff', height: '100%'}}
+                            style={{ marginTop: 0, flexDirection: 'column', backgroundColor: darkTheme === false ? '#fff' : 'transparent', height: '100%'}}
                             contentContainerStyle={{width: CELL_WIDTH * 4 + 60}}
                             scrollEnabled={true}
                             extraData={updateScores}
@@ -1995,21 +2033,21 @@ const Scorecard = ({navigation}) => {
                             )}
                             ListFooterComponent={() => (
                                 <View>
-                                    <View style={[styles.roundbox, {height: 50}]}>
+                                    <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                                          
                                     </View>
-                                    <View style={[styles.roundbox, {height: 50}]}>
+                                    <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                                          
                                     </View>
-                                    <View style={[styles.roundbox, {height: 50}]}>
+                                    <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                                          
                                     </View>
                                     {isTimerEnabled === true ? (
                                         <View>
-                                            <View style={[styles.roundbox, {height: 50}]}>
+                                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                                          
                                         </View>
-                                        <View style={[styles.roundbox, {height: 50}]}>
+                                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                                          
                                         </View>
                                         </View>
@@ -2082,12 +2120,12 @@ const Scorecard = ({navigation}) => {
                     scrollEventThrottle={16}
                     stickyHeaderIndices={[]}
                     ListHeaderComponent={() => (
-                        <View style={[styles.roundbox, {height: 50}]}>
+                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                         </View>
                     )}
                     ListFooterComponent={() => (
                         <View>
-                            <View style={[styles.roundbox, {height: 50}]}>
+                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                             <TouchableOpacity onPress={SetNewRound}>
                                 <Feather 
                                     name='plus-circle'
@@ -2097,16 +2135,16 @@ const Scorecard = ({navigation}) => {
                             </TouchableOpacity>
                             
                             </View>
-                            <View style={[styles.roundbox, {height: 50}]}>
+                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                             </View>
-                            <View style={[styles.roundbox, {height: 50}]}>
+                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                             </View>
                             {isTimerEnabled === true ? (
                                         <View>
-                                            <View style={[styles.roundbox, {height: 50}]}>
+                                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                                          
                                         </View>
-                                        <View style={[styles.roundbox, {height: 50}]}>
+                                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                                          
                                         </View>
                                         </View>
@@ -2119,11 +2157,11 @@ const Scorecard = ({navigation}) => {
             </View>
 
             { isRoundWinsEnabled ? (
-                <View style={[styles.roundbox, { position: 'absolute', 
+                <View style={[styles.roundbox, { position: 'absolute', backgroundColor: darkTheme === false ? '#fff' : '#000', 
                     bottom: isTimerEnabled === true ? 110 : isPointsEnabled === false ? 0 : 50
                     , left: 0, height: 50}]}> 
                     <TouchableOpacity>
-                        <View style={[styles.roundbox, {height: 50}]}>
+                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000'}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
                                 Wins
                             </Text> */}
@@ -2134,11 +2172,12 @@ const Scorecard = ({navigation}) => {
 
             { isPointsEnabled ? (
                 <View style={[styles.roundbox, { 
+                    backgroundColor: darkTheme === false ? '#fff' : '#000',
                     position: 'absolute', 
                     bottom: isTimerEnabled === true ? 60 : 0, 
                     left: 0, height: 50}]}> 
                     <TouchableOpacity>
-                        <View style={[styles.roundbox, {height: 50}]}>
+                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
                                 Points
                             </Text> */}
@@ -2166,7 +2205,7 @@ const Scorecard = ({navigation}) => {
            
             
 
-            <View style={[styles.roundbox, { position: 'absolute', top: 80, left: 0, height: 50, width: 60}]}>      
+            <View style={[styles.roundbox, { backgroundColor: darkTheme === false ? '#fff' : '#000', position: 'absolute', top: 80, left: 0, height: 50, width: 60}]}>      
             </View>
             
             
@@ -2183,7 +2222,7 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 16,
         //fontWeight: 'bold',
-        color: '#000',
+        //color: '#000',
         fontFamily: 'chalkboard-bold',
         textAlign: 'center'
     },
@@ -2207,7 +2246,7 @@ const styles = StyleSheet.create({
         paddingVertical: 0, 
         width: 60, 
         //height: 50,
-        backgroundColor: '#fff',
+        //backgroundColor: '#fff',
         alignItems: 'center', 
         borderRightWidth: 0.3,
         justifyContent: 'center',
