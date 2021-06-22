@@ -876,6 +876,21 @@ const Scorecard = ({navigation}) => {
     
     }
 
+    const SetNewRound = () => {
+
+        let scores = Scores.length
+
+        let round = scores + 1;
+        
+        setScores([...Scores, {
+                round: round,
+                team: [1, 2, 3, 4],
+                score: ['', '', '', ''],
+                extra: [ ['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''] ],
+                winner: null,
+        }]);
+    }
+
     const SetShowTeamModal = () => {
 
         let teams = Teams.length
@@ -2317,7 +2332,7 @@ const Scorecard = ({navigation}) => {
                     ListFooterComponent={() => (
                         <View>
                             <View style={[styles.roundbox, {height: 50}]}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={SetNewRound}>
                                 <Feather 
                                     name='plus-circle'
                                     color='lightgray'
