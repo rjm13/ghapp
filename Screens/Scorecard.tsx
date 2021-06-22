@@ -1162,11 +1162,13 @@ const Scorecard = ({navigation}) => {
         <Provider>
         <View>
 
-        <ImageBackground 
-                source={require('../assets/chalkboard.jpg')}
-                imageStyle={{resizeMode: 'cover', width: SCREEN_WIDTH, height: Dimensions.get('window').height + 30}}
-                style={{position: 'absolute', justifyContent: 'center'}}
-            />
+        {darkTheme === true ? (
+            <ImageBackground 
+                    source={require('../assets/chalkboard.jpg')}
+                    imageStyle={{resizeMode: 'cover', width: SCREEN_WIDTH, height: Dimensions.get('window').height + 30}}
+                    style={{position: 'absolute', justifyContent: 'center'}}
+                />
+        ) : null}
 
 {/*Score Modal */}
             <Portal>
