@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
+import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -274,7 +274,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: 1,
                 name: 'Team 1',
-                playerNames: [''],
+                playerNames: [],
                 playerID: [1, 2],
                 total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
@@ -284,7 +284,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: '2',
                 name: 'Team 2',
-                playerNames: [''],
+                playerNames: [],
                 playerID: [3, 4],
                 total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
@@ -293,7 +293,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: '3',
                 name: 'Team 3',
-                playerNames: [''],
+                playerNames: [],
                 playerID: [5, 6],
                 total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
@@ -302,7 +302,7 @@ const Scorecard = ({navigation}) => {
             {
                 id: '4',
                 name: 'Team 4',
-                playerNames: [''],
+                playerNames: [],
                 playerID: [7, 8],
                 total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ),
                 //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
@@ -529,11 +529,13 @@ const Scorecard = ({navigation}) => {
 
     const [players, setPlayers] = useState([])
 
-    const [TeamName, setTeamName] = useState('Some Team');
+    const [TeamSettingId, setTeamSettingId] = useState(1)
+
+    const [TeamName, setTeamName] = useState('Team');
 
     const [TeamNames, setTeamNames] = useState(['Team 1', 'Team 2', 'Team 3', 'Team 4']);
 
-    const [TeamSettingId, setTeamSettingId] = useState(0)
+    
 
     const AddTeam = () => {
 
@@ -545,8 +547,16 @@ const Scorecard = ({navigation}) => {
         teamArray[TeamSettingId - 1].playerNames = players;
         setTeams(teamArray)
 
-        hideTeamModal();
+        setPlayers([]);
 
+        hideTeamModal();
+    }
+
+    const DeletePlayer = ({index}) => {
+
+        let array = [...players]
+        array.splice(index, 1)
+        setPlayers(array)
     }
 
     const ChangeSettings = () => {    
@@ -695,8 +705,8 @@ const Scorecard = ({navigation}) => {
                         </View>
                     </View>
                     <View style={{marginHorizontal: 10, marginTop: -10}}>
-                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
-                            {Teams[id - 1].playerNames.join(', ')}
+                        <Text style={{fontSize: 14, textTransform: 'capitalize', fontFamily: 'chalkboard-light', color: '#000000a5'}}>
+                            {Teams[id - 1].playerNames.join(' - ')}
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -855,8 +865,9 @@ const Scorecard = ({navigation}) => {
     const showTeamModal = ({id, name}) => {
 
         setTeamSettingId(id);
+        setTeamName('Team' + ' ' + id.toString())
         setVisibleTeamModal(true);
-        console.log(id);
+        setPlayers(Teams[id - 1].playerNames);
     
     }
 
@@ -1336,8 +1347,8 @@ const Scorecard = ({navigation}) => {
     }
 
     const [timePlaceholder, setTimePlaceholder] = useState('');
-    const [TickerPlaceholder, setTickerPlaceholder] = useState('None');
-    const [DoneSoundPlaceholder, setDoneSoundPlaceholder] = useState('None');
+    const [TickerPlaceholder, setTickerPlaceholder] = useState('Clock');
+    const [DoneSoundPlaceholder, setDoneSoundPlaceholder] = useState('Ting');
 
     return (
         <Provider>
@@ -1378,45 +1389,6 @@ const Scorecard = ({navigation}) => {
 
                         <View style={{ alignItems: 'center'}}>
                             <TouchableOpacity onPress={SetScore}>
-                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Feather 
-                                        name='check'
-                                        color='#fff'
-                                        size={30}
-                                    />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-
-                    </View>
-                </Modal>
-{/* Scorecard title modal */}
-                <Modal visible={visibleNameModal} onDismiss={hideNameModal} contentContainerStyle={nameModalContainerStyle}>
-                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
-
-                        <View style={{ alignItems: 'center'}}>
-                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
-                                Scorecard Name
-                            </Text>
-                        </View>
-
-                        <View>
-                            <View style={{marginVertical: 20, height: 80, alignItems: 'center', justifyContent: 'center'}}>
-                               <TextInput 
-                                    placeholder=''
-                                    placeholderTextColor='#000000a5'
-                                    style={{textAlign: 'center', height: 80, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 40}}
-                                    maxLength={20}
-                                    //keyboardType='number-pad'
-                                    autoFocus={true}
-                                    onChangeText={val => Set({val})}
-                                    //onChangeText={val => setData({...data, title: val})}
-                                /> 
-                            </View>
-                        </View>
-
-                        <View style={{ alignItems: 'center'}}>
-                            <TouchableOpacity onPress={hideNameModal}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
                                     <Feather 
                                         name='check'
@@ -1555,7 +1527,12 @@ const Scorecard = ({navigation}) => {
                                 </Text>
 
                                 <View style={{ marginVertical: 10, marginHorizontal: 5}}>
-                                    <TextInput 
+                                    <TouchableOpacity onPress={showNameModal}>
+                                        <Text style={{ color: '#000000a5', fontFamily: 'chalkboard-bold', fontSize: 18}}>
+                                            {ScorecardData.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {/* <TextInput 
                                         //placeholder={ScorecardData.name}
                                         placeholder='----'
                                         placeholderTextColor='#000000a5'
@@ -1563,7 +1540,7 @@ const Scorecard = ({navigation}) => {
                                         maxLength={20}
                                         autoFocus={false}
                                         onChangeText={val => Set({val})}
-                                    /> 
+                                    />  */}
                                 </View>
                             </View>
 
@@ -1581,16 +1558,19 @@ const Scorecard = ({navigation}) => {
                                         showsVerticalScrollIndicator={false}
                                         scrollEnabled={false}
                                         ListFooterComponent={() => 
-                                            <View style={{flexDirection: 'row', marginHorizontal: 10, marginTop: 30}}>
-                                                <Feather
-                                                name='plus-circle'
-                                                color='#155843a5'
-                                                size={18}
-                                                />
-                                                <Text style={{color: 'gray', fontSize: 12, marginLeft: 10}}>
-                                                    Add Team
-                                                </Text>
-                                            </View>
+                                            <TouchableOpacity onPress={showTeamModal}>
+                                                <View style={{flexDirection: 'row', marginHorizontal: 10, marginTop: 20}}>
+                                                    <Feather
+                                                        name='plus-circle'
+                                                        color='#155843a5'
+                                                        size={18}
+                                                    />
+                                                    <Text style={{color: '#155843a5', fontSize: 12, marginLeft: 10}}>
+                                                        Add Team
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                            
                                         }
                                     />
                                 </View>
@@ -1913,72 +1893,88 @@ const Scorecard = ({navigation}) => {
                                         <Text style={{fontSize: 16}}>
                                             Ding
                                         </Text> 
-                                        <ModalDropdown 
-                                            options={DoneSound}
-                                            defaultValue={DoneSoundPlaceholder}
-                                            defaultTextStyle={{ color: '#155843'}}
-                                            onSelect={(val) => {setSound(val.toString()); setDoneSoundPlaceholder(DoneSound[val])}}
-                                            style={{ 
-                                            }}
-                                            textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
-                                            dropdownStyle={{ 
-                                                backgroundColor: '#363636', 
-                                                width: 200, 
-                                                borderWidth: 0,
-                                                borderRadius: 15,
-                                                height: 330,
-                                                marginTop: 10
-                                            }}
-                                            dropdownTextStyle={{ 
-                                                backgroundColor: 'transparent',
-                                                color: '#fff',
-                                                fontSize: 14,
-                                                paddingHorizontal: 20,
-                                                paddingVertical: 15,
-                                                textTransform: 'capitalize',
-                                                fontFamily: 'chalkboard-regular'
-                                                
-                                            }}
-                                            dropdownTextHighlightStyle={{
-                                                color: '#41a661'
-                                            }}
+                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                            <ModalDropdown 
+                                                options={DoneSound}
+                                                defaultValue={DoneSoundPlaceholder}
+                                                defaultTextStyle={{ color: '#155843'}}
+                                                onSelect={(val) => {setSound(val.toString()); setDoneSoundPlaceholder(DoneSound[val])}}
+                                                style={{ 
+                                                }}
+                                                textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
+                                                dropdownStyle={{ 
+                                                    backgroundColor: '#363636', 
+                                                    width: 200, 
+                                                    borderWidth: 0,
+                                                    borderRadius: 15,
+                                                    height: 330,
+                                                    marginTop: 10
+                                                }}
+                                                dropdownTextStyle={{ 
+                                                    backgroundColor: 'transparent',
+                                                    color: '#fff',
+                                                    fontSize: 14,
+                                                    paddingHorizontal: 20,
+                                                    paddingVertical: 15,
+                                                    textTransform: 'capitalize',
+                                                    fontFamily: 'chalkboard-regular'
+                                                    
+                                                }}
+                                                dropdownTextHighlightStyle={{
+                                                    color: '#41a661'
+                                                }}
                                             />
+                                            <Feather 
+                                                name='chevron-down'
+                                                color='#155843'
+                                                size={22}
+                                                style={{ marginLeft: 10}}
+                                            />
+                                        </View>
                                     </View>
 
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
                                             Ticker
                                         </Text> 
-                                        <ModalDropdown 
-                                            options={Ticker}
-                                            defaultValue={TickerPlaceholder}
-                                            defaultTextStyle={{ color: '#155843'}}
-                                            onSelect={(val) => {setTicker(val.toString()); setTickerPlaceholder(Ticker[val])}}
-                                            style={{ 
-                                            }}
-                                            textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
-                                            dropdownStyle={{ 
-                                                backgroundColor: '#363636', 
-                                                width: 200, 
-                                                borderWidth: 0,
-                                                borderRadius: 15,
-                                                height: 320,
-                                                marginTop: 10
-                                            }}
-                                            dropdownTextStyle={{ 
-                                                backgroundColor: 'transparent',
-                                                color: '#fff',
-                                                fontSize: 14,
-                                                paddingHorizontal: 20,
-                                                paddingVertical: 15,
-                                                textTransform: 'capitalize',
-                                                fontFamily: 'chalkboard-regular'
-                                                
-                                            }}
-                                            dropdownTextHighlightStyle={{
-                                                color: '#41a661'
-                                            }}
+                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                            <ModalDropdown 
+                                                options={Ticker}
+                                                defaultValue={TickerPlaceholder}
+                                                defaultTextStyle={{ color: '#155843'}}
+                                                onSelect={(val) => {setTicker(val.toString()); setTickerPlaceholder(Ticker[val])}}
+                                                style={{ 
+                                                }}
+                                                textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
+                                                dropdownStyle={{ 
+                                                    backgroundColor: '#363636', 
+                                                    width: 200, 
+                                                    borderWidth: 0,
+                                                    borderRadius: 15,
+                                                    height: 320,
+                                                    marginTop: 10
+                                                }}
+                                                dropdownTextStyle={{ 
+                                                    backgroundColor: 'transparent',
+                                                    color: '#fff',
+                                                    fontSize: 14,
+                                                    paddingHorizontal: 20,
+                                                    paddingVertical: 15,
+                                                    textTransform: 'capitalize',
+                                                    fontFamily: 'chalkboard-regular'
+                                                    
+                                                }}
+                                                dropdownTextHighlightStyle={{
+                                                    color: '#41a661'
+                                                }}
                                             />
+                                            <Feather 
+                                                name='chevron-down'
+                                                color='#155843'
+                                                size={22}
+                                                style={{ marginLeft: 10}}
+                                            />
+                                        </View>
                                     </View>
                                 </View>
 
@@ -2003,16 +1999,56 @@ const Scorecard = ({navigation}) => {
                     </View>
                 </Modal>
 
+{/* Scorecard title modal */}
+                <Modal visible={visibleNameModal} onDismiss={hideNameModal} contentContainerStyle={nameModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
+                                Scorecard Name
+                            </Text>
+                        </View>
+
+                        <View>
+                            <View style={{marginVertical: 20, height: 80, alignItems: 'center', justifyContent: 'center'}}>
+                               <TextInput 
+                                    placeholder=''
+                                    placeholderTextColor='#000000a5'
+                                    style={{textAlign: 'center', height: 80, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 40}}
+                                    maxLength={20}
+                                    //keyboardType='number-pad'
+                                    autoFocus={true}
+                                    onChangeText={val => Set({val})}
+                                    //onChangeText={val => setData({...data, title: val})}
+                                /> 
+                            </View>
+                        </View>
+
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={hideNameModal}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Feather 
+                                        name='check'
+                                        color='#fff'
+                                        size={30}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </Modal>
+
 {/* Team Modal */}
                 <Modal visible={visibleTeamModal} onDismiss={hideTeamModal} contentContainerStyle={teamModalContainerStyle}>
-                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15}}>
 
                         <View style={{ alignItems: 'center', marginVertical: 40}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
                                 Team Name:
                             </Text>
                             <TextInput 
-                                placeholder={'Enter a team name'}
+                                placeholder={Teams[TeamSettingId - 1].name}
                                 placeholderTextColor='lightgray'
                                 style={{textAlign: 'center', borderBottomWidth: 0.5, borderColor: 'gray', height: 50, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 20}}
                                 maxLength={20}
@@ -2022,8 +2058,11 @@ const Scorecard = ({navigation}) => {
                         </View>
 
                         <View style={{ alignItems: 'center', marginBottom: 40}}>
-                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center', marginBottom: 10}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center', marginBottom: 0}}>
                                 Add Player:
+                            </Text>
+                            <Text style={{fontSize: 12, fontFamily: 'chalkboard-light', textAlign: 'center', marginBottom: 10, color: '#000000a5'}}>
+                                (press and hold to remove)
                             </Text>
                                       
                             <FlatList 
@@ -2031,13 +2070,17 @@ const Scorecard = ({navigation}) => {
                                 scrollEnabled={false}
                                 numColumns={3}
                                 style={{}}
+                                keyExtractor={(item, index) => index.toString()}
                                 contentContainerStyle={{width: '100%'}}
-                                renderItem={({item}) => 
-                                    <View style={{ backgroundColor: '#e0e0e0', paddingVertical: 4, paddingHorizontal: 14, margin: 6, borderRadius: 20}}>
-                                        <Text style={{textTransform: 'capitalize', fontSize: 17, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
-                                            {item}
-                                        </Text>
-                                    </View>
+                                renderItem={({item, index}) => 
+                                    <TouchableOpacity onLongPress={() => DeletePlayer({index})}>
+                                        <View style={{ backgroundColor: '#e0e0e0', paddingVertical: 4, paddingHorizontal: 14, margin: 6, borderRadius: 20}}>
+                                            <Text style={{textTransform: 'capitalize', fontSize: 17, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                                {item}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    
                                 }
                             />
                             
@@ -2050,7 +2093,7 @@ const Scorecard = ({navigation}) => {
                                     onChangeText={val => setTeamPlayer(val)}  
                                     ref={addPlayerRef}
                                 /> 
-                                <TouchableOpacity onPress={() =>  {setPlayers([...players, teamPlayer]); addPlayerRef.current.clear(); }}>
+                                <TouchableOpacity onPress={() =>  {setPlayers([...players, teamPlayer]); addPlayerRef.current.clear() }}>
                                     <View style={{alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 15, backgroundColor: '#155843a5'}}>
                                         <Feather 
                                             name='corner-right-up'
