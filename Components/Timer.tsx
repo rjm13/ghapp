@@ -8,7 +8,7 @@ import { Audio } from 'expo-av';
 
 
 
-const Timer = ({warning, length, ticker, donesound, settingchange}) => {
+const Timer = ({warning, length, ticker, donesound, settingchange} : {warning: boolean, length: any, ticker: any, donesound: any, settingchange: boolean}) => {
 
     const [settingChange, setSettingChange] = useState(settingchange);
 

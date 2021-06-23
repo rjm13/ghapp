@@ -3,37 +3,39 @@ import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
-import { Item } from 'react-native-paper/lib/typescript/components/List/List';
-
 import OptionsMenu from "react-native-option-menu";
 
 import Timer from '../Components/Timer';
-import { FULLSCREEN_UPDATE_PLAYER_DID_PRESENT } from 'expo-av/build/Video';
 
+
+//constants
 const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
-const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const DoneSound = ['none', 'ting', 'rooster', 'whistle', 'doorbell', 'air horn', 'trombone', 'meep meep','tick tock!', 'bomb']
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-const Ticker = ['none', 'clock', 'stopwatch', 'grandfather clock', 'water tap', 'blood', 'war drums', 'jumanji', 'jeopordy']
+const DoneSound = ['none', 'ting', 'rooster', 'whistle', 'doorbell', 'air horn', 'trombone', 'meep meep','tick tock!', 'bomb'];
 
+const Ticker = ['none', 'clock', 'stopwatch', 'grandfather clock', 'water tap', 'blood', 'war drums', 'jumanji', 'jeopordy'];
 
-
-var toRoman = require('roman-numerals').toRoman;
-[ 42, new Number(42), '42', new String('42')].forEach(function (x, i) {
-    //console.log('%d: %s', i, toRoman(x));
-});
+const toRoman = require('roman-numerals').toRoman;
+[ 42, new Number(42), '42', new String('42')].forEach(function (x, i) {});
 
 
-
+//exported scorecard function
 const Scorecard = ({navigation}) => {
 
+
+//setting states
+    const [whiteTheme, setWhiteTheme] = useState(true);
+    const toggleWhiteTheme = () => setWhiteTheme(previousState => !previousState);
 
     const [darkTheme, setDarkTheme] = useState(false);
     const toggleDarkTheme = () => setDarkTheme(previousState => !previousState);
 
-    const [Totals, setTotals] = useState([0, 0, 0, 0]);
+    const [legalPadTheme, setLegalPadTheme] = useState(false);
+    const toggleLegalPad = () => setLegalPadTheme(previousState => !previousState);
 
     const [isBidEnabled, setIsBidEnabled] = useState(false);
     const toggleSwitchBid = () => setIsBidEnabled(previousState => !previousState);
@@ -77,52 +79,82 @@ const Scorecard = ({navigation}) => {
 
     const CELL_HEIGHT = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 100 : 50
 
+    const ThemeColor = 
+            darkTheme === true ? '#fff' : 
+            legalPadTheme === true ? '#6a0dad' :
+            whiteTheme === true ? '#000' : '#000';
 
+    const Theme2Color = 
+            darkTheme === true ? '#ffffffa5' :
+            legalPadTheme === true ? '#3b49bf' :
+            whiteTheme === true ? '#000000a5' : '#000000a5';
 
-    const Footer = ({total, style}) => {
+    const ThemeBackgroundColor = 
+            darkTheme === true ? '#000' :
+            legalPadTheme === true ? '#f7f483' :
+            whiteTheme === true ? '#fff' : '#fff';
 
+    const ThemeBackgroundColor2 = 
+            darkTheme === true ? 'transparent' :
+            legalPadTheme === true ? '#f7f483' :
+            whiteTheme === true ? '#fff' : '#fff';
 
-        return (
-            <View style={{ height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000', flexDirection: 'row'}}>
-                
-               
+    const ThemeBackgroundColor3 = darkTheme === true ? 'transparent' :
+            legalPadTheme === true ? 'lightgray' :
+            'lightgray';
+
+    useEffect(() => {
+        if (legalPadTheme === true) {setDarkTheme(false); setWhiteTheme(false);}
+    }, [legalPadTheme])
+
+    useEffect(() => {
+        if (darkTheme === true) {setLegalPadTheme(false); setWhiteTheme(false);}
+    }, [darkTheme])
+
+    useEffect(() => {
+        if (whiteTheme === true) {setDarkTheme(false); setLegalPadTheme(false);}
+    }, [whiteTheme])
+
     
+
+
+//footer that displays the team score totals
+    const Footer = ({total, style}: {total: any, style: any}) => {
+        return (
+            <View style={{ height: 50, backgroundColor: ThemeBackgroundColor, flexDirection: 'row'}}>
                 <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
                         {total}
                     </Text>
                 </View>
-                
             </View>
         );
     }
     
-    const WinsFooter = ({roundWins, style}) => {
+//footer that displays the team round wins
+    const WinsFooter = ({roundWins, style} : {roundWins: any, style: any}) => {
         return (
-            <View style={{ height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000', flexDirection: 'row'}}>
-                
-               
-    
+            <View style={{ height: 50, backgroundColor: ThemeBackgroundColor, flexDirection: 'row'}}>
                 <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
                         {roundWins}
                     </Text>
-                </View>
-                
+                </View> 
             </View>
         );
     }
 
-    const ConvertToMillis = (val) => {
+//conversion function for timer - seconds from textinput to millieconds
+    const ConvertToMillis = ({val} : {val: any}) => {
         let time = parseInt(val) * 1000
         setRoundLength(time)
         console.log(time)
     }
 
-
-    const RoundsColumn = ({round}) => {
+//static left handed column that displays the rounds
+    const RoundsColumn = ({round}: {round: any}) => {
         return (
-            <View style={[styles.roundbox, {height: CELL_HEIGHT, backgroundColor: darkTheme === false ? '#fff' : '#000000'}]}>
+            <View style={[styles.roundbox, {height: CELL_HEIGHT, backgroundColor: ThemeBackgroundColor2}]}>
                 <Text style={styles.round}>
                     {isRomanEnabled === true ? toRoman(round) : round}
                 </Text>
@@ -130,24 +162,20 @@ const Scorecard = ({navigation}) => {
         );
     }
 
-
+//scorecard dataset
     const [Scores, setScores] = useState(
         [
             {
                 round: 1,
                 team: [1, 2, 3, 4],
                 score: ['', '', '', ''],
-                extra: [
-                    ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']
-                ],
+                extra: [['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']],
                 winner: null,
-            },
-            
+            }, 
         ]
     )
 
-    
-
+//teams dataset
     const [Teams, setTeams] = useState(
         [
             {
@@ -156,9 +184,7 @@ const Scorecard = ({navigation}) => {
                 playerNames: [],
                 playerID: [1, 2],
                 total: 0 ,
-                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[0]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
-                
             },
             {
                 id: '2',
@@ -166,7 +192,6 @@ const Scorecard = ({navigation}) => {
                 playerNames: [],
                 playerID: [3, 4],
                 total: 0,
-                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[1]) , 0 ), 
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
             },
             {
@@ -175,7 +200,6 @@ const Scorecard = ({navigation}) => {
                 playerNames: [],
                 playerID: [5, 6],
                 total: 0,
-                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[2]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),
             },
             {
@@ -184,15 +208,13 @@ const Scorecard = ({navigation}) => {
                 playerNames: [],
                 playerID: [7, 8],
                 total: 0,
-                //total: Scores.reduce((a,v) =>  a = parseInt(a) + parseInt(v.score[3]) , 0 ),
                 roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),
             },
         ]
     
     )
 
-
-
+//scorecard dataset
     const [ScorecardData, setScorecardData] = useState(
         {
             id: '1',
@@ -204,12 +226,12 @@ const Scorecard = ({navigation}) => {
         },
     );
 
-// State controllers
+// State controllers to force update of components through useEffect and extraData(flatlist)
     const [Updated, setUpdated] = useState(true);
     const [roundUpdate, setRoundUpdate] = useState(false);
+    const [updateScores, setUpdateScores] = useState(false);
 
-//clear scorecard
-
+//blank datasets to reset the scorecard
     const blankScorecard = {
         id: '1',
         name: new Date().toDateString(),
@@ -219,15 +241,13 @@ const Scorecard = ({navigation}) => {
         scores: [Scores]
     }
 
-
     const blankTeams = [
         {
             id: 1,
             name: 'Team 1',
             playerID: [1, 2],
             total: 0 ,
-            roundWins: 0,
-            
+            roundWins: 0, 
         },
         {
             id: '2',
@@ -251,6 +271,7 @@ const Scorecard = ({navigation}) => {
             roundWins: 0,
         },
     ]
+
     const blankScores = [
         {
             round: 1,
@@ -261,9 +282,7 @@ const Scorecard = ({navigation}) => {
         },
     ];
 
-
-
-    //Scorecard Settings Modal
+//Scorecard Settings Modal
     const [visibleSettingModal, setVisibleSettingModal] = useState(false);
     
     const showSettingModal = () => setVisibleSettingModal(true);
@@ -273,6 +292,8 @@ const Scorecard = ({navigation}) => {
         backgroundColor: 'transparent', 
         padding: 20,
     }; 
+
+//edit team functions and states
 
     const addPlayerRef = useRef();
 
@@ -288,6 +309,7 @@ const Scorecard = ({navigation}) => {
 
     
 
+//add team
     const AddTeam = () => {
 
         let newArray = [...TeamNames];
@@ -303,13 +325,14 @@ const Scorecard = ({navigation}) => {
         hideTeamModal();
     }
 
-    const DeletePlayer = ({index}) => {
-
+//delete player from team
+    const DeletePlayer = ({index}: {index: any}) => {
         let array = [...players]
         array.splice(index, 1)
         setPlayers(array)
     }
 
+//final button to update the scorecard through the settings modal
     const ChangeSettings = () => {    
 
         let newArray = [...Teams];
@@ -322,18 +345,17 @@ const Scorecard = ({navigation}) => {
         setUpdated(!Updated);
         setRoundUpdate(!roundUpdate)
         setNewSetting(!newSetting);
-        hideSettingModal();  
-        
-        
+        hideSettingModal();    
     }
 
-
-    const Set = ({val}) => {
-        
+//edit the name of the scorecard function
+    const Set = (val : any) => {
         setScorecardData(
             {...ScorecardData, updated: Updated, name: val, } 
         )
     }
+
+//horizontal and vertical scroll functions for flatlist
 
     const scrollRef = useRef();
 
@@ -343,8 +365,7 @@ const Scorecard = ({navigation}) => {
 
     const horzScrollRef3 = useRef();
 
-    const handleVertScroll = (event) => {
-      
+    const handleVertScroll = (event : any) => {
     	scrollRef.current?.scrollToOffset({
           //y: (200),
           offset: (event.nativeEvent.contentOffset.y),
@@ -352,8 +373,7 @@ const Scorecard = ({navigation}) => {
         })
     }
 
-    const handleHorzScroll = (event) => {
-      
+    const handleHorzScroll = (event : any) => {
     	horzScrollRef.current?.scrollToOffset({
           //y: (200),
           offset: (event.nativeEvent.contentOffset.x),
@@ -373,9 +393,10 @@ const Scorecard = ({navigation}) => {
         })
     }
 
+//display who the leader of the rounds and totals are
 
-    const [leader, setLeader] = useState(null);
-    const [roundLeader, setRoundLeader] = useState(null);
+    const [leader, setLeader] = useState(0);
+    const [roundLeader, setRoundLeader] = useState(0);
 
     useEffect(() => {
         if (isLowestPointsEnabled === false) {
@@ -388,48 +409,8 @@ const Scorecard = ({navigation}) => {
         }
     }, [Teams])
 
-
-    // const MapTeamNames = ({val, id}) => {
-    //     if (id === 1) {setTeamNames([val, TeamNames[1], TeamNames[2], TeamNames[3]])}
-    //     else if (id === 2) {setTeamNames([TeamNames[0], val, TeamNames[2], TeamNames[3]])}
-    //     else if (id === 3) {setTeamNames([TeamNames[0], TeamNames[1], val, TeamNames[3]])}
-    //     else if (id === 4) {setTeamNames([TeamNames[0], TeamNames[1], TeamNames[2], val])}
-
-    //     console.log(val);
-    //     console.log(id)
-    //     console.log(TeamNames)
-    // }
-
-    // const inputRef = useRef(null);
-
-    // useEffect(() => {
-    //     inputRef.current.focus();
-    // }, [TeamNames])
-
-    
-
-    const MapTeamNames = ({text, id}) => {
-
-        
-
-        let newArray = [...TeamNames];
-        newArray[id - 1] = text;
-        setTeamNames(newArray);
-        
-        // if (id === 1) {setTeamNames([text, TeamNames[1], TeamNames[2], TeamNames[3]])}
-        // else if (id === 2) {setTeamNames([TeamNames[0], text, TeamNames[2], TeamNames[3]])}
-        // else if (id === 3) {setTeamNames([TeamNames[0], TeamNames[1], text, TeamNames[3]])}
-        // else if (id === 4) {setTeamNames([TeamNames[0], TeamNames[1], TeamNames[2], text])}
-        
-        // console.log(text);
-        // console.log(id)
-        // console.log(TeamNames)
-    }
-
-
-    const TeamList = ({name, id}) => {
-
-
+//the item for the list of teams in the settings modal
+    const TeamList = ({name, id} : {name: string, id: any}) => {
         return(
             <View>
                 <TouchableOpacity onPress={() => showTeamModal({name, id})}>
@@ -437,22 +418,13 @@ const Scorecard = ({navigation}) => {
                         <Text style={{fontFamily: 'chalkboard-bold', fontSize: 16, color: '#000000a5'}}>
                             {TeamNames[id - 1]}
                         </Text>
-                        
-                        
                         <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-                            
-                            {/* <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
-                                EDIT
-                            </Text> */}
-                            
                                 <Feather 
                                     name='edit'
                                     color='#155843a5'
                                     size={18}
                                     style={{marginHorizontal: 5}}
                                 />
-                            
-                            
                         </View>
                     </View>
                     <View style={{marginHorizontal: 10, marginTop: -10}}>
@@ -465,9 +437,8 @@ const Scorecard = ({navigation}) => {
         );
     };
     
-
-    const renderItem = ({ item }) => {
-        
+//render header row function
+    const renderItem = ({ item } : {item: any}) => {
         return (
           <HeaderRow
             id={item.id} 
@@ -476,34 +447,26 @@ const Scorecard = ({navigation}) => {
         );
       };
 
-    const renderFooter = ({ item }) => {
-
-    const color = item.total === leader && darkTheme === false ? 'green' :
-                  item.total === leader && darkTheme === true ? 'green' :
-                  item.total !== leader && darkTheme === true ? '#fff' :
-                  '#000'
-
-
-    // console.log(item.total)
-    // console.log(leader)
-    // console.log('test')
-    
-    return (
-        <Footer
-        total={item.total}
-        style={{ color }}
-        />
-    );
+//render points total footer
+    const renderFooter = ({ item } : {item: any}) => {
+        const color = item.total === leader && darkTheme === false ? 'green' :
+                    item.total === leader && darkTheme === true ? 'green' :
+                    item.total !== leader && darkTheme === true ? '#fff' :
+                    '#000'
+        return (
+            <Footer
+            total={item.total}
+            style={{ color }}
+            />
+        );
     };
 
-    const renderWinsFooter = ({ item }) => {
-
+//render rounds total footer
+    const renderWinsFooter = ({ item } : {item: any}) => {
         const color = item.roundWins === roundLeader && darkTheme === false ? 'green' :
                       item.roundWins === roundLeader && darkTheme === true ? 'green' :
                       item.roundWins !== roundLeader && darkTheme === true ? '#fff' :
                       '#000';
-    
-        
         return (
             <WinsFooter
                 roundWins={item.roundWins}
@@ -512,73 +475,53 @@ const Scorecard = ({navigation}) => {
         );
     };
 
-      const renderItemScoreRow = ({ item, index }) => {
-        
+//render the score row for a round
+    const renderItemScoreRow = ({ item, index } : {item: any, index: any}) => {
         return (
           <ScoreRow
             index={index}
             score={item.score}
             round={item.round}
             team={item.team}
-
           />
         );
-      };
+    };
 
-      const renderRounds = ({ item }) => {
-        
+//render the static rounds list
+    const renderRounds = ({ item } : {item: any}) => {
         return (
           <RoundsColumn
             round={item.round}
-
           />
         );
-      };
+    };
 
-      const renderTeamList = ({item}) => {
-
+//render the team list for the settings modal
+    const renderTeamList = ({item} : {item: any}) => {
         return (
             <TeamList 
                 name={item.name}
                 id={item.id}
             />
         );
-      };
+    };
 
-
-      const [roundState, setRoundState] = useState(null);
-      const [teamState, setTeamState] = useState(0);
-      const [scoreState, setScoreState] = useState();
-
-    
+//round and team state management for updating the score through the modal
+      const [roundState, setRoundState] = useState(1);
+      const [teamState, setTeamState] = useState(1);
 
 //Scorebox Modal
-      const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
   
-      const showModal = ({round, index}) => {
+    const showModal = ({round, index} : {round: any, index: any}) => {
+        setVisible(true);
+        setRoundState(round);
+        setTeamState(index + 1);
+    }
 
-        // const team = () => {
-        //     if (team1) return team1;
-        //     else if (team2) return team2;
-        //     else if (team3) return team3;
-        //     else if (team4) return team4;
-        //     else return null;
-        // }
-            setVisible(true);
-            setRoundState(round);
-            setTeamState(index + 1);
-            //setScoreState(Score);
+    const hideModal = () => setVisible(false);
 
-            //console.log(winnerIndex)
-            // console.log(round);
-            // console.log(index);
-        }
-
-      const hideModal = () => setVisible(false);
-      const containerStyle = {
-          backgroundColor: 'transparent', 
-          padding: 20,
-      }; 
+    const containerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
 //Scorecard Name Modal
       const [visibleNameModal, setVisibleNameModal] = useState(false);
@@ -586,12 +529,8 @@ const Scorecard = ({navigation}) => {
       const showNameModal = () => setVisibleNameModal(true);
 
       const hideNameModal = () => setVisibleNameModal(false);
-      const nameModalContainerStyle = {
-          backgroundColor: 'transparent', 
-          padding: 20,
-      }; 
 
-      
+      const nameModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
 //New Scorecard  Modal
         const [visibleClearModal, setVisibleClearModal] = useState(false);
@@ -599,47 +538,39 @@ const Scorecard = ({navigation}) => {
         const showClearModal = () => setVisibleClearModal(true);
 
         const hideClearModal = () => setVisibleClearModal(false);
-        const clearModalContainerStyle = {
-            backgroundColor: 'transparent', 
-            padding: 20,
-        }; 
 
-//Extras Modal
+        const clearModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+
+//Extras Modal (bid, meld, bonus)
         const [visibleExtrasModal, setVisibleExtrasModal] = useState(false);
                 
-        const showExtrasModal = ({ index, round}) => {
+        const showExtrasModal = ({ index, round} : {index: any, round: any}) => {
             setVisibleExtrasModal(true);
             setRoundState(round);
             setTeamState(index + 1);
         }
 
         const hideExtrasModal = () => setVisibleExtrasModal(false);
-        const extrasModalContainerStyle = {
-            backgroundColor: 'transparent', 
-            padding: 20,
-        }; 
 
-//Team  Modal
+        const extrasModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
-    
-
+//Edit Team  Modal
     const [visibleTeamModal, setVisibleTeamModal] = useState(false);
-
-    const [newTeam, setNewTeam] = useState(false)
         
-    const showTeamModal = ({id, name}) => {
-
+    const showTeamModal = ({id, name} : {id: any, name: string}) => {
         setTeamSettingId(id);
         setTeamName('Team' + ' ' + id.toString())
         setVisibleTeamModal(true);
         setPlayers(Teams[id - 1].playerNames);
-    
     }
 
+    const hideTeamModal = () => setVisibleTeamModal(false);
+    const teamModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+
+//function to add another round to the scorecard
     const SetNewRound = () => {
 
         let scores = Scores.length
-
         let round = scores + 1;
         
         setScores([...Scores, {
@@ -654,7 +585,6 @@ const Scorecard = ({navigation}) => {
     const SetShowTeamModal = () => {
 
         let teams = Teams.length
-
         let id = teams + 1;
         let name = 'Team' + ' ' + id.toString();
 
@@ -668,25 +598,15 @@ const Scorecard = ({navigation}) => {
         }]);
 
         setTeamNames([...TeamNames, name])
-
-        console.log(Teams);
     }
 
-    const hideTeamModal = () => setVisibleTeamModal(false);
-    const teamModalContainerStyle = {
-        backgroundColor: 'transparent', 
-        padding: 20,
-    }; 
-
-
-
-    const HeaderRow = ({id, name}) => {
-
+//team name item for the header row
+    const HeaderRow = ({id, name} : {id: any, name: string}) => {
         return (
-            <View style={{flexDirection: 'column', height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000', justifyContent: 'center'}}>
+            <View style={{flexDirection: 'column', height: 50, backgroundColor: ThemeBackgroundColor, justifyContent: 'center'}}>
                 <TouchableOpacity onPress={showSettingModal}>
                     <View style={[styles.headerbox, {width: CELL_WIDTH}]}>
-                        <Text style={[styles.header, {color: darkTheme === false ? '#000' : '#fff'}]}>
+                        <Text style={[styles.header, {color: ThemeColor}]}>
                             {name}
                         </Text>
                     </View>
@@ -695,11 +615,8 @@ const Scorecard = ({navigation}) => {
         );
     }
 
-    const [updateScores, setUpdateScores] = useState(false);
-
-      const ScoreRow = ({index, round, score, team}) => {
-
-        //const data = Scores[round - 1].score
+//item for the score row. This item contains nested flatlist
+    const ScoreRow = ({index, round, score, team} : {index: any, round: any, score: any, team: any}) => {
 
         const Round = round
 
@@ -707,49 +624,45 @@ const Scorecard = ({navigation}) => {
             isLowestPointsEnabled === false ? Math.max(score[0], score[1], score[2], score[3]) :
             isLowestPointsEnabled === true ? Math.min(score[0], score[1], score[2], score[3]) : Math.max(score[0], score[1], score[2], score[3])
 
+//item for the extras list. Controlled by state to show bid, meld, bonus
+        const ExtraItemSingle = ({index, item} : {index: any, item: any}) => {
+            return (
+                <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH }}>
+                    <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
 
-            const ExtraItemSingle = ({index, item}) => {
+                            { isBidEnabled === true ? (
+                                <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                                        <View style={{ width: 50, alignItems: 'center'}}>
+                                            <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                                Bid
+                                            </Text>
+                                        </View>   
+                                </View>
+                            ) : null}
 
-                return (
-                    <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH }}>
-                        <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
+                            { isMeldEnabled === true ? (
+                                <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                                        <View style={{ width: 50, alignItems: 'center'}}>
+                                            <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                                Meld
+                                            </Text>
+                                        </View>
+                                </View>
+                            ) : null}
 
-                                { isBidEnabled === true ? (
-                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                                            <View style={{ width: 50, alignItems: 'center'}}>
-                                                <Text style={{fontWeight: 'bold', fontSize: 11}}>
-                                                    Bid
-                                                </Text>
-                                            </View>   
-                                    </View>
-                                ) : null}
+                            { isBonusEnabled === true ? (
+                                <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
+                                        <View style={{ width: 50, alignItems: 'center'}}>
+                                            <Text style={{fontWeight: 'bold', fontSize: 11}}>
+                                                Bonus
+                                            </Text>
+                                        </View>
+                                </View>
+                            ) : null}
 
-                                { isMeldEnabled === true ? (
-                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                                            <View style={{ width: 50, alignItems: 'center'}}>
-                                                <Text style={{fontWeight: 'bold', fontSize: 11}}>
-                                                    Meld
-                                                </Text>
-                                            </View>
-                                    </View>
-                                ) : null}
-
-                                { isBonusEnabled === true ? (
-                                    <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                                            <View style={{ width: 50, alignItems: 'center'}}>
-                                                <Text style={{fontWeight: 'bold', fontSize: 11}}>
-                                                    Bonus
-                                                </Text>
-                                            </View>
-                                    </View>
-                                ) : null}
-
-                            </View>
-
+                        </View>
                             <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH}}>
-                               
-                                    {/* <View style={{ width: 50, alignItems: 'center'}}> */}
                                     { isBidEnabled === true ? (
                                         <Text style={{fontFamily: 'chalkboard-light'}}>
                                             {item[0]}
@@ -765,116 +678,14 @@ const Scorecard = ({navigation}) => {
                                             {item[2]}
                                         </Text>
                                     ) : null}
-                                    {/* </View> */}
-                             
                             </View> 
-                            
-                        
-                        </TouchableOpacity>
+                    </TouchableOpacity>
                 </View>
-                );
-                
-            }
+            );
+        }
 
-
-            // const ExtraItem = ({index, item}) => {
-
-            //     return (
-            //         <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH/3, backgroundColor: 'cyan'  }}>
-            //             <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
-                        
-            //                 <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                                
-            //                         <View style={{ width: 50, alignItems: 'center'}}>
-            //                             <Text style={{fontWeight: 'bold', fontSize: 11}}>
-            //                                 Bid
-            //                             </Text>
-            //                         </View>
-                                
-            //                 </View>
-
-            //                 <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                               
-            //                         <View style={{ width: 50, alignItems: 'center'}}>
-            //                             <Text style={{fontFamily: 'chalkboard-light'}}>
-            //                                 {item}
-            //                             </Text>
-            //                         </View>
-                             
-            //                 </View> 
-                        
-            //             </TouchableOpacity>
-            //     </View>
-            //     );
-                
-            // }
-
-            // const MeldItem = ({index, item}) => {
-
-            //     return (
-            //         <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH/3, backgroundColor: 'yellow'}}>
-            //         <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
-                    
-            //             <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                            
-                           
-            //                     <View style={{ width: 50, alignItems: 'center'}}>
-            //                         <Text style={{fontWeight: 'bold', fontSize: 11}}>
-            //                             Meld
-            //                         </Text>
-            //                     </View>
-                          
-            //             </View>
-
-            //             <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                         
-            //                     <View style={{ width: 50, alignItems: 'center'}}>
-            //                         <Text style={{fontFamily: 'chalkboard-light'}}>
-            //                             {item}
-            //                         </Text>
-            //                     </View>
-                        
-            //             </View> 
-                    
-            //         </TouchableOpacity>
-            //     </View>
-            //     );
-                
-            // }
-
-            // const BonusItem = ({index, item}) => {
-
-            //     return (
-            //         <View style={{borderColor: '#cccccc', borderRightWidth: 0.2, width: CELL_WIDTH/3, backgroundColor: 'lime' }}>
-            //         <TouchableOpacity style={{height: 50, paddingTop: 5, opacity: item ? 0.3 : 1}} onPress={() => {showExtrasModal({index, round});}}>
-                    
-            //             <View style={{ paddingBottom: 4, borderBottomWidth: 0.3, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                          
-            //                     <View style={{ width: 50, alignItems: 'center'}}>
-            //                         <Text style={{fontWeight: 'bold', fontSize: 11}}>
-            //                             Bonus
-            //                         </Text>
-            //                     </View>
-                          
-            //             </View>
-
-            //             <View style={{ paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around', width: CELL_WIDTH/3}}>
-                       
-            //                     <View style={{ width: 50, alignItems: 'center'}}>
-            //                         <Text style={{fontFamily: 'chalkboard-light'}}>
-            //                             {item}
-            //                         </Text>
-            //                     </View>
-                    
-            //             </View> 
-                    
-            //         </TouchableOpacity>
-            //     </View>
-            //     );
-                
-            // }
-
-        const Row = ({item, index, style}) => {
+//item for the score row
+        const Row = ({item, index, style} : {item: any, index: any, style: any}) => {
 
             const round = Round
 
@@ -883,7 +694,7 @@ const Scorecard = ({navigation}) => {
                         <View style={[styles.scorebox, style, { width: CELL_WIDTH, height: 50}]}>
                             <TouchableOpacity onPress={() => {showModal({index, round});}}>
                                 <View style={{width: CELL_WIDTH, height: 50, justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={[styles.score, {color: darkTheme === false ? '#000000a5' : '#ffffffa5'}]}>
+                                    <Text style={[styles.score, {color: Theme2Color}]}>
                                         {item}
                                     </Text>
                                 </View>
@@ -893,9 +704,11 @@ const Scorecard = ({navigation}) => {
             )
         }
 
-        const renderRow = ({ item, index }) => {
+        const renderRow = ({ item, index } : {item: any, index: any}) => {
 
-            const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true ? '#f0f0f0a5' : 'transparent';
+            const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true && darkTheme === false ? '#f0f0f0a5' : 
+                                    item === roundWinner && item !== 0 && isRoundWinnerEnabled === true && darkTheme === true ? '#606060a5' : 'transparent';
+            
 
             return (
                 <Row
@@ -906,7 +719,7 @@ const Scorecard = ({navigation}) => {
             );
         };
 
-        const renderExtraItemSingle = ({ item, index }) => {
+        const renderExtraItemSingle = ({ item, index } : {item: any, index: any}) => {
             return (
                 <ExtraItemSingle
                     index={index}
@@ -915,124 +728,45 @@ const Scorecard = ({navigation}) => {
             );
         };
 
-        // const renderExtraItem = ({ item, index }) => {
-        //     return (
-        //         <ExtraItem
-        //             index={index}
-        //             item={item}
-        //         />
-        //     );
-        // };
-
-        // const renderMeldItem = ({ item, index }) => {
-        //     return (
-        //         <MeldItem
-        //             index={index}
-        //             item={item}
-        //         />
-        //     );
-        // };
-
-        // const renderBonusItem = ({ item, index }) => {
-        //     return (
-        //         <BonusItem
-        //             index={index}
-        //             item={item}
-        //         />
-        //     );
-        // };
-
-
-
         return (
             <View style={{flexDirection: 'row', height: CELL_HEIGHT}}>
-                <View style={{backgroundColor: darkTheme === false ? '#fff' : 'transparent', width: 60}}>
-    
+                <View style={{backgroundColor: ThemeBackgroundColor2, width: 60}}>
                 </View>
 
-                <View style={{ }}>
-
+                <View>
                     { isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? (
-                    <View>
-                        <FlatList 
-                            data={Scores[round - 1 ].extra}
-                            renderItem={renderExtraItemSingle}
-                            //keyExtractor={(item, index) => item.id.toString()}
-                            keyExtractor={(item, index) => index.toString()}
-                            horizontal={true}
-                            //style={{position: 'absolute'}}
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
-                            scrollEnabled={false}
-                            extraData={updateScores}
-                        />
-                    </View>
+                        <View>
+                            <FlatList 
+                                data={Scores[round - 1 ].extra}
+                                renderItem={renderExtraItemSingle}
+                                //keyExtractor={(item, index) => item.id.toString()}
+                                keyExtractor={(item, index) => index.toString()}
+                                horizontal={true}
+                                //style={{position: 'absolute'}}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
+                                scrollEnabled={false}
+                                extraData={updateScores}
+                            />
+                        </View>
                     ) : null}
 
-                    {/* <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
-                        { isBidEnabled === true ? (
-                        <FlatList 
-                            data={Scores[round - 1 ].bid}
-                            renderItem={renderExtraItem}
-                            //keyExtractor={(item, index) => item.id.toString()}
-                            keyExtractor={(item, index) => index.toString()}
-                            horizontal={true}
-                            //style={{position: 'absolute'}}
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
-                            scrollEnabled={false}
-                            extraData={updateScores}
-                        />
-                        ) : null }
-                        { isMeldEnabled === true ? (
-                            <FlatList 
-                                data={Scores[round - 1 ].meld}
-                                renderItem={renderMeldItem}
-                                //keyExtractor={(item, index) => item.id.toString()}
-                                keyExtractor={(item, index) => index.toString()}
-                                horizontal={true}
-                                //style={{position: 'absolute'}}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
-                                scrollEnabled={false}
-                                extraData={updateScores}
-                            />
-                        ) : null }
-                        { isBonusEnabled === true ? (
-                            <FlatList 
-                                data={Scores[round - 1 ].bonus}
-                                renderItem={renderBonusItem} 
-                                //keyExtractor={(item, index) => item.id.toString()}
-                                keyExtractor={(item, index) => index.toString()}
-                                horizontal={true}
-                                //style={{position: 'absolute'}}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
-                                scrollEnabled={false}
-                                extraData={updateScores}
-                            />
-                        ) : null }
-                    </View> */}
-
-                
-                <FlatList 
-                    data={Scores[round - 1].score}
-                    renderItem={renderRow}
-                    
-                    keyExtractor={(item, index) => index.toString()}
-                    horizontal={true}
-                    //style={{position: 'absolute', top: 0, marginLeft: 60}}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{width: CELL_WIDTH * 4, height: 70}}
-                    scrollEnabled={false}
-                    extraData={updateScores}
-                    
-                    
-                />
+                    <FlatList 
+                        data={Scores[round - 1].score}
+                        renderItem={renderRow}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{width: CELL_WIDTH * 4, height: 70}}
+                        scrollEnabled={false}
+                        extraData={updateScores}
+                    />
                 </View>
-        </View>
+            </View>
         );
     }
+
+//text state management for textInputs
 
     const [text, setText] = useState('');
 
@@ -1040,23 +774,12 @@ const Scorecard = ({navigation}) => {
 
     const [bidText, setBidText] = useState('');
 
-    const textBid = parseInt(bidText);
-
     const [meldText, setMeldText] = useState('');
-
-    const textMeld = parseInt(meldText);
 
     const [bonusText, setBonusText] = useState('');
 
-    const textBonus = parseInt(bonusText);
-
-    const [winnerState, setWinnerState] = useState(0);
-
+//function to update the extra data (bid, meld, bonus)
     const UpdateExtra = () => {
-
-        //let prev = Scores[roundState - 1].extra[teamState - 1][0]
-        console.log('roundstate')
-        console.log(roundState)
 
         let newArray = [...Scores];
         newArray[roundState - 1].extra[teamState - 1 ] = [
@@ -1064,10 +787,6 @@ const Scorecard = ({navigation}) => {
             meldText === '' ? Scores[roundState - 1].extra[teamState - 1][1] : meldText, 
             bonusText === '' ? Scores[roundState - 1].extra[teamState - 1][2] : bonusText
         ];
-        //if (meldText !== '') {newArray[roundState - 1].meld[teamState - 1 ][1] = textMeld;}
-        //if (bonusText !== '') {newArray[roundState - 1].bonus[teamState - 1 ][2] = textBonus;}
-
-
 
         setScores(newArray);
         setUpdated(!Updated)    
@@ -1079,50 +798,40 @@ const Scorecard = ({navigation}) => {
         hideExtrasModal();
     }
 
+//function to the set the score of a single cell in the scorecard
     const SetScore = () => {    
-
-        
 
         let newArray = [...Scores];
         newArray[roundState - 1].score[teamState - 1 ] = textNum;
-        //newArray[roundState - 1].winner = winnerState;
         setScores(newArray);
-
-        // let newArray2 = [...Scores];
-        // newArray[roundState - 1].winner = winnerState;
-        // setScores(newArray2);
-
-        //console.log(winnerState)
 
         hideModal();
 
         setUpdated(!Updated)    
-        //setWinnerState(winnerIndex);
         setRoundUpdate(!roundUpdate)
-        //updateRoundLeader();
     }
 
+//when the round is updated, this function will determine the total round winner
     useEffect(() => {
 
         if (roundState) {
-        let newArray = [...Scores];
+            let newArray = [...Scores];
 
-        const roundWinner = isLowestPointsEnabled === false ? Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
-                            isLowestPointsEnabled === true ? Math.min(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
-                            Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3])
-        
+            const roundWinner = isLowestPointsEnabled === false ? Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
+                                isLowestPointsEnabled === true ? Math.min(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
+                                Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3])
+            
+            const winnerIndex = roundWinner === parseInt(newArray[roundState - 1].score[0]) ? 0 : 
+                                roundWinner === parseInt(newArray[roundState - 1].score[1]) ? 1 : 
+                                roundWinner === parseInt(newArray[roundState - 1].score[2]) ? 2 : 
+                                roundWinner === parseInt(newArray[roundState - 1].score[3] ? 3 : null)
 
-        const winnerIndex = roundWinner === newArray[roundState - 1].score[0] ? 0 : 
-                            roundWinner === newArray[roundState - 1].score[1] ? 1 : 
-                            roundWinner === newArray[roundState - 1].score[2] ? 2 : 
-                            roundWinner === newArray[roundState - 1].score[3] ? 3 : null
-
-
-        newArray[roundState - 1].winner = winnerIndex;
-        setScores(newArray);
+            newArray[roundState - 1].winner = winnerIndex;
+            setScores(newArray);
         }
     }, [roundUpdate])
 
+//when the scorecard is updated, this function will add together the scores and round wins and update the dataset
     useEffect(() => {
         setTeams (
             [
@@ -1133,7 +842,6 @@ const Scorecard = ({navigation}) => {
             ]
         );
     },[Updated]);
-
 
 //clear scorecard function
     const clearScorecard = () => {
@@ -1146,29 +854,27 @@ const Scorecard = ({navigation}) => {
         setScorecardData(array);
         setUpdateScores(!updateScores);  
         setRoundState(null);  
-        
-        //setUpdated(!Updated);
-        //setRoundUpdate(!roundUpdate)
-        hideClearModal(); 
 
-        
-    }
+        hideClearModal();    
+    };
 
+//placeholder text states for textInputs
     const [timePlaceholder, setTimePlaceholder] = useState('');
     const [TickerPlaceholder, setTickerPlaceholder] = useState('Clock');
     const [DoneSoundPlaceholder, setDoneSoundPlaceholder] = useState('Ting');
 
+//FINALLY, THE RETURN FUNCTION OF THE SCORECARD
     return (
         <Provider>
-        <View>
-
-        {darkTheme === true ? (
-            <ImageBackground 
-                    source={require('../assets/chalkboard.jpg')}
-                    imageStyle={{resizeMode: 'cover', width: SCREEN_WIDTH, height: Dimensions.get('window').height + 30}}
-                    style={{position: 'absolute', justifyContent: 'center'}}
-                />
-        ) : null}
+            <View>
+{/* image background for the dark theme */}
+                {darkTheme === true ? (
+                    <ImageBackground 
+                            source={require('../assets/chalkboard.jpg')}
+                            imageStyle={{resizeMode: 'cover', width: SCREEN_WIDTH, height: SCREEN_HEIGHT + 30}}
+                            style={{position: 'absolute', justifyContent: 'center'}}
+                        />
+                ) : null}
 
 {/*Score Modal */}
             <Portal>
@@ -1197,8 +903,6 @@ const Scorecard = ({navigation}) => {
                                     keyboardType='number-pad'
                                     autoFocus={true}
                                     onChangeText={val =>setText(val)}
-                                    
-                                    
                                 /> 
                             </View>
                         </View>
@@ -1214,20 +918,17 @@ const Scorecard = ({navigation}) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </Modal>
 
 {/* New Scorecard Modal */}
                 <Modal visible={visibleClearModal} onDismiss={hideClearModal} contentContainerStyle={clearModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
-
                         <View style={{ alignItems: 'center', marginVertical: 40}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
                                 Are you sure you want to erase this scorecard?
                             </Text>
                         </View>
-
                         <View style={{ alignItems: 'center'}}>
                             <TouchableOpacity onPress={clearScorecard}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#d92121', alignItems: 'center', justifyContent: 'center'}}>
@@ -1237,17 +938,13 @@ const Scorecard = ({navigation}) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </Modal>
-
-
 
 {/* Extras Modal */}
                 <Modal visible={visibleExtrasModal} onDismiss={hideExtrasModal} contentContainerStyle={extrasModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
-
-                    <View style={{ alignItems: 'center', marginVertical: 20}}>
+                        <View style={{ alignItems: 'center', marginVertical: 20}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
                                 {   teamState === 1 ? Teams[0].name :
                                     teamState === 2 ? Teams[1].name :
@@ -1258,32 +955,26 @@ const Scorecard = ({navigation}) => {
                                 Round {roundState}
                             </Text>
                         </View>
-
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 20}}>
                             <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
-                               <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
-                                   Bid
-                               </Text>
-                               
-                               <TextInput 
-                                    placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][0] : '0'}
-                                    placeholderTextColor='#000000a5'
-                                    //defaultValue={Scores[roundState - 1].extra[teamState - 1][0]}
-                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
-                                    maxLength={20}
-                                    keyboardType='number-pad'
-                                    autoFocus={false}
-                                    //value={bidText}
-                                    //onChangeText={text =>setBidText(text)}
-                                    onChangeText={text => setBidText(text)}
-                                /> 
+                                <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                    Bid
+                                </Text>
+                                <TextInput 
+                                        placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][0] : '0'}
+                                        placeholderTextColor='#000000a5'
+                                        style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
+                                        maxLength={20}
+                                        keyboardType='number-pad'
+                                        autoFocus={false}
+                                        onChangeText={text => setBidText(text)}
+                                    /> 
                             </View>
                             <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
-                               <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
-                                   Meld
-                               </Text>
-                               
-                               <TextInput 
+                                <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                    Meld
+                                </Text>
+                                <TextInput 
                                     placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][1] : '0'}
                                     placeholderTextColor='#000000a5'
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
@@ -1294,11 +985,10 @@ const Scorecard = ({navigation}) => {
                                 /> 
                             </View>
                             <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
-                               <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
-                                   Bonus
-                               </Text>
-                               
-                               <TextInput 
+                                <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                    Bonus
+                                </Text>
+                                <TextInput 
                                     placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][2] : '0'}
                                     placeholderTextColor='#000000a5'
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
@@ -1309,7 +999,6 @@ const Scorecard = ({navigation}) => {
                                 /> 
                             </View>
                         </View>
-
                         <View style={{ alignItems: 'center'}}>
                             <TouchableOpacity onPress={UpdateExtra}>
                                 <View style={{ marginTop: 20, width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
@@ -1321,22 +1010,18 @@ const Scorecard = ({navigation}) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </Modal>
         
 {/* Settings Modal */}
                 <Modal visible={visibleSettingModal} onDismiss={hideSettingModal} contentContainerStyle={settingModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
-
                         <ScrollView style={{height: 460, marginTop: 10, marginBottom: 20}} showsVerticalScrollIndicator={false}>
-
                             <View style={{ alignItems: 'center', marginBottom: 20}}>
                                 <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
                                     Scorecard Settings
                                 </Text>
                             </View>
-
                             <View>
                                 <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
                                     Card Title
@@ -1348,20 +1033,10 @@ const Scorecard = ({navigation}) => {
                                             {ScorecardData.name}
                                         </Text>
                                     </TouchableOpacity>
-                                    {/* <TextInput 
-                                        //placeholder={ScorecardData.name}
-                                        placeholder='----'
-                                        placeholderTextColor='#000000a5'
-                                        style={{height: 40, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 18}}
-                                        maxLength={20}
-                                        autoFocus={false}
-                                        onChangeText={val => Set({val})}
-                                    />  */}
                                 </View>
                             </View>
 
-
-                        <View style={{marginTop: 10}}>
+                            <View style={{marginTop: 10}}>
                                 <View>
                                     <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
                                         Teams and Players
@@ -1391,290 +1066,170 @@ const Scorecard = ({navigation}) => {
                                         }
                                     />
                                 </View>
-                        </View>
-
-                                    {/* <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
-                                        <TextInput 
-                                            placeholder={Teams[0].name}
-                                            //defaultValue={Teams[0].name}
-                                            placeholderTextColor='#000000a5'
-                                            style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
-                                            maxLength={20}
-                                            //keyboardType='number-pad'
-                                            autoFocus={false}
-                                            //onChangeText={val => setTeamName()}
-                                            onChangeText={val => setTeamNames([
-                                                val,
-                                                TeamNames[1],
-                                                TeamNames[2],
-                                                TeamNames[3],
-                                                
-                                            ])}
-                                        /> 
-                                        <View style={{ flexDirection: 'row'}}>
-                                            
-                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
-                                                EDIT TEAM
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
-                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
-                                            Randy, Meghan
-                                        </Text>
-                                    </View>
-
-                                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 10}}>
-                                       
-                                            <TextInput 
-                                                placeholder={Teams[1].name}
-                                                placeholderTextColor='#000000a5'
-                                                style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
-                                                maxLength={20}
-                                                //keyboardType='number-pad'
-                                                autoFocus={false}
-                                                onChangeText={val => setTeamNames([
-                                                    TeamNames[0],
-                                                    val,
-                                                    TeamNames[2],
-                                                    TeamNames[3],
-                                                    
-                                                ])}
-                                            /> 
-                                       
-                                       <View style={{ flexDirection: 'row'}}>
-                                            <Feather
-                                                name='plus-circle'
-                                                color='#155843a5'
-                                                size={18}
-                                            />
-                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
-                                                Add Player
-                                            </Text>
-                                        </View>
-                                        
-                                    </View>
-                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
-                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
-                                            Jack, Luke
-                                        </Text>
-                                    </View>
-
-                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
-                                            <TextInput 
-                                                placeholder={Teams[2].name}
-                                                placeholderTextColor='#000000a5'
-                                                style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
-                                                maxLength={20}
-                                                //keyboardType='number-pad'
-                                                autoFocus={false}
-                                                onChangeText={val => setTeamNames([
-                                                    TeamNames[0],
-                                                    TeamNames[1],
-                                                    val,
-                                                    TeamNames[3],
-                                                    
-                                                ])}
-                                            /> 
-                                        
-                                        <View style={{ flexDirection: 'row'}}>
-                                            <Feather
-                                                name='plus-circle'
-                                                color='#155843a5'
-                                                size={18}
-                                            />
-                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
-                                                Add Player
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
-                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
-                                            Mikey, Max
-                                        </Text>
-                                    </View>
-
-                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
-                                            <TextInput 
-                                                placeholder={Teams[3].name}
-                                                placeholderTextColor='#000000a5'
-                                                style={{textAlign: 'left', height: 30, width: 150, fontFamily: 'chalkboard-bold', fontSize: 16}}
-                                                maxLength={20}
-                                                //keyboardType='number-pad'
-                                                autoFocus={false}
-                                                //onChangeText={val => Set({val})}
-                                                //onChangeText={val => setData({...data, title: val})}
-                                                onChangeText={val => setTeamNames([
-                                                    TeamNames[0],
-                                                    TeamNames[1],
-                                                    TeamNames[2],
-                                                    val,
-                                                    
-                                                ])}
-                                            /> 
-                                        <View style={{ flexDirection: 'row'}}>
-                                            <Feather
-                                                name='plus-circle'
-                                                color='#155843a5'
-                                                size={18}
-                                            />
-                                            <Text style={{fontSize: 12, color: '#155843a5', marginLeft: 5}}>
-                                                Add Player
-                                            </Text>
-                                        </View>
-                                        
-                                    </View>
-                                    <View style={{marginHorizontal: 10, marginTop: -10}}>
-                                        <Text style={{fontSize: 14, textTransform: 'capitalize'}}>
-                                            Quinn, Bruna
-                                        </Text>
-                                    </View>
-                                </View>  
-                            </View> */}
-
+                            </View>
 
                             <View style={{marginTop: 30}}>
-                                    <View>
-                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
-                                            Play Style
-                                        </Text>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Rounds
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isRoundWinsEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchRoundWins}
-                                                value={isRoundWinsEnabled}
-                                            />
-                                        </View>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Points
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isPointsEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchPoints}
-                                                value={isPointsEnabled}
-                                            />
-                                        </View>
-
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Lowest Points Wins
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isLowestPointsEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchLowestPoints}
-                                                value={isLowestPointsEnabled}
-                                            />
-                                        </View>
-                                        
+                                <View>
+                                    <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                        Play Style
+                                    </Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Rounds
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isRoundWinsEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchRoundWins}
+                                            value={isRoundWinsEnabled}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Points
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isPointsEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchPoints}
+                                            value={isPointsEnabled}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Lowest Points Wins
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isLowestPointsEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchLowestPoints}
+                                            value={isLowestPointsEnabled}
+                                        />
                                     </View>  
-                                </View>
+                                </View>  
+                            </View>
+                            <View style={{marginTop: 20}}>
+                                <View>
+                                    <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                        Counters
+                                    </Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Bid
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isBidEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchBid}
+                                            value={isBidEnabled}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Meld
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isMeldEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchMeld}
+                                            value={isMeldEnabled}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Bonus +
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isBonusEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchBonus}
+                                            value={isBonusEnabled}
+                                        />
+                                    </View>
+                                </View>  
+                            </View>
 
                             <View style={{marginTop: 20}}>
-                                    <View>
-                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
-                                            Counters
-                                        </Text>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Bid
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isBidEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchBid}
-                                                value={isBidEnabled}
-                                            />
-                                        </View>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Meld
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isMeldEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchMeld}
-                                                value={isMeldEnabled}
-                                            />
-                                        </View>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Bonus +
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isBonusEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchBonus}
-                                                value={isBonusEnabled}
-                                            />
-                                        </View>
-                                    </View>  
-                                </View>
+                                <View>
+                                    <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                        Options
+                                    </Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Use Roman Numerals
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isRomanEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchRoman}
+                                            value={isRomanEnabled}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Show Round Winners
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={isRoundWinnerEnabled ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleSwitchRoundWinner}
+                                            value={isRoundWinnerEnabled}
+                                        />
+                                    </View>
+                                </View>  
+                            </View>
 
-                                <View style={{marginTop: 20}}>
-                                    <View>
-                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
-                                            Options
-                                        </Text>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Use Roman Numerals
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isRomanEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchRoman}
-                                                value={isRomanEnabled}
-                                            />
-                                        </View>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Show Round Winners
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={isRoundWinnerEnabled ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleSwitchRoundWinner}
-                                                value={isRoundWinnerEnabled}
-                                            />
-                                        </View>
-                                    </View>  
-                                </View>
-
-                                <View style={{marginTop: 20}}>
-                                    <View>
-                                        <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
-                                            Theme
-                                        </Text>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Chalkboard
-                                            </Text> 
-                                            <Switch
-                                                trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                                thumbColor={darkTheme ? "#155843" : "#f4f3f4"}
-                                                ios_backgroundColor="#3e3e3e"
-                                                onValueChange={toggleDarkTheme}
-                                                value={darkTheme}
-                                            />
-                                        </View>
-                                        
-                                    </View>  
-                                </View>
+                            <View style={{marginTop: 20}}>
+                                <View>
+                                    <Text style={{paddingBottom: 5, fontSize: 16, color: '#000', fontWeight: 'bold', borderBottomColor: 'darkgray', borderBottomWidth: 1}}>
+                                        Theme
+                                    </Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Whiteboard
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={whiteTheme ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleWhiteTheme}
+                                            value={whiteTheme}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Chalkboard
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={darkTheme ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleDarkTheme}
+                                            value={darkTheme}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Legal Pad
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={legalPadTheme ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleLegalPad}
+                                            value={legalPadTheme}
+                                        />
+                                    </View>
+                                </View>  
+                            </View>
 
                             <View style={{marginTop: 20}}>
                                 <View>
@@ -1755,8 +1310,7 @@ const Scorecard = ({navigation}) => {
                                                     paddingHorizontal: 20,
                                                     paddingVertical: 15,
                                                     textTransform: 'capitalize',
-                                                    fontFamily: 'chalkboard-regular'
-                                                    
+                                                    fontFamily: 'chalkboard-regular'  
                                                 }}
                                                 dropdownTextHighlightStyle={{
                                                     color: '#41a661'
@@ -1814,12 +1368,8 @@ const Scorecard = ({navigation}) => {
                                             />
                                         </View>
                                     </View>
-                                </View>
-
-                                
-                            </View>
-
-                            
+                                </View> 
+                            </View>     
                         </ScrollView>
 
                         <View style={{ alignItems: 'center'}}>
@@ -1833,20 +1383,17 @@ const Scorecard = ({navigation}) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </Modal>
 
 {/* Scorecard title modal */}
                 <Modal visible={visibleNameModal} onDismiss={hideNameModal} contentContainerStyle={nameModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
-
                         <View style={{ alignItems: 'center'}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
                                 Scorecard Name
                             </Text>
                         </View>
-
                         <View>
                             <View style={{marginVertical: 20, height: 80, alignItems: 'center', justifyContent: 'center'}}>
                                <TextInput 
@@ -1854,10 +1401,8 @@ const Scorecard = ({navigation}) => {
                                     placeholderTextColor='#000000a5'
                                     style={{textAlign: 'center', height: 80, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 40}}
                                     maxLength={20}
-                                    //keyboardType='number-pad'
                                     autoFocus={true}
                                     onChangeText={val => Set({val})}
-                                    //onChangeText={val => setData({...data, title: val})}
                                 /> 
                             </View>
                         </View>
@@ -1873,14 +1418,12 @@ const Scorecard = ({navigation}) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </Modal>
 
 {/* Team Modal */}
                 <Modal visible={visibleTeamModal} onDismiss={hideTeamModal} contentContainerStyle={teamModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15}}>
-
                         <View style={{ alignItems: 'center', marginVertical: 40}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
                                 Team Name:
@@ -1890,19 +1433,16 @@ const Scorecard = ({navigation}) => {
                                 placeholderTextColor='lightgray'
                                 style={{textAlign: 'center', borderBottomWidth: 0.5, borderColor: 'gray', height: 50, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 20}}
                                 maxLength={20}
-                                onChangeText={val => setTeamName(val)}
-                                    
+                                onChangeText={val => setTeamName(val)}        
                             /> 
                         </View>
-
                         <View style={{ alignItems: 'center', marginBottom: 40}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center', marginBottom: 0}}>
                                 Add Player:
                             </Text>
                             <Text style={{fontSize: 12, fontFamily: 'chalkboard-light', textAlign: 'center', marginBottom: 10, color: '#000000a5'}}>
                                 (press and hold to remove)
-                            </Text>
-                                      
+                            </Text>       
                             <FlatList 
                                 data={players}
                                 scrollEnabled={false}
@@ -1921,7 +1461,6 @@ const Scorecard = ({navigation}) => {
                                     
                                 }
                             />
-                            
                             <View style={{marginTop: 10, flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between'}}>
                                 <TextInput 
                                     placeholder='Enter a player name'
@@ -1939,12 +1478,9 @@ const Scorecard = ({navigation}) => {
                                             size={24}
                                         />
                                     </View>
-                                </TouchableOpacity>
-                                
+                                </TouchableOpacity>  
                             </View>
-                            
                         </View>
-
                         <View style={{ alignItems: 'center'}}>
                             <TouchableOpacity onPress={AddTeam}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
@@ -1954,13 +1490,11 @@ const Scorecard = ({navigation}) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </Modal>
-
             </Portal>
 
- {/* Header            */}
+ {/* Header*/}
             <View style={{ width: SCREEN_WIDTH, height: 80, justifyContent: 'space-between', backgroundColor: '#155843', flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <View style={{marginTop: 20, marginHorizontal: 20}}>
@@ -1976,8 +1510,7 @@ const Scorecard = ({navigation}) => {
                         <Text style={{fontSize: 18, fontFamily: 'chalkboard-regular', color: '#fff'}}>
                             {ScorecardData.name}
                         </Text>
-                    </TouchableOpacity>
-                    
+                    </TouchableOpacity>  
                 </View>
                 <View style={{marginTop: 20, marginHorizontal: 0, flexDirection: 'row'}}>
                     <TouchableOpacity onPress={() => {showSettingModal(); setTimePlaceholder((roundLength / 1000).toString())}} >
@@ -1994,74 +1527,58 @@ const Scorecard = ({navigation}) => {
                             options={["New","Save Settings", "Mark as Complete", "Share", "Save Scores"]}
                             actions={[showClearModal]}
                         />
-                    </View>
-                    
-                    
+                    </View> 
                 </View>
             </View>
-
-            <View style={{}}>
-
-                
-              
+            <View>
+{/* primary horizontal scroll of rows */}
                 <ScrollView 
                     style={{height: '89%', width: '100%',}}
                     stickyHeaderIndices={[]}
                     scrollEnabled={true}
                     nestedScrollEnabled={true}
                     horizontal={true}
-                    onScroll = {(event)=>{{
-                        handleHorzScroll(event);}}}//Vertical scrolling distance 
-                    scrollEventThrottle={16}
-                    
+                    onScroll = {(event)=>{{handleHorzScroll(event);}}}//Vertical scrolling distance 
+                    scrollEventThrottle={16}  
                 >
-                    
-                        <FlatList
-                            data={Scores}
-                            renderItem={renderItemScoreRow}
-                            keyExtractor={(item, index) => index.toString()}
-                            showsVerticalScrollIndicator={false}
-                            style={{ marginTop: 0, flexDirection: 'column', backgroundColor: darkTheme === false ? '#fff' : 'transparent', height: '100%'}}
-                            contentContainerStyle={{width: CELL_WIDTH * 4 + 60}}
-                            scrollEnabled={true}
-                            extraData={updateScores}
-                            //ref={scrollRef}
-                            onScroll = {(event)=>{{
-                                handleVertScroll(event);}}}//Vertical scrolling distance 
-                            ListHeaderComponent={() => (
-                                <View style={{width: CELL_WIDTH * 4 + 60, height: 50}}>
-
+{/* render list of score row, by round */}
+                    <FlatList
+                        data={Scores}
+                        renderItem={renderItemScoreRow}
+                        keyExtractor={(item, index) => index.toString()}
+                        showsVerticalScrollIndicator={false}
+                        style={{ marginTop: 0, flexDirection: 'column', backgroundColor: ThemeBackgroundColor2, height: '100%'}}
+                        contentContainerStyle={{width: CELL_WIDTH * 4 + 60}}
+                        scrollEnabled={true}
+                        extraData={updateScores}
+                        //ref={scrollRef}
+                        onScroll = {(event)=>{{
+                            handleVertScroll(event);}}}//Vertical scrolling distance 
+                        ListHeaderComponent={() => (
+                            <View style={{width: CELL_WIDTH * 4 + 60, height: 50}}>
+                            </View>
+                        )}
+                        ListFooterComponent={() => (
+                            <View>
+                                <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
                                 </View>
-                            )}
-                            ListFooterComponent={() => (
-                                <View>
-                                    <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                                         
-                                    </View>
-                                    <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                                         
-                                    </View>
-                                    <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                                         
-                                    </View>
-                                    {isTimerEnabled === true ? (
-                                        <View>
-                                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                                         
-                                        </View>
-                                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                                         
-                                        </View>
-                                        </View>
-                                        
-                                    ) : null}
-
+                                <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
                                 </View>
-                            )}   
-                        />
-                    
+                                <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
+                                </View>
+                                {isTimerEnabled === true ? (
+                                    <View>
+                                        <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
+                                        </View>
+                                        <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>   
+                                        </View>
+                                    </View>
+                                ) : null}
+                            </View>
+                        )}   
+                    />
                </ScrollView>
-
+{/* Header flatlist for team names, horizontal scroll */}
                 <FlatList 
                     data={Teams}
                     renderItem={renderItem}
@@ -2073,7 +1590,7 @@ const Scorecard = ({navigation}) => {
                     ref={horzScrollRef2}
                     scrollEnabled={false}
                 />
-                
+{/* footer flatlist for round wins */}
                 { isRoundWinsEnabled ? (
                     <FlatList 
                         data={Teams}
@@ -2094,7 +1611,7 @@ const Scorecard = ({navigation}) => {
                         extraData={roundUpdate}
                     />
                 ) : null }
-
+{/* Footer flatlist for point wins */}
                 { isPointsEnabled ? (
                     <FlatList 
                         data={Teams}
@@ -2109,7 +1626,8 @@ const Scorecard = ({navigation}) => {
                         extraData={Updated}
                     />
                 ) : null }
-
+{/* static left flatlist for rounds */}
+                
                 <FlatList
                     data={Scores}
                     renderItem={renderRounds}
@@ -2122,48 +1640,44 @@ const Scorecard = ({navigation}) => {
                     scrollEventThrottle={16}
                     stickyHeaderIndices={[]}
                     ListHeaderComponent={() => (
-                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
+                        <View style={[styles.roundbox, {height: 50, backgroundColor:  ThemeBackgroundColor2}]}>
                         </View>
                     )}
                     ListFooterComponent={() => (
                         <View>
-                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                            <TouchableOpacity onPress={SetNewRound}>
-                                <Feather 
-                                    name='plus-circle'
-                                    color='lightgray'
-                                    size={22}
-                                /> 
-                            </TouchableOpacity>
-                            
+                            <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
+                                <TouchableOpacity onPress={SetNewRound}>
+                                    <Feather 
+                                        name='plus-circle'
+                                        color='lightgray'
+                                        size={22}
+                                    /> 
+                                </TouchableOpacity>
                             </View>
-                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
+                            <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
                             </View>
-                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
+                            <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
                             </View>
                             {isTimerEnabled === true ? (
-                                        <View>
-                                            <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                                         
-                                        </View>
-                                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
-                                         
-                                        </View>
-                                        </View>
-                                        
-                                    ) : null}
+                                <View>
+                                    <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
+                                    </View>
+                                    <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
+                                    </View>
+                                </View>
+                            ) : null}
                         </View>
                     )}
-                />
-                
+                /> 
+                 
             </View>
 
             { isRoundWinsEnabled ? (
-                <View style={[styles.roundbox, { position: 'absolute', backgroundColor: darkTheme === false ? '#fff' : '#000', 
+                <View style={[styles.roundbox, { position: 'absolute', backgroundColor: ThemeBackgroundColor, 
                     bottom: isTimerEnabled === true ? 110 : isPointsEnabled === false ? 0 : 50
                     , left: 0, height: 50}]}> 
                     <TouchableOpacity>
-                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : '#000'}]}>
+                        <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
                                 Wins
                             </Text> */}
@@ -2174,12 +1688,12 @@ const Scorecard = ({navigation}) => {
 
             { isPointsEnabled ? (
                 <View style={[styles.roundbox, { 
-                    backgroundColor: darkTheme === false ? '#fff' : '#000',
+                    backgroundColor: ThemeBackgroundColor,
                     position: 'absolute', 
                     bottom: isTimerEnabled === true ? 60 : 0, 
                     left: 0, height: 50}]}> 
                     <TouchableOpacity>
-                        <View style={[styles.roundbox, {height: 50, backgroundColor: darkTheme === false ? '#fff' : 'transparent'}]}>
+                        <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
                                 Points
                             </Text> */}
@@ -2194,7 +1708,7 @@ const Scorecard = ({navigation}) => {
             ) : null }
 
             { isTimerEnabled ? (
-                <View style={{position: 'absolute', bottom: 0, left: 0}}> 
+                <View style={{position: 'absolute', bottom: -2, left: 0}}> 
                     <Timer 
                         warning={isWarningEnabled}
                         length={roundLength}
@@ -2205,17 +1719,9 @@ const Scorecard = ({navigation}) => {
                 </View>
             ) : null }
            
-            
-
-            <View style={[styles.roundbox, { backgroundColor: darkTheme === false ? '#fff' : '#000', position: 'absolute', top: 80, left: 0, height: 50, width: 60}]}>      
+            <View style={[styles.roundbox, { backgroundColor: ThemeBackgroundColor, position: 'absolute', top: 80, left: 0, height: 50, width: 60}]}>      
             </View>
-            
-            
-               
-            
-            
-     
-        </View>
+            </View>
         </Provider>
     );
 }
@@ -2223,19 +1729,15 @@ const Scorecard = ({navigation}) => {
 const styles = StyleSheet.create({
     header: {
         fontSize: 16,
-        //fontWeight: 'bold',
-        //color: '#000',
         fontFamily: 'chalkboard-bold',
         textAlign: 'center'
     },
     headerbox: {
-        //width: 100,
         alignItems: 'center',
         justifyContent: 'center',
     },
     round: {
         fontSize: 16,
-        //fontWeight: 'bold',
         color: 'gray',
         textTransform: 'lowercase',
     },
@@ -2247,23 +1749,17 @@ const styles = StyleSheet.create({
     roundbox: {
         paddingVertical: 0, 
         width: 60, 
-        //height: 50,
-        //backgroundColor: '#fff',
         alignItems: 'center', 
         borderRightWidth: 0.3,
-        justifyContent: 'center',
-        
+        justifyContent: 'center', 
     },
     scorebox: {
         paddingVertical: 0, 
-        //width: CELL_WIDTH, 
-        //height: 50,
         alignItems: 'center', 
         borderRightWidth: 0.2,
         borderBottomWidth: 0.2,
         justifyContent: 'center',
-        borderColor: '#cccccc',
-        
+        borderColor: '#cccccc', 
     },
 });
 
