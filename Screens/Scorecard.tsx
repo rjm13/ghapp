@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase } from 'react-native';
+import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase, ScrollViewBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -24,8 +24,114 @@ const toRoman = require('roman-numerals').toRoman;
 
 
 //exported scorecard function
-const Scorecard = ({navigation}) => {
+const Scorecard = ({navigation} : {navigation: any}) => {
 
+//number of teams array
+    const [TeamArray, setTeamArray] = useState([1, 2]);
+
+    const [ExtraArray, setExtraArray] = useState([['', '', ''], ['', '', '']]);
+
+    const [ScoreArray, setScoreArray] = useState(['', '']);
+
+//scorecard dataset
+    const [Scores, setScores] = useState(
+        [
+            {
+                round: 1,
+                team: [1, 2],
+                score: ['', ''],
+                extra: [['', '', ''], ['', '', '']],
+                winner: null,
+            }, 
+        ]
+    )
+
+//teams dataset
+    const [Teams, setTeams] = useState(
+        [
+            {
+                id: 1,
+                name: 'Team 1',
+                playerNames: [],
+                playerID: [],
+                total: 0 ,
+                roundWins: 0,
+                //roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
+            },
+            {
+                id: '2',
+                name: 'Team 2',
+                playerNames: [],
+                playerID: [],
+                total: 0,
+                roundWins: 0,
+                //roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
+            },
+        ]
+    )
+
+//scorecard dataset
+    const [ScorecardData, setScorecardData] = useState(
+        {
+            id: '1',
+            name: new Date().toDateString(),
+            updated: false,
+            dateCreated: new Date().toDateString(),
+            teams: [Teams],
+            scores: [Scores]
+        },
+    );
+
+// State controllers to force update of components through useEffect and extraData(flatlist)
+    const [Updated, setUpdated] = useState(true);
+    const [roundUpdate, setRoundUpdate] = useState(false);
+    const [updateScores, setUpdateScores] = useState(false);
+
+//round and team state management for updating the score through the modal
+    const [roundState, setRoundState] = useState(1);
+    const [teamState, setTeamState] = useState(1);
+
+//blank datasets to reset the scorecard
+    const blankScorecard = {
+        id: '1',
+        name: new Date().toDateString(),
+        updated: false,
+        dateCreated: new Date().toDateString(),
+        teams: [Teams],
+        scores: [Scores]
+    }
+
+    const blankTeams = [
+        {
+            id: 1,
+            name: 'Team 1',
+            playerID: [],
+            total: 0 ,
+            roundWins: 0, 
+        },
+        {
+            id: '2',
+            name: 'Team 2',
+            playerID: [],
+            total:  0 ,
+            roundWins: 0,
+        },
+    ]
+
+    const blankScores = [
+        {
+            round: 1,
+            team: [1, 2],
+            score: ['', '', '', ''],
+            extra: [ ['', '', ''], ['', '', ''] ],
+            winner: null,
+        },
+    ];
+
+//set if two player or more in order to change the cell size for 2 players
+    useEffect(() => {
+        if (Teams.length > 2) {setIsTwoPlayer(false);}
+    }, [Teams])
 
 //setting states
     const [whiteTheme, setWhiteTheme] = useState(true);
@@ -67,7 +173,7 @@ const Scorecard = ({navigation}) => {
     const [isWarningEnabled, setIsWarningEnabled] = useState(false);
     const toggleSwitchWarning = () => setIsWarningEnabled(previousState => !previousState);
 
-    const [roundLength, setRoundLength] = useState(60000)
+    const [roundLength, setRoundLength] = useState(60000);
 
     const [sound, setSound] = useState('');
 
@@ -75,10 +181,18 @@ const Scorecard = ({navigation}) => {
 
     const [newSetting, setNewSetting] = useState(false);
 
-    const CELL_WIDTH = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 150 : 100
+    const [isTwoPlayer, setIsTwoPlayer] = useState(true);
 
-    const CELL_HEIGHT = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 100 : 50
+    const TWO_PLAYER_CELL_WIDTH = (SCREEN_WIDTH - 60) / 2;
 
+    const CELL_WIDTH = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true && isTwoPlayer === false ? 150 : 
+                        isTwoPlayer === true ? TWO_PLAYER_CELL_WIDTH : 100;
+
+    const CELL_HEIGHT = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 100 : 50;
+
+    
+
+//themes
     const ThemeColor = 
             darkTheme === true ? '#fff' : 
             legalPadTheme === true ? '#6a0dad' :
@@ -99,7 +213,8 @@ const Scorecard = ({navigation}) => {
             legalPadTheme === true ? '#f7f483' :
             whiteTheme === true ? '#fff' : '#fff';
 
-    const ThemeBackgroundColor3 = darkTheme === true ? 'transparent' :
+    const ThemeBackgroundColor3 = 
+            darkTheme === true ? 'transparent' :
             legalPadTheme === true ? 'lightgray' :
             'lightgray';
 
@@ -113,36 +228,7 @@ const Scorecard = ({navigation}) => {
 
     useEffect(() => {
         if (whiteTheme === true) {setDarkTheme(false); setLegalPadTheme(false);}
-    }, [whiteTheme])
-
-    
-
-
-//footer that displays the team score totals
-    const Footer = ({total, style}: {total: any, style: any}) => {
-        return (
-            <View style={{ height: 50, backgroundColor: ThemeBackgroundColor, flexDirection: 'row'}}>
-                <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
-                        {total}
-                    </Text>
-                </View>
-            </View>
-        );
-    }
-    
-//footer that displays the team round wins
-    const WinsFooter = ({roundWins, style} : {roundWins: any, style: any}) => {
-        return (
-            <View style={{ height: 50, backgroundColor: ThemeBackgroundColor, flexDirection: 'row'}}>
-                <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
-                        {roundWins}
-                    </Text>
-                </View> 
-            </View>
-        );
-    }
+    }, [whiteTheme])    
 
 //conversion function for timer - seconds from textinput to millieconds
     const ConvertToMillis = ({val} : {val: any}) => {
@@ -150,137 +236,6 @@ const Scorecard = ({navigation}) => {
         setRoundLength(time)
         console.log(time)
     }
-
-//static left handed column that displays the rounds
-    const RoundsColumn = ({round}: {round: any}) => {
-        return (
-            <View style={[styles.roundbox, {height: CELL_HEIGHT, backgroundColor: ThemeBackgroundColor2}]}>
-                <Text style={styles.round}>
-                    {isRomanEnabled === true ? toRoman(round) : round}
-                </Text>
-            </View>
-        );
-    }
-
-//scorecard dataset
-    const [Scores, setScores] = useState(
-        [
-            {
-                round: 1,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']],
-                winner: null,
-            }, 
-        ]
-    )
-
-//teams dataset
-    const [Teams, setTeams] = useState(
-        [
-            {
-                id: 1,
-                name: 'Team 1',
-                playerNames: [],
-                playerID: [1, 2],
-                total: 0 ,
-                roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
-            },
-            {
-                id: '2',
-                name: 'Team 2',
-                playerNames: [],
-                playerID: [3, 4],
-                total: 0,
-                roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
-            },
-            {
-                id: '3',
-                name: 'Team 3',
-                playerNames: [],
-                playerID: [5, 6],
-                total: 0,
-                roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),
-            },
-            {
-                id: '4',
-                name: 'Team 4',
-                playerNames: [],
-                playerID: [7, 8],
-                total: 0,
-                roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),
-            },
-        ]
-    
-    )
-
-//scorecard dataset
-    const [ScorecardData, setScorecardData] = useState(
-        {
-            id: '1',
-            name: new Date().toDateString(),
-            updated: false,
-            dateCreated: new Date().toDateString(),
-            teams: [Teams],
-            scores: [Scores]
-        },
-    );
-
-// State controllers to force update of components through useEffect and extraData(flatlist)
-    const [Updated, setUpdated] = useState(true);
-    const [roundUpdate, setRoundUpdate] = useState(false);
-    const [updateScores, setUpdateScores] = useState(false);
-
-//blank datasets to reset the scorecard
-    const blankScorecard = {
-        id: '1',
-        name: new Date().toDateString(),
-        updated: false,
-        dateCreated: new Date().toDateString(),
-        teams: [Teams],
-        scores: [Scores]
-    }
-
-    const blankTeams = [
-        {
-            id: 1,
-            name: 'Team 1',
-            playerID: [1, 2],
-            total: 0 ,
-            roundWins: 0, 
-        },
-        {
-            id: '2',
-            name: 'Team 2',
-            playerID: [3, 4],
-            total:  0 ,
-            roundWins: 0,
-        },
-        {
-            id: '3',
-            name: 'Team 3',
-            playerID: [5, 6],
-            total: 0,
-            roundWins: 0,
-        },
-        {
-            id: '4',
-            name: 'Team 4',
-            playerID: [7, 8],
-            total: 0,
-            roundWins: 0,
-        },
-    ]
-
-    const blankScores = [
-        {
-            round: 1,
-            team: [1, 2, 3, 4],
-            score: ['', '', '', ''],
-            extra: [ ['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''] ],
-            winner: null,
-        },
-    ];
 
 //Scorecard Settings Modal
     const [visibleSettingModal, setVisibleSettingModal] = useState(false);
@@ -305,22 +260,21 @@ const Scorecard = ({navigation}) => {
 
     const [TeamName, setTeamName] = useState('Team');
 
-    const [TeamNames, setTeamNames] = useState(['Team 1', 'Team 2', 'Team 3', 'Team 4']);
+    const [TeamNames, setTeamNames] = useState(['Team 1', 'Team 2']); 
 
-    
-
-//add team
+//add team players and set team name
     const AddTeam = () => {
 
-        let newArray = [...TeamNames];
-        newArray[TeamSettingId - 1] = TeamName;
-        setTeamNames(newArray);
+        let new2Array = [...TeamNames];
+        new2Array[TeamSettingId - 1] = TeamName;
+        setTeamNames(new2Array);
 
         let teamArray = [...Teams];
         teamArray[TeamSettingId - 1].playerNames = players;
         setTeams(teamArray)
 
         setPlayers([]);
+        setUpdated(!Updated);
 
         hideTeamModal();
     }
@@ -331,18 +285,70 @@ const Scorecard = ({navigation}) => {
         array.splice(index, 1)
         setPlayers(array)
     }
+    
+//add a team module and function
+    const SetShowTeamModal = () => {
 
+        let teams = Teams.length
+        let id = teams + 1;
+        let name = 'Team' + ' ' + id.toString();
+
+        setTeams([...Teams, {
+            id: id,
+            name: name,
+            playerNames: [],
+            playerID: [],
+            total: 0,
+            roundWins: 0,
+        }]);
+
+        setTeamArray([...TeamArray, id]);
+        setExtraArray([...ExtraArray, ['', '', '']]);
+        setScoreArray([...ScoreArray, '']);
+        setTeamNames([...TeamNames, name]);
+
+        for (var i=0; i < Scores.length; i++) {
+
+            let newArray = [...Scores];
+            newArray[i].team = [...Scores[i].team, id];
+            newArray[i].extra = [...Scores[i].extra, ['', '', '']];
+            newArray[i].score = [...Scores[i].score, ''];
+            setScores(newArray);
+        }
+    };
+
+//function to add another round to the scorecard
+    const SetNewRound = () => {
+
+        let scores = Scores.length
+        let round = scores + 1;
+        let scorearray = Array(Teams.length).fill('');
+        let extraarray = Array(Teams.length).fill(['', '', '']);
+        //let teamarray = Array(Teams.length);
+        
+        setScores([...Scores, {
+                round: round,
+                team: TeamArray,
+                score: scorearray,
+                extra: extraarray,
+                winner: null,
+        }]);
+        console.log(round)
+    }
+    
 //final button to update the scorecard through the settings modal
     const ChangeSettings = () => {    
 
-        let newArray = [...Teams];
-        newArray[0].name = TeamNames[0];
-        newArray[1].name = TeamNames[1];
-        newArray[2].name = TeamNames[2];
-        newArray[3].name = TeamNames[3];
-        setTeams(newArray);
+        for (var i=0; i < TeamArray.length; i++) {
+
+            let newTeamArray = [...Teams];
+
+            newTeamArray[i].name = TeamNames[i],
+            setTeams(newTeamArray);
+        }
 
         setUpdated(!Updated);
+        //setUpdateScores(!updateScores);
         setRoundUpdate(!roundUpdate)
         setNewSetting(!newSetting);
         hideSettingModal();    
@@ -354,6 +360,104 @@ const Scorecard = ({navigation}) => {
             {...ScorecardData, updated: Updated, name: val, } 
         )
     }
+
+//text state management for textInputs
+
+const [text, setText] = useState('');
+
+const textNum = parseInt(text);
+
+const [bidText, setBidText] = useState('');
+
+const [meldText, setMeldText] = useState('');
+
+const [bonusText, setBonusText] = useState('');
+
+//function to update the extra data (bid, meld, bonus)
+const UpdateExtra = () => {
+
+    let newUpdateArray = [...Scores];
+        newUpdateArray[roundState - 1].extra[teamState - 1 ] = [
+        bidText === '' ? Scores[roundState - 1].extra[teamState - 1][0] : bidText, 
+        meldText === '' ? Scores[roundState - 1].extra[teamState - 1][1] : meldText, 
+        bonusText === '' ? Scores[roundState - 1].extra[teamState - 1][2] : bonusText
+    ];
+
+    setScores(newUpdateArray);
+    setUpdated(!Updated)    
+    setRoundUpdate(!roundUpdate);
+    setBidText('');
+    setMeldText('');
+    setBonusText('');
+
+    hideExtrasModal();
+}
+
+//function to the set the score of a single cell in the scorecard
+    const NewScore = () => {    
+
+        let newSArray = [...Scores];
+        newSArray[roundState - 1].score[teamState - 1 ] = textNum;
+        setScores(newSArray);
+
+        hideModal();
+
+        setUpdated(!Updated)    
+        setRoundUpdate(!roundUpdate);
+    }
+
+//when the scorecard is updated, this function will add together the scores and round wins and update the dataset
+    useEffect(() => {
+
+        for (var i=0; i < TeamArray.length; i++) {
+
+            let newArray = [...Teams];
+
+            newArray[i].total = Scores.reduce((a,v) => a = a + v.score[i], 0),
+            newArray[i].roundWins = Scores.reduce((count, item) => count + (item.winner === i ? 1 : 0), 0);
+            setTeams(newArray);
+        }
+        
+        // setTeams (
+        //     [
+        //         {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0), roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0), }, 
+        //         {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),}, 
+        //     ]
+        // );
+    },[Updated]);
+
+//when the round is updated, this function will determine the total round winner
+    useEffect(() => {
+
+        if (roundState) {
+            let newArray = [...Scores];
+
+            const roundWinner = isLowestPointsEnabled === false ? Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1]) :
+                                isLowestPointsEnabled === true ? Math.min(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1]) :
+                                Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1])
+            
+            const winnerIndex = roundWinner === parseInt(newArray[roundState - 1].score[0]) ? 0 : 
+                                roundWinner === parseInt(newArray[roundState - 1].score[1]) ? 1 : null;
+
+            newArray[roundState - 1].winner = winnerIndex;
+            setScores(newArray);
+        }
+    }, [roundUpdate])
+
+//clear scorecard function
+    const clearScorecard = () => {
+
+        let array = {...blankScorecard};
+        array.name = new Date().toDateString();
+        
+        setScores(blankScores);
+        setTeams(blankTeams);
+        setScorecardData(array);
+        setUpdateScores(!updateScores);  
+        setRoundState(1);  
+
+        hideClearModal();    
+    };
 
 //horizontal and vertical scroll functions for flatlist
 
@@ -400,14 +504,51 @@ const Scorecard = ({navigation}) => {
 
     useEffect(() => {
         if (isLowestPointsEnabled === false) {
-            setLeader( Math.max(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total));
-            setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins));
+            setLeader( Math.max(Teams[0].total, Teams[1].total));
+            setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins));
         }
         if (isLowestPointsEnabled === true) {
             setLeader( Math.min(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total));
             setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins));
         }
     }, [Teams])
+
+//footer that displays the team score totals
+    const Footer = ({total, style}: {total: any, style: any}) => {
+        return (
+            <View style={{ height: 50, backgroundColor: ThemeBackgroundColor, flexDirection: 'row'}}>
+                <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
+                        {total}
+                    </Text>
+                </View>
+            </View>
+        );
+    }
+
+//static left handed column that displays the rounds
+    const RoundsColumn = ({round}: {round: any}) => {
+        return (
+            <View style={[styles.roundbox, {height: CELL_HEIGHT, backgroundColor: ThemeBackgroundColor2}]}>
+                <Text style={styles.round}>
+                    {isRomanEnabled === true ? toRoman(round) : round}
+                </Text>
+            </View>
+        );
+    }
+
+//footer that displays the team round wins
+    const WinsFooter = ({roundWins, style} : {roundWins: any, style: any}) => {
+        return (
+            <View style={{ height: 50, backgroundColor: ThemeBackgroundColor, flexDirection: 'row'}}>
+                <View style={{ width: CELL_WIDTH, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={[styles.score, style, {fontFamily: 'chalkboard-bold', fontSize: 22, }]}>
+                        {roundWins}
+                    </Text>
+                </View> 
+            </View>
+        );
+    }
 
 //the item for the list of teams in the settings modal
     const TeamList = ({name, id} : {name: string, id: any}) => {
@@ -506,10 +647,6 @@ const Scorecard = ({navigation}) => {
         );
     };
 
-//round and team state management for updating the score through the modal
-      const [roundState, setRoundState] = useState(1);
-      const [teamState, setTeamState] = useState(1);
-
 //Scorebox Modal
     const [visible, setVisible] = useState(false);
   
@@ -567,38 +704,6 @@ const Scorecard = ({navigation}) => {
     const hideTeamModal = () => setVisibleTeamModal(false);
     const teamModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
-//function to add another round to the scorecard
-    const SetNewRound = () => {
-
-        let scores = Scores.length
-        let round = scores + 1;
-        
-        setScores([...Scores, {
-                round: round,
-                team: [1, 2, 3, 4],
-                score: ['', '', '', ''],
-                extra: [ ['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''] ],
-                winner: null,
-        }]);
-    }
-
-    const SetShowTeamModal = () => {
-
-        let teams = Teams.length
-        let id = teams + 1;
-        let name = 'Team' + ' ' + id.toString();
-
-        setTeams([...Teams, {
-            id: id,
-            name: name,
-            playerNames: [],
-            playerID: [],
-            total: 0,
-            roundWins: 0,
-        }]);
-
-        setTeamNames([...TeamNames, name])
-    }
 
 //team name item for the header row
     const HeaderRow = ({id, name} : {id: any, name: string}) => {
@@ -621,8 +726,8 @@ const Scorecard = ({navigation}) => {
         const Round = round
 
         const roundWinner =
-            isLowestPointsEnabled === false ? Math.max(score[0], score[1], score[2], score[3]) :
-            isLowestPointsEnabled === true ? Math.min(score[0], score[1], score[2], score[3]) : Math.max(score[0], score[1], score[2], score[3])
+            isLowestPointsEnabled === false ? Math.max(score[0], score[1]) :
+            isLowestPointsEnabled === true ? Math.min(score[0], score[1]) : Math.max(score[0], score[1])
 
 //item for the extras list. Controlled by state to show bid, meld, bonus
         const ExtraItemSingle = ({index, item} : {index: any, item: any}) => {
@@ -744,7 +849,9 @@ const Scorecard = ({navigation}) => {
                                 horizontal={true}
                                 //style={{position: 'absolute'}}
                                 showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{width: CELL_WIDTH * 4, height: 50}}
+                                contentContainerStyle={{width: 
+                                    isTwoPlayer === true ? (TWO_PLAYER_CELL_WIDTH * 2) : (CELL_WIDTH * Teams.length), 
+                                    height: 50}}
                                 scrollEnabled={false}
                                 extraData={updateScores}
                             />
@@ -757,7 +864,9 @@ const Scorecard = ({navigation}) => {
                         keyExtractor={(item, index) => index.toString()}
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{width: CELL_WIDTH * 4, height: 70}}
+                        contentContainerStyle={{width: 
+                            isTwoPlayer === true ? (TWO_PLAYER_CELL_WIDTH * 2) : (CELL_WIDTH * Teams.length), 
+                            height: 70}}
                         scrollEnabled={false}
                         extraData={updateScores}
                     />
@@ -765,98 +874,6 @@ const Scorecard = ({navigation}) => {
             </View>
         );
     }
-
-//text state management for textInputs
-
-    const [text, setText] = useState('');
-
-    const textNum = parseInt(text);
-
-    const [bidText, setBidText] = useState('');
-
-    const [meldText, setMeldText] = useState('');
-
-    const [bonusText, setBonusText] = useState('');
-
-//function to update the extra data (bid, meld, bonus)
-    const UpdateExtra = () => {
-
-        let newArray = [...Scores];
-        newArray[roundState - 1].extra[teamState - 1 ] = [
-            bidText === '' ? Scores[roundState - 1].extra[teamState - 1][0] : bidText, 
-            meldText === '' ? Scores[roundState - 1].extra[teamState - 1][1] : meldText, 
-            bonusText === '' ? Scores[roundState - 1].extra[teamState - 1][2] : bonusText
-        ];
-
-        setScores(newArray);
-        setUpdated(!Updated)    
-        setRoundUpdate(!roundUpdate);
-        setBidText('');
-        setMeldText('');
-        setBonusText('');
-
-        hideExtrasModal();
-    }
-
-//function to the set the score of a single cell in the scorecard
-    const SetScore = () => {    
-
-        let newArray = [...Scores];
-        newArray[roundState - 1].score[teamState - 1 ] = textNum;
-        setScores(newArray);
-
-        hideModal();
-
-        setUpdated(!Updated)    
-        setRoundUpdate(!roundUpdate)
-    }
-
-//when the round is updated, this function will determine the total round winner
-    useEffect(() => {
-
-        if (roundState) {
-            let newArray = [...Scores];
-
-            const roundWinner = isLowestPointsEnabled === false ? Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
-                                isLowestPointsEnabled === true ? Math.min(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3]) :
-                                Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1], newArray[roundState - 1].score[2], newArray[roundState - 1].score[3])
-            
-            const winnerIndex = roundWinner === parseInt(newArray[roundState - 1].score[0]) ? 0 : 
-                                roundWinner === parseInt(newArray[roundState - 1].score[1]) ? 1 : 
-                                roundWinner === parseInt(newArray[roundState - 1].score[2]) ? 2 : 
-                                roundWinner === parseInt(newArray[roundState - 1].score[3] ? 3 : null)
-
-            newArray[roundState - 1].winner = winnerIndex;
-            setScores(newArray);
-        }
-    }, [roundUpdate])
-
-//when the scorecard is updated, this function will add together the scores and round wins and update the dataset
-    useEffect(() => {
-        setTeams (
-            [
-                {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0), roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0), }, 
-                {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),}, 
-                {...Teams[2], total: Scores.reduce((a,v) =>  a = a + v.score[2] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 2 ? 1 : 0), 0),},
-                {...Teams[3], total: Scores.reduce((a,v) =>  a = a + v.score[3] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 3 ? 1 : 0), 0),},
-            ]
-        );
-    },[Updated]);
-
-//clear scorecard function
-    const clearScorecard = () => {
-
-        let array = {...blankScorecard};
-        array.name = new Date().toDateString();
-        
-        setScores(blankScores);
-        setTeams(blankTeams);
-        setScorecardData(array);
-        setUpdateScores(!updateScores);  
-        setRoundState(null);  
-
-        hideClearModal();    
-    };
 
 //placeholder text states for textInputs
     const [timePlaceholder, setTimePlaceholder] = useState('');
@@ -908,7 +925,7 @@ const Scorecard = ({navigation}) => {
                         </View>
 
                         <View style={{ alignItems: 'center'}}>
-                            <TouchableOpacity onPress={SetScore}>
+                            <TouchableOpacity onPress={NewScore}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
                                     <Feather 
                                         name='check'
@@ -948,8 +965,7 @@ const Scorecard = ({navigation}) => {
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
                                 {   teamState === 1 ? Teams[0].name :
                                     teamState === 2 ? Teams[1].name :
-                                    teamState === 3 ? Teams[2].name :
-                                    teamState === 4 ? Teams[3].name : 'Some Team'}
+                                    'Some Team'}
                             </Text>
                             <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
                                 Round {roundState}
@@ -1548,14 +1564,20 @@ const Scorecard = ({navigation}) => {
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
                         style={{ marginTop: 0, flexDirection: 'column', backgroundColor: ThemeBackgroundColor2, height: '100%'}}
-                        contentContainerStyle={{width: CELL_WIDTH * 4 + 60}}
+                        contentContainerStyle={{width: 
+                            isTwoPlayer === true ? TWO_PLAYER_CELL_WIDTH * 2 + 60 : CELL_WIDTH * Teams.length + 60,
+
+                        }}
                         scrollEnabled={true}
                         extraData={updateScores}
                         //ref={scrollRef}
                         onScroll = {(event)=>{{
                             handleVertScroll(event);}}}//Vertical scrolling distance 
                         ListHeaderComponent={() => (
-                            <View style={{width: CELL_WIDTH * 4 + 60, height: 50}}>
+                            <View style={{width:
+                                isTwoPlayer === true ? TWO_PLAYER_CELL_WIDTH * 2 + 60 : CELL_WIDTH * Teams.length + 60,
+                               // CELL_WIDTH * 4 + 60, 
+                                height: 50}}>
                             </View>
                         )}
                         ListFooterComponent={() => (
@@ -1586,7 +1608,9 @@ const Scorecard = ({navigation}) => {
                     horizontal={true}
                     style={{position: 'absolute', top: 0, marginLeft: 60}}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{width: CELL_WIDTH * 4}}
+                    contentContainerStyle={{width: 
+                    isTwoPlayer === true ? TWO_PLAYER_CELL_WIDTH * 2  : CELL_WIDTH * Teams.length
+                    }}
                     ref={horzScrollRef2}
                     scrollEnabled={false}
                 />
@@ -1605,7 +1629,9 @@ const Scorecard = ({navigation}) => {
                                 isTimerEnabled === false && isPointsEnabled === false ? -2 : 48
                             }}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{width: CELL_WIDTH * 4}}
+                        contentContainerStyle={{width: 
+                            isTwoPlayer === true ? TWO_PLAYER_CELL_WIDTH * 2  : CELL_WIDTH * Teams.length
+                        }}
                         ref={horzScrollRef3}
                         scrollEnabled={false}
                         extraData={roundUpdate}
@@ -1620,10 +1646,12 @@ const Scorecard = ({navigation}) => {
                         horizontal={true}
                         style={{position: 'absolute', bottom: isTimerEnabled === true ? 58 : -2, marginLeft: 60}}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{width: CELL_WIDTH * 4}}
+                        contentContainerStyle={{width: 
+                            isTwoPlayer === true ? TWO_PLAYER_CELL_WIDTH * 2 : CELL_WIDTH * Teams.length
+                        }}
                         ref={horzScrollRef}
                         scrollEnabled={false}
-                        extraData={Updated}
+                        //extraData={Updated}
                     />
                 ) : null }
 {/* static left flatlist for rounds */}
