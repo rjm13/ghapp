@@ -183,6 +183,8 @@ const Scorecard = ({navigation} : {navigation: any}) => {
 
     const [isTwoPlayer, setIsTwoPlayer] = useState(true);
 
+    const [teamToDelete, setTeamToDelete] = useState(0);
+
     const TWO_PLAYER_CELL_WIDTH = (SCREEN_WIDTH - 60) / 2;
 
     const CELL_WIDTH = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true && isTwoPlayer === false ? 150 : 
@@ -317,6 +319,51 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         }
     };
 
+    const DeleteTeam = () => {
+
+        let id = teamToDelete
+
+    //delete the team object
+        let newArray = [...Teams];
+        newArray.splice(id - 1, 1);
+        setTeams(newArray);
+
+    //delete the team from the scores, extra, indexes
+        let newTeamArray = [...TeamArray];
+        newTeamArray.splice(id - 1, 1);
+        setTeamArray(newTeamArray);
+
+        let newExtraArray = [...ExtraArray];
+        newExtraArray.splice(id - 1, 1);
+        setExtraArray(newExtraArray);
+
+        let newScoreArray = [...ScoreArray];
+        newScoreArray.splice(id - 1, 1);
+        setScoreArray(newScoreArray);
+
+        let newTeamNamesArray = [...TeamNames];
+        newTeamNamesArray.splice(id - 1, 1);
+        setTeamNames(newTeamNamesArray);
+
+        setUpdated(!Updated);
+        setTeamState(1);
+
+        hideDeleteTeamModal();
+
+    //delete that team's scores
+
+        for (var i=0; i < Scores.length; i++) {
+
+            let newArray = [...Scores];
+            newArray[i].team.splice(id - 1, 1);
+            newArray[i].extra.splice(id - 1, 1);
+            newArray[i].score.splice(id - 1, 1);
+            
+            setScores(newArray);
+        }
+
+    };
+
 //function to add another round to the scorecard
     const SetNewRound = () => {
 
@@ -349,7 +396,9 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         //setUpdateScores(!updateScores);
         setRoundUpdate(!roundUpdate)
         setNewSetting(!newSetting);
-        hideSettingModal();    
+        hideSettingModal();  
+        
+        if (Teams.length === 2) {setIsTwoPlayer(true);}
     }
 
 //edit the name of the scorecard function
@@ -548,7 +597,7 @@ const UpdateExtra = () => {
     const TeamList = ({name, id} : {name: string, id: any}) => {
         return(
             <View>
-                <TouchableOpacity onPress={() => showTeamModal({name, id})}>
+                <TouchableOpacity onPress={() => showTeamModal({name, id})} onLongPress={() => showDeleteTeamModal(id)}>
                     <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
                         <Text style={{fontFamily: 'chalkboard-bold', fontSize: 16, color: '#000000a5'}}>
                             {TeamNames[id - 1]}
@@ -671,6 +720,16 @@ const UpdateExtra = () => {
         const hideClearModal = () => setVisibleClearModal(false);
 
         const clearModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+
+//New Scorecard  Modal
+
+    const [visibleDeleteTeamModal, setVisibleDeleteTeamModal] = useState(false);
+            
+    const showDeleteTeamModal = (id : any) => {setVisibleDeleteTeamModal(true); setTeamToDelete(id)}
+
+    const hideDeleteTeamModal = () => setVisibleDeleteTeamModal(false);
+
+    const deleteTeamModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
 //Extras Modal (bid, meld, bonus)
         const [visibleExtrasModal, setVisibleExtrasModal] = useState(false);
@@ -894,10 +953,7 @@ const UpdateExtra = () => {
 
                         <View style={{ alignItems: 'center'}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
-                                {   teamState === 1 ? Teams[0].name :
-                                    teamState === 2 ? Teams[1].name :
-                                    teamState === 3 ? Teams[2].name :
-                                    teamState === 4 ? Teams[3].name : 'Some Team'}
+                                {Teams[teamState - 1].name}
                             </Text>
                             <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
                                 Round {roundState}
@@ -1396,6 +1452,26 @@ const UpdateExtra = () => {
                     </View>
                 </Modal>
 
+{/* New Scorecard Modal */}
+                <Modal visible={visibleDeleteTeamModal} onDismiss={hideDeleteTeamModal} contentContainerStyle={deleteTeamModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Are you sure you want to remove this team?
+                            </Text>
+                        </View>
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={DeleteTeam}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#d92121', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{color: '#fff', fontSize: 22, textAlign: 'center', fontWeight: 'bold'}}>
+                                        Delete
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
 {/* Scorecard title modal */}
                 <Modal visible={visibleNameModal} onDismiss={hideNameModal} contentContainerStyle={nameModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
@@ -1628,7 +1704,6 @@ const UpdateExtra = () => {
                         }}
                         ref={horzScrollRef3}
                         scrollEnabled={false}
-                        //extraData={Scores}
                     />
                 ) : null }
 {/* Footer flatlist for point wins */}
