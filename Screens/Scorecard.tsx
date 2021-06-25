@@ -324,7 +324,6 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         let round = scores + 1;
         let scorearray = Array(Teams.length).fill('');
         let extraarray = Array(Teams.length).fill(['', '', '']);
-        //let teamarray = Array(Teams.length);
         
         setScores([...Scores, {
                 round: round,
@@ -333,7 +332,6 @@ const Scorecard = ({navigation} : {navigation: any}) => {
                 extra: extraarray,
                 winner: null,
         }]);
-        console.log(round)
     }
     
 //final button to update the scorecard through the settings modal
@@ -406,6 +404,21 @@ const UpdateExtra = () => {
         setRoundUpdate(!roundUpdate);
     }
 
+    //when the round is updated, this function will determine the total round winner
+    useEffect(() => {
+
+        if (roundState) {
+        
+            let newArray = [...Scores];
+
+            let i = isLowestPointsEnabled === false ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1].score)) :
+                    isLowestPointsEnabled === true ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1].score)) : null
+        
+            newArray[roundState - 1].winner = i;
+            setScores(newArray);
+        }
+    }, [roundUpdate])
+
 //when the scorecard is updated, this function will add together the scores and round wins and update the dataset
     useEffect(() => {
 
@@ -417,32 +430,8 @@ const UpdateExtra = () => {
             newArray[i].roundWins = Scores.reduce((count, item) => count + (item.winner === i ? 1 : 0), 0);
             setTeams(newArray);
         }
-        
-        // setTeams (
-        //     [
-        //         {...Teams[0], total: Scores.reduce((a,v) =>  a = a + v.score[0] , 0), roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0), }, 
-        //         {...Teams[1], total: Scores.reduce((a,v) =>  a = a + v.score[1] , 0 ), roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),}, 
-        //     ]
-        // );
-    },[Updated]);
+    },[roundUpdate]);
 
-//when the round is updated, this function will determine the total round winner
-    useEffect(() => {
-
-        if (roundState) {
-            let newArray = [...Scores];
-
-            const roundWinner = isLowestPointsEnabled === false ? Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1]) :
-                                isLowestPointsEnabled === true ? Math.min(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1]) :
-                                Math.max(newArray[roundState - 1].score[0], newArray[roundState - 1].score[1])
-            
-            const winnerIndex = roundWinner === parseInt(newArray[roundState - 1].score[0]) ? 0 : 
-                                roundWinner === parseInt(newArray[roundState - 1].score[1]) ? 1 : null;
-
-            newArray[roundState - 1].winner = winnerIndex;
-            setScores(newArray);
-        }
-    }, [roundUpdate])
 
 //clear scorecard function
     const clearScorecard = () => {
@@ -455,6 +444,7 @@ const UpdateExtra = () => {
         setScorecardData(array);
         setUpdateScores(!updateScores);  
         setRoundState(1);  
+        setIsTwoPlayer(true);
 
         hideClearModal();    
     };
@@ -503,15 +493,19 @@ const UpdateExtra = () => {
     const [roundLeader, setRoundLeader] = useState(0);
 
     useEffect(() => {
+
+        let totalarray = Teams.map(i => i.total);
+        let roundarray = Teams.map(i => i.roundWins);
+
         if (isLowestPointsEnabled === false) {
-            setLeader( Math.max(Teams[0].total, Teams[1].total));
-            setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins));
+            setLeader( Math.max(...totalarray));
+            setRoundLeader( Math.max(...roundarray));
         }
         if (isLowestPointsEnabled === true) {
-            setLeader( Math.min(Teams[0].total, Teams[1].total, Teams[2].total, Teams[3].total));
-            setRoundLeader( Math.max(Teams[0].roundWins, Teams[1].roundWins, Teams[2].roundWins, Teams[3].roundWins));
+            setLeader( Math.min(...totalarray));
+            setRoundLeader( Math.max(...roundarray));
         }
-    }, [Teams])
+    }, [roundUpdate])
 
 //footer that displays the team score totals
     const Footer = ({total, style}: {total: any, style: any}) => {
@@ -726,8 +720,8 @@ const UpdateExtra = () => {
         const Round = round
 
         const roundWinner =
-            isLowestPointsEnabled === false ? Math.max(score[0], score[1]) :
-            isLowestPointsEnabled === true ? Math.min(score[0], score[1]) : Math.max(score[0], score[1])
+            isLowestPointsEnabled === false ? Math.max(...score) :
+            isLowestPointsEnabled === true ? Math.min(...score) : null
 
 //item for the extras list. Controlled by state to show bid, meld, bonus
         const ExtraItemSingle = ({index, item} : {index: any, item: any}) => {
@@ -1418,7 +1412,7 @@ const UpdateExtra = () => {
                                     style={{textAlign: 'center', height: 80, width: '100%', fontFamily: 'chalkboard-bold', fontSize: 40}}
                                     maxLength={20}
                                     autoFocus={true}
-                                    onChangeText={val => Set({val})}
+                                onChangeText={val => Set(val)}
                                 /> 
                             </View>
                         </View>
@@ -1634,7 +1628,7 @@ const UpdateExtra = () => {
                         }}
                         ref={horzScrollRef3}
                         scrollEnabled={false}
-                        extraData={roundUpdate}
+                        //extraData={Scores}
                     />
                 ) : null }
 {/* Footer flatlist for point wins */}
