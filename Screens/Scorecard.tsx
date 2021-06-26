@@ -6,6 +6,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import OptionsMenu from "react-native-option-menu";
 
 import Timer from '../Components/Timer';
+import { TapGestureHandler } from 'react-native-gesture-handler';
 
 
 //constants
@@ -19,12 +20,15 @@ const DoneSound = ['none', 'ting', 'rooster', 'whistle', 'doorbell', 'air horn',
 
 const Ticker = ['none', 'clock', 'stopwatch', 'grandfather clock', 'water tap', 'blood', 'war drums', 'jumanji', 'jeopordy'];
 
+//convert rounds from 1 to roman numerals
 const toRoman = require('roman-numerals').toRoman;
 [ 42, new Number(42), '42', new String('42')].forEach(function (x, i) {});
 
-
 //exported scorecard function
 const Scorecard = ({navigation} : {navigation: any}) => {
+
+//for timer to scroll to bottom
+    //const scrollViewRef = useRef();
 
 //number of teams array
     const [TeamArray, setTeamArray] = useState([1, 2]);
@@ -134,14 +138,18 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     }, [Teams])
 
 //setting states
+
     const [whiteTheme, setWhiteTheme] = useState(true);
-    const toggleWhiteTheme = () => setWhiteTheme(previousState => !previousState);
+    const toggleWhiteTheme = () => {setWhiteTheme(previousState => !previousState); setChalkTheme(false); setLegalPadTheme(false); setDarkTheme(false);}
+
+    const [chalkTheme, setChalkTheme] = useState(false);
+    const toggleChalkTheme = () => {setChalkTheme(previousState => !previousState); setDarkTheme(false); setLegalPadTheme(false); setWhiteTheme(false);}
 
     const [darkTheme, setDarkTheme] = useState(false);
-    const toggleDarkTheme = () => setDarkTheme(previousState => !previousState);
+    const toggleDarkTheme = () => {setDarkTheme(previousState => !previousState); setChalkTheme(false); setLegalPadTheme(false); setWhiteTheme(false);}
 
     const [legalPadTheme, setLegalPadTheme] = useState(false);
-    const toggleLegalPad = () => setLegalPadTheme(previousState => !previousState);
+    const toggleLegalPad = () => {setLegalPadTheme(previousState => !previousState); setChalkTheme(false); setDarkTheme(false); setWhiteTheme(false);}
 
     const [isBidEnabled, setIsBidEnabled] = useState(false);
     const toggleSwitchBid = () => setIsBidEnabled(previousState => !previousState);
@@ -167,8 +175,10 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     const [isLowestPointsEnabled, setIsLowestPointsEnabled] = useState(false);
     const toggleSwitchLowestPoints = () => setIsLowestPointsEnabled(previousState => !previousState);
 
+    //const [scrollToEnd, setScrollToEnd] = useState(false);
+
     const [isTimerEnabled, setIsTimerEnabled] = useState(false);
-    const toggleSwitchTimer = () => setIsTimerEnabled(previousState => !previousState);
+    const toggleSwitchTimer = () => setIsTimerEnabled(previousState => !previousState); //setScrollToEnd(previousState => !previousState);}
 
     const [isWarningEnabled, setIsWarningEnabled] = useState(false);
     const toggleSwitchWarning = () => setIsWarningEnabled(previousState => !previousState);
@@ -196,41 +206,43 @@ const Scorecard = ({navigation} : {navigation: any}) => {
 
 //themes
     const ThemeColor = 
-            darkTheme === true ? '#fff' : 
+            chalkTheme === true ? '#fff' : 
             legalPadTheme === true ? '#6a0dad' :
+            darkTheme === true ? 'gold' :
             whiteTheme === true ? '#000' : '#000';
 
     const Theme2Color = 
-            darkTheme === true ? '#ffffffa5' :
+            chalkTheme === true ? '#ffffffa5' :
             legalPadTheme === true ? '#3b49bf' :
+            darkTheme === true ? '#ffffffa5' :
             whiteTheme === true ? '#000000a5' : '#000000a5';
 
     const ThemeBackgroundColor = 
-            darkTheme === true ? '#000' :
+            chalkTheme === true ? 'transparent' :
             legalPadTheme === true ? '#f7f483' :
+            darkTheme === true ? '#000' :
             whiteTheme === true ? '#fff' : '#fff';
 
     const ThemeBackgroundColor2 = 
-            darkTheme === true ? 'transparent' :
+            chalkTheme === true ? 'transparent' :
             legalPadTheme === true ? '#f7f483' :
+            darkTheme === true ? '#000' :
             whiteTheme === true ? '#fff' : '#fff';
 
     const ThemeBackgroundColor3 = 
-            darkTheme === true ? 'transparent' :
+            chalkTheme === true ? 'transparent' :
             legalPadTheme === true ? 'lightgray' :
-            'lightgray';
+            darkTheme === true ? 'transparent' :
+            'lightgray';  
 
-    useEffect(() => {
-        if (legalPadTheme === true) {setDarkTheme(false); setWhiteTheme(false);}
-    }, [legalPadTheme])
 
-    useEffect(() => {
-        if (darkTheme === true) {setLegalPadTheme(false); setWhiteTheme(false);}
-    }, [darkTheme])
-
-    useEffect(() => {
-        if (whiteTheme === true) {setDarkTheme(false); setLegalPadTheme(false);}
-    }, [whiteTheme])    
+//scroll timer settings to the bottom
+    // useEffect(() => {
+    //     if (isTimerEnabled === true) {scrollViewRef.current?.scrollTo({
+    //         y: 700,
+    //         animated: true,
+    //     })}
+    // }, [scrollToEnd])
 
 //conversion function for timer - seconds from textinput to millieconds
     const ConvertToMillis = (val : any) => {
@@ -640,7 +652,7 @@ const UpdateExtra = () => {
     const renderFooter = ({ item } : {item: any}) => {
         const color = item.total === leader && darkTheme === false ? 'green' :
                     item.total === leader && darkTheme === true ? 'green' :
-                    item.total !== leader && darkTheme === true ? '#fff' :
+                    item.total !== leader && darkTheme || chalkTheme=== true ? '#fff' :
                     '#000'
         return (
             <Footer
@@ -654,7 +666,7 @@ const UpdateExtra = () => {
     const renderWinsFooter = ({ item } : {item: any}) => {
         const color = item.roundWins === roundLeader && darkTheme === false ? 'green' :
                       item.roundWins === roundLeader && darkTheme === true ? 'green' :
-                      item.roundWins !== roundLeader && darkTheme === true ? '#fff' :
+                      item.roundWins !== roundLeader && darkTheme || chalkTheme === true ? '#fff' :
                       '#000';
         return (
             <WinsFooter
@@ -943,7 +955,7 @@ const UpdateExtra = () => {
         <Provider>
             <View>
 {/* image background for the dark theme */}
-                {darkTheme === true ? (
+                {chalkTheme === true ? (
                     <ImageBackground 
                             source={require('../assets/chalkboard.jpg')}
                             imageStyle={{resizeMode: 'cover', width: SCREEN_WIDTH, height: SCREEN_HEIGHT + 30}}
@@ -1277,7 +1289,7 @@ const UpdateExtra = () => {
                                     </View>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
-                                            Chalkboard
+                                            Arcade
                                         </Text> 
                                         <Switch
                                             trackColor={{ false: "#767577", true: "#B2D9BF" }}
@@ -1297,6 +1309,18 @@ const UpdateExtra = () => {
                                             ios_backgroundColor="#3e3e3e"
                                             onValueChange={toggleLegalPad}
                                             value={legalPadTheme}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                        <Text style={{fontSize: 16}}>
+                                            Chalkboard
+                                        </Text> 
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                            thumbColor={chalkTheme ? "#155843" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={toggleChalkTheme}
+                                            value={chalkTheme}
                                         />
                                     </View>
                                 </View>  
@@ -1319,126 +1343,131 @@ const UpdateExtra = () => {
                                             value={isTimerEnabled}
                                         />
                                     </View>
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            15 Second Warning
-                                        </Text> 
-                                        <Switch
-                                            trackColor={{ false: "#767577", true: "#B2D9BF" }}
-                                            thumbColor={isWarningEnabled ? "#155843" : "#f4f3f4"}
-                                            ios_backgroundColor="#3e3e3e"
-                                            onValueChange={toggleSwitchWarning}
-                                            value={isWarningEnabled}
-                                        />
-                                    </View>
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-                                            <Text style={{fontSize: 16}}>
-                                                Length
-                                            </Text> 
-                                            <Text style={{ fontSize: 12, color: 'gray', marginLeft: 6}}>
-                                                (in seconds)
-                                            </Text>
-                                        </View>
-                                        
-                                        <TextInput 
-                                            //placeholder={(roundLength / 1000).toString()}
-                                            placeholder={timePlaceholder}
-                                            placeholderTextColor='#000000a5'
-                                            keyboardType='number-pad'
-                                            style={{textAlign: 'right', height: 30, width: 60, fontFamily: 'chalkboard-bold', fontSize: 16}}
-                                            maxLength={5}
-                                            autoFocus={false}
-                                            onChangeText={val => ConvertToMillis(val)}
-                                        />
-                                    </View>
-                                    
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            Ding
-                                        </Text> 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-                                            <ModalDropdown 
-                                                options={DoneSound}
-                                                defaultValue={DoneSoundPlaceholder}
-                                                defaultTextStyle={{ color: '#155843'}}
-                                                onSelect={(val) => {setSound(val.toString()); setDoneSoundPlaceholder(DoneSound[val])}}
-                                                style={{ 
-                                                }}
-                                                textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
-                                                dropdownStyle={{ 
-                                                    backgroundColor: '#363636', 
-                                                    width: 200, 
-                                                    borderWidth: 0,
-                                                    borderRadius: 15,
-                                                    height: 330,
-                                                    marginTop: 10
-                                                }}
-                                                dropdownTextStyle={{ 
-                                                    backgroundColor: 'transparent',
-                                                    color: '#fff',
-                                                    fontSize: 14,
-                                                    paddingHorizontal: 20,
-                                                    paddingVertical: 15,
-                                                    textTransform: 'capitalize',
-                                                    fontFamily: 'chalkboard-regular'  
-                                                }}
-                                                dropdownTextHighlightStyle={{
-                                                    color: '#41a661'
-                                                }}
-                                            />
-                                            <Feather 
-                                                name='chevron-down'
-                                                color='#155843'
-                                                size={22}
-                                                style={{ marginLeft: 10}}
-                                            />
-                                        </View>
-                                    </View>
 
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-                                        <Text style={{fontSize: 16}}>
-                                            Ticker
-                                        </Text> 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-                                            <ModalDropdown 
-                                                options={Ticker}
-                                                defaultValue={TickerPlaceholder}
-                                                defaultTextStyle={{ color: '#155843'}}
-                                                onSelect={(val) => {setTicker(val.toString()); setTickerPlaceholder(Ticker[val])}}
-                                                style={{ 
-                                                }}
-                                                textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
-                                                dropdownStyle={{ 
-                                                    backgroundColor: '#363636', 
-                                                    width: 200, 
-                                                    borderWidth: 0,
-                                                    borderRadius: 15,
-                                                    height: 320,
-                                                    marginTop: 10
-                                                }}
-                                                dropdownTextStyle={{ 
-                                                    backgroundColor: 'transparent',
-                                                    color: '#fff',
-                                                    fontSize: 14,
-                                                    paddingHorizontal: 20,
-                                                    paddingVertical: 15,
-                                                    textTransform: 'capitalize',
-                                                    fontFamily: 'chalkboard-regular'
-                                                    
-                                                }}
-                                                dropdownTextHighlightStyle={{
-                                                    color: '#41a661'
-                                                }}
-                                            />
-                                            <Feather 
-                                                name='chevron-down'
-                                                color='#155843'
-                                                size={22}
-                                                style={{ marginLeft: 10}}
-                                            />
+                                    {isTimerEnabled === true ? (
+                                        <View>
+                                            <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                                <Text style={{fontSize: 16}}>
+                                                    15 Second Warning
+                                                </Text> 
+                                                <Switch
+                                                    trackColor={{ false: "#767577", true: "#B2D9BF" }}
+                                                    thumbColor={isWarningEnabled ? "#155843" : "#f4f3f4"}
+                                                    ios_backgroundColor="#3e3e3e"
+                                                    onValueChange={toggleSwitchWarning}
+                                                    value={isWarningEnabled}
+                                                />
+                                            </View>
+                                            <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                                    <Text style={{fontSize: 16}}>
+                                                        Length
+                                                    </Text> 
+                                                    <Text style={{ fontSize: 12, color: 'gray', marginLeft: 6}}>
+                                                        (in seconds)
+                                                    </Text>
+                                                </View>
+                                                
+                                                <TextInput 
+                                                    //placeholder={(roundLength / 1000).toString()}
+                                                    placeholder={timePlaceholder}
+                                                    placeholderTextColor='#000000a5'
+                                                    keyboardType='number-pad'
+                                                    style={{textAlign: 'right', height: 30, width: 60, fontFamily: 'chalkboard-bold', fontSize: 16}}
+                                                    maxLength={5}
+                                                    autoFocus={false}
+                                                    onChangeText={val => ConvertToMillis(val)}
+                                                />
+                                            </View>
+                                        
+                                            <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                                <Text style={{fontSize: 16}}>
+                                                    Ding
+                                                </Text> 
+                                                <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                                    <ModalDropdown 
+                                                        options={DoneSound}
+                                                        defaultValue={DoneSoundPlaceholder}
+                                                        defaultTextStyle={{ color: '#155843'}}
+                                                        onSelect={(val) => {setSound(val.toString()); setDoneSoundPlaceholder(DoneSound[val])}}
+                                                        style={{ 
+                                                        }}
+                                                        textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
+                                                        dropdownStyle={{ 
+                                                            backgroundColor: '#363636', 
+                                                            width: 200, 
+                                                            borderWidth: 0,
+                                                            borderRadius: 15,
+                                                            height: 330,
+                                                            marginTop: 10
+                                                        }}
+                                                        dropdownTextStyle={{ 
+                                                            backgroundColor: 'transparent',
+                                                            color: '#fff',
+                                                            fontSize: 14,
+                                                            paddingHorizontal: 20,
+                                                            paddingVertical: 15,
+                                                            textTransform: 'capitalize',
+                                                            fontFamily: 'chalkboard-regular'  
+                                                        }}
+                                                        dropdownTextHighlightStyle={{
+                                                            color: '#41a661'
+                                                        }}
+                                                    />
+                                                    <Feather 
+                                                        name='chevron-down'
+                                                        color='#155843'
+                                                        size={22}
+                                                        style={{ marginLeft: 10}}
+                                                    />
+                                                </View>
+                                            </View>
+
+                                            <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                                                <Text style={{fontSize: 16}}>
+                                                    Ticker
+                                                </Text> 
+                                                <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                                    <ModalDropdown 
+                                                        options={Ticker}
+                                                        defaultValue={TickerPlaceholder}
+                                                        defaultTextStyle={{ color: '#155843'}}
+                                                        onSelect={(val) => {setTicker(val.toString()); setTickerPlaceholder(Ticker[val])}}
+                                                        style={{ 
+                                                        }}
+                                                        textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
+                                                        dropdownStyle={{ 
+                                                            backgroundColor: '#363636', 
+                                                            width: 200, 
+                                                            borderWidth: 0,
+                                                            borderRadius: 15,
+                                                            height: 320,
+                                                            marginTop: 10
+                                                        }}
+                                                        dropdownTextStyle={{ 
+                                                            backgroundColor: 'transparent',
+                                                            color: '#fff',
+                                                            fontSize: 14,
+                                                            paddingHorizontal: 20,
+                                                            paddingVertical: 15,
+                                                            textTransform: 'capitalize',
+                                                            fontFamily: 'chalkboard-regular'
+                                                            
+                                                        }}
+                                                        dropdownTextHighlightStyle={{
+                                                            color: '#41a661'
+                                                        }}
+                                                    />
+                                                    <Feather 
+                                                        name='chevron-down'
+                                                        color='#155843'
+                                                        size={22}
+                                                        style={{ marginLeft: 10}}
+                                                    />
+                                                </View>
+                                            </View>
                                         </View>
-                                    </View>
+                                    ) : <View style={{ height: 24}}></View>}
                                 </View> 
                             </View>     
                         </ScrollView>
