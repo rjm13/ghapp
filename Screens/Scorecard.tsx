@@ -475,7 +475,9 @@ const UpdateExtra = () => {
 
             let newArray = [...Teams];
 
-            newArray[i].total = Scores.reduce((a,v) => a = a + v.score[i], 0),
+            let list = Scores.map(i => i.score[i])
+
+            newArray[i].total = Scores.reduce((a,v) => a = a + (v.score[i] === '' ? 0 : v.score[i]), 0),
             newArray[i].roundWins = Scores.reduce((count, item) => count + (item.winner === i ? 1 : 0), 0);
             setTeams(newArray);
         }

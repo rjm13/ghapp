@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, ImageBackground, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, ImageBackground, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 
 
 const DATA = [
@@ -57,14 +57,16 @@ const DATA = [
   
   const Item = ({ category, tile, onPress, style }) => (
 
-    <TouchableOpacity 
+    <TouchableWithoutFeedback 
       onPress={onPress}
-      style={styles.content}
     >
-          <ImageBackground source={tile} style={[styles.imageContent, style]}>
+      <View style={styles.content}>
+        <ImageBackground source={tile} style={[styles.imageContent, style]}>
             <Text style={styles.category} >{category}</Text>
           </ImageBackground>
-    </TouchableOpacity>
+      </View>
+          
+    </TouchableWithoutFeedback>
     
   );
   
