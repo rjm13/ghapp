@@ -233,7 +233,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     }, [whiteTheme])    
 
 //conversion function for timer - seconds from textinput to millieconds
-    const ConvertToMillis = ({val} : {val: any}) => {
+    const ConvertToMillis = (val : any) => {
         let time = parseInt(val) * 1000
         setRoundLength(time)
         console.log(time)
