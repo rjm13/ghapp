@@ -775,7 +775,7 @@ const UpdateExtra = () => {
         
     const showTeamModal = ({id, name} : {id: any, name: string}) => {
         setTeamSettingId(id);
-        setTeamName(Teams[TeamSettingId - 1].name ? Teams[TeamSettingId - 1].name : 'Team' + ' ' + id.toString())
+        setTeamName(Teams[id - 1].name ? Teams[id - 1].name : 'Team' + ' ' + id.toString())
         setVisibleTeamModal(true);
         setPlayers(Teams[id - 1].playerNames);
     }
