@@ -473,7 +473,7 @@ const UpdateExtra = () => {
             let newArray = [...Scores];
 
             let i = isLowestPointsEnabled === false ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1].score)) :
-                    isLowestPointsEnabled === true ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1].score)) : null
+                    isLowestPointsEnabled === true ? newArray[roundState - 1].score.indexOf(Math.min(...Scores[roundState - 1].score)) : null
         
             newArray[roundState - 1].winner = i;
             setScores(newArray);
