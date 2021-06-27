@@ -333,6 +333,8 @@ const Scorecard = ({navigation} : {navigation: any}) => {
 
     const DeleteTeam = () => {
 
+        let numbTeams = Teams.length
+
         let id = teamToDelete
 
     //delete the team object
@@ -358,6 +360,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         setTeamNames(newTeamNamesArray);
 
         setUpdated(!Updated);
+        setTeamSettingId(1);
         setTeamState(1);
 
         hideDeleteTeamModal();
@@ -373,7 +376,13 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             
             setScores(newArray);
         }
+//subtract 1 from the id of every team in the list that is after the deleted team
+        for (var i = id; i < numbTeams; i++ ) {
+            let newIdArray = [...Teams];
+            newIdArray[i - 1].id = newIdArray[i -1].id - 1
 
+            setTeams(newIdArray);
+        }
     };
 
 //function to add another round to the scorecard
