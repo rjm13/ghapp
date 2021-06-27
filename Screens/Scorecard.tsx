@@ -378,10 +378,10 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         }
 //subtract 1 from the id of every team in the list that is after the deleted team
         for (var i = id; i < numbTeams; i++ ) {
-            let newIdArray = [...Teams];
-            newIdArray[i - 1].id = newIdArray[i -1].id - 1
+            //let newIdArray = [...Teams];
+            newArray[i - 1].id = newArray[i - 1].id - 1
 
-            setTeams(newIdArray);
+            setTeams(newArray);
         }
     };
 
