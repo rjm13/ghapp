@@ -4,9 +4,34 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
 import OptionsMenu from "react-native-option-menu";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
 import Timer from '../Components/Timer';
-import { TapGestureHandler } from 'react-native-gesture-handler';
+
+//saved setting state
+const SavedSetting = {
+    id: 1,
+    title: '',
+    NumTeams: 2,
+    isRounds: true,
+    isPoints: true, 
+    lowestPoints: false,
+    isBid: false,
+    isMeld: false,
+    isBonus: false,
+    isRoman: true,
+    roundWinners: true,
+    isWhiteTheme: true,
+    isDarkTheme: false,
+    isLegalTheme: false,
+    isChalkTheme: false,
+    isTimer: false,
+    isTimerWarning: false,
+    isTimerLength: 60,
+    isTimerDing: 'ting',
+    isTimerTicker: 'clock'
+}
 
 
 //constants
@@ -60,7 +85,6 @@ const Scorecard = ({navigation} : {navigation: any}) => {
                 playerID: [],
                 total: 0 ,
                 roundWins: 0,
-                //roundWins: Scores.reduce((count, item) => count + (item.winner === 0 ? 1 : 0), 0),
             },
             {
                 id: '2',
@@ -69,7 +93,6 @@ const Scorecard = ({navigation} : {navigation: any}) => {
                 playerID: [],
                 total: 0,
                 roundWins: 0,
-                //roundWins: Scores.reduce((count, item) => count + (item.winner === 1 ? 1 : 0), 0),
             },
         ]
     )
@@ -81,10 +104,21 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             name: new Date().toDateString(),
             updated: false,
             dateCreated: new Date().toDateString(),
-            teams: [Teams],
-            scores: [Scores]
+            teams: '1',
+            scores: '1',
+            //teams: [Teams],
+            //scores: [Scores]
         },
     );
+
+//set uuid
+    useEffect(() => {
+        let cardIdentity = uuid.v4();
+        let teamIdentity = uuid.v4();
+        let scoreIdentity = uuid.v4();
+        setScorecardData({...ScorecardData, id: cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString() })
+
+    }, [])
 
 // State controllers to force update of components through useEffect and extraData(flatlist)
     const [Updated, setUpdated] = useState(true);
@@ -235,6 +269,30 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             darkTheme === true ? 'transparent' :
             'lightgray';  
 
+
+    const SaveToStorage = () => {
+        let ScorecardDataToLoad = ScorecardData;
+        let TeamsToLoad = {
+            id: ScorecardData.teams,
+            teams: Teams,
+        }
+        let ScoresToLoad = {
+            id: ScorecardData.scores,
+            scores: Scores,
+        }
+    }
+
+    const SaveSettings = () => {
+        alert('Save the settings of this scorecard as a preset game')
+    }
+
+    const MarkComplete = () => {
+        alert('mark this scorecard as complete')
+    }
+
+    const Share = () => {
+        alert('share this scorecard on social media')
+    }
 
 //scroll timer settings to the bottom
     // useEffect(() => {
@@ -426,7 +484,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     const Set = (val : any) => {
         setScorecardData(
             {...ScorecardData, updated: Updated, name: val, } 
-        )
+        );
     }
 
 //text state management for textInputs
@@ -520,7 +578,8 @@ const UpdateExtra = () => {
         setExtraArray([['', '', ''], ['', '', '']]);
         setScoreArray(['', '']);
         setTeamNames(['Team 1', 'Team 2']);
-       
+        setTeamPlayer('');
+        setPlayers([])
 
         hideClearModal();    
     };
@@ -778,7 +837,7 @@ const UpdateExtra = () => {
         setTeamSettingId(id);
         setTeamName(Teams[id - 1].name ? Teams[id - 1].name : 'Team' + ' ' + id.toString())
         setVisibleTeamModal(true);
-        setPlayers(Teams[id - 1].playerNames);
+        setPlayers(Teams[id - 1].playerNames ? Teams[id - 1].playerNames : []);
     }
 
     const hideTeamModal = () => setVisibleTeamModal(false);
@@ -1604,7 +1663,8 @@ const UpdateExtra = () => {
                                     onChangeText={val => setTeamPlayer(val)}  
                                     ref={addPlayerRef}
                                 /> 
-                                <TouchableOpacity onPress={() =>  {setPlayers([...players, teamPlayer]); addPlayerRef.current.clear() }}>
+                                <TouchableOpacity onPress={() =>  {setPlayers([...players, teamPlayer]); addPlayerRef.current?.clear() 
+                                    }}>
                                     <View style={{alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 15, backgroundColor: '#155843a5'}}>
                                         <Feather 
                                             name='corner-right-up'
@@ -1659,7 +1719,7 @@ const UpdateExtra = () => {
                             customButton={MoreIcon}
                             destructiveIndex={1}
                             options={["New","Save Settings", "Mark as Complete", "Share", "Save Scores"]}
-                            actions={[showClearModal]}
+                            actions={[showClearModal, SaveSettings, MarkComplete, Share, SaveToStorage]}
                         />
                     </View> 
                 </View>
