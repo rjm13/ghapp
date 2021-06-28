@@ -219,13 +219,13 @@ const Scorecard = ({navigation} : {navigation: any}) => {
 
     const ThemeBackgroundColor = 
             chalkTheme === true ? 'transparent' :
-            legalPadTheme === true ? '#f7f483' :
+            legalPadTheme === true ? '#fffdb3' :
             darkTheme === true ? '#000' :
             whiteTheme === true ? '#fff' : '#fff';
 
     const ThemeBackgroundColor2 = 
             chalkTheme === true ? 'transparent' :
-            legalPadTheme === true ? '#f7f483' :
+            legalPadTheme === true ? '#fffdb3' :
             darkTheme === true ? '#000' :
             whiteTheme === true ? '#fff' : '#fff';
 
@@ -891,15 +891,19 @@ const UpdateExtra = () => {
 
         const renderRow = ({ item, index } : {item: any, index: any}) => {
 
-            const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true && darkTheme === false ? '#f0f0f0a5' : 
-                                    item === roundWinner && item !== 0 && isRoundWinnerEnabled === true && darkTheme === true ? '#606060a5' : 'transparent';
+            const backgroundColor = item === roundWinner && item !== 0 && isRoundWinnerEnabled === true && whiteTheme === true ? '#f0f0f0a5' : 
+                                    item === roundWinner && item !== 0 && isRoundWinnerEnabled === true && darkTheme === true ? '#606060a5' :
+                                    item === roundWinner && item !== 0 && isRoundWinnerEnabled === true && chalkTheme === true ? '#8080804D' :
+                                    'transparent';
+
+            const borderRightWidth = index + 1 === Teams.length ? 0 : 0.2;
             
 
             return (
                 <Row
                     index={index}
                     item={item}
-                    style={{  backgroundColor }}
+                    style={{  backgroundColor, borderRightWidth }}
                 />
             );
         };
@@ -1299,7 +1303,7 @@ const UpdateExtra = () => {
                                     </View>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
                                         <Text style={{fontSize: 16}}>
-                                            Arcade
+                                            Midnight
                                         </Text> 
                                         <Switch
                                             trackColor={{ false: "#767577", true: "#B2D9BF" }}
@@ -1399,7 +1403,7 @@ const UpdateExtra = () => {
                                                         options={DoneSound}
                                                         defaultValue={DoneSoundPlaceholder}
                                                         defaultTextStyle={{ color: '#155843'}}
-                                                        onSelect={(val) => {setSound(val.toString()); setDoneSoundPlaceholder(DoneSound[val])}}
+                                                        onSelect={(val : any) => {setSound(val.toString()); setDoneSoundPlaceholder(DoneSound[val])}}
                                                         style={{ 
                                                         }}
                                                         textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
@@ -1442,7 +1446,7 @@ const UpdateExtra = () => {
                                                         options={Ticker}
                                                         defaultValue={TickerPlaceholder}
                                                         defaultTextStyle={{ color: '#155843'}}
-                                                        onSelect={(val) => {setTicker(val.toString()); setTickerPlaceholder(Ticker[val])}}
+                                                        onSelect={(val : any) => {setTicker(val.toString()); setTickerPlaceholder(Ticker[val])}}
                                                         style={{ 
                                                         }}
                                                         textStyle={{ color: '#155843', fontSize: 18, textTransform: 'capitalize', fontFamily: 'chalkboard-regular'}}
