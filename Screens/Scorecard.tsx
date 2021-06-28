@@ -519,6 +519,7 @@ const UpdateExtra = () => {
         setTeamArray([1, 2]);
         setExtraArray([['', '', ''], ['', '', '']]);
         setScoreArray(['', '']);
+        setTeamNames(['Team 1', 'Team 2']);
        
 
         hideClearModal();    
