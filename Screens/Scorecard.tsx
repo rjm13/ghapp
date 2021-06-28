@@ -1783,7 +1783,7 @@ const UpdateExtra = () => {
                     ref={scrollRef}
                     scrollEnabled={false}
                     scrollEventThrottle={16}
-                    stickyHeaderIndices={[]}
+                    //stickyHeaderIndices={[]}
                     ListHeaderComponent={() => (
                         <View style={[styles.roundbox, {height: 50, backgroundColor:  ThemeBackgroundColor2}]}>
                         </View>
@@ -1792,11 +1792,11 @@ const UpdateExtra = () => {
                         <View>
                             <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
                                 <TouchableOpacity onPress={SetNewRound}>
-                                    <Feather 
+                                    {/* <Feather 
                                         name='plus-circle'
                                         color='lightgray'
                                         size={22}
-                                    /> 
+                                    />  */}
                                 </TouchableOpacity>
                             </View>
                             <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
@@ -1814,13 +1814,13 @@ const UpdateExtra = () => {
                         </View>
                     )}
                 /> 
-                 
+               
             </View>
 
             { isRoundWinsEnabled ? (
-                <View style={[styles.roundbox, { position: 'absolute', backgroundColor: ThemeBackgroundColor, 
+                <View style={[styles.roundbox, { height: 50, position: 'absolute', backgroundColor: ThemeBackgroundColor, 
                     bottom: isTimerEnabled === true ? 110 : isPointsEnabled === false ? 0 : 50
-                    , left: 0, height: 50}]}> 
+                    , left: 0}]}> 
                     <TouchableOpacity>
                         <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
@@ -1831,26 +1831,26 @@ const UpdateExtra = () => {
                 </View>
             ) : null }
 
-            { isPointsEnabled ? (
+            {/* { isPointsEnabled ? ( */}
                 <View style={[styles.roundbox, { 
                     backgroundColor: ThemeBackgroundColor,
                     position: 'absolute', 
                     bottom: isTimerEnabled === true ? 60 : 0, 
                     left: 0, height: 50}]}> 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={SetNewRound}>
                         <View style={[styles.roundbox, {height: 50, backgroundColor: ThemeBackgroundColor2}]}>
                             {/* <Text style={[styles.round, {fontSize: 12}]}>
                                 Points
                             </Text> */}
-                            {/* <Feather 
+                            <Feather 
                                 name='plus-circle'
                                 color='gray'
                                 size={22}
-                            />  */}
+                            /> 
                         </View> 
                     </TouchableOpacity>
                 </View>
-            ) : null }
+            {/* ) : null } */}
 
             { isTimerEnabled ? (
                 <View style={{position: 'absolute', bottom: -2, left: 0}}> 
