@@ -885,21 +885,42 @@ const UpdateExtra = () => {
 
     const SavedItems = ({item} : any) => {
 
-        const [itemname, setitemname] = useState('')
+        let [itemname, setitemname] = useState('');
+
+        useEffect(() => {
+            let componentMounted = true;
+              const fetchData = async () => {
+                try {
+                    let object = await AsyncStorage.getItem(item);
+                    let objs = object ? JSON.parse(object) : null
+                    if(componentMounted) {
+                    setitemname(objs.name);
+                }
+                } catch(e) {
+                    // read error
+                }
+                
+              };
+              fetchData();
+              return () => {
+               componentMounted = false;
+              }
+            }, []);
+
+        // let [itemname, setitemname] = useState('');
   
-        const getMyObject = async () => {
+        // const getMyObject = async () => {
     
-            try {
-                let object = await AsyncStorage.getItem(item);
-                let objs = object ? JSON.parse(object) : null
-                setitemname(objs.name)
-            } catch(e) {
-              // read error
-            }
-            
-        }
+        //     try {
+        //         let object = await AsyncStorage.getItem(item);
+        //         let objs = object ? JSON.parse(object) : null
+        //         setitemname(objs.name)
+        //     } catch(e) {
+        //       // read error
+        //     }
+        // }
     
-        getMyObject();
+        // getMyObject();
 
         return (
             <TouchableOpacity onPress={() => {LoadCard({item}); hideLoadModal()}}>
