@@ -20,6 +20,7 @@ import GamesHome from '../Screens/GamesHome';
 // import UpdateEmail from '../authentication/screens/UpdateEmail';
 
 import ScoresHome from '../Screens/ScoresHome';
+import SavedScores from '../Screens/SavedScoresScreen';
 // import GamePageScreen from '../screens/GameScreen';
 // import ProfileScreen from '../screens/ProfileScreen';
 // import EditProfile from '../screens/EditProfile';
@@ -250,13 +251,35 @@ function GameNavigator() {
 
 const ScoreStack = createStackNavigator();
 
-function ScoreNavigator() {
+function ScoreNavigator({navigation}) {
   return (
     <ScoreStack.Navigator>
       <ScoreStack.Screen
         name="ScoreHome"
         component={ScoresHome}
         options={{ headerShown: false }}
+      />
+      <ScoreStack.Screen
+        name="SavedScores"
+        component={SavedScores}
+        options={{ 
+            headerShown: false,
+            headerLeft: () => (
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                            }}
+                >
+                <Feather.Button 
+                    name='chevron-left'
+                    size={20}
+                    backgroundColor='#155843'
+                    style={{ paddingLeft: 25 }}
+                    onPress={navigation.goBack()}
+                />
+                </View>
+            ),
+         }}
       />
     </ScoreStack.Navigator>
   );

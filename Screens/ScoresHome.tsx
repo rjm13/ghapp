@@ -47,13 +47,15 @@ const ScorecardMenu = ({navigation}) => {
                 </View>
 
                 <View style={{ alignItems: 'center'}}>
-                    <View style={styles.quickbutton}>
-                            <Ionicons 
-                                name='save'
-                                size={36}
-                                color='#B2D9BF'
-                            />
-                    </View>
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('SavedScores')}>
+                        <View style={styles.quickbutton}>
+                                <Ionicons 
+                                    name='save'
+                                    size={36}
+                                    color='#B2D9BF'
+                                />
+                        </View>
+                    </TouchableWithoutFeedback>
                     <Text style={styles.quickbuttontext}>
                         Saved
                     </Text>
