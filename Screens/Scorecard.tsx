@@ -116,7 +116,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         let cardIdentity = uuid.v4();
         let teamIdentity = uuid.v4();
         let scoreIdentity = uuid.v4();
-        setScorecardData({...ScorecardData, id: cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString() })
+        setScorecardData({...ScorecardData, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString() })
 
     }, [])
 
@@ -124,10 +124,12 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     const [Updated, setUpdated] = useState(true);
     const [roundUpdate, setRoundUpdate] = useState(false);
     const [updateScores, setUpdateScores] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
 
 //round and team state management for updating the score through the modal
     const [roundState, setRoundState] = useState(1);
     const [teamState, setTeamState] = useState(1);
+    const [loadedCards, setLoadedCards] = useState([''])
 
 //blank datasets to reset the scorecard
     const blankScorecard = {
@@ -165,6 +167,22 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             winner: null,
         },
     ];
+
+const [SavedCards, setSavedCards] = useState([''])
+
+//fetch saved scorecards to set the dataset for the flatlist
+useEffect(() => {
+    const LoadKeys = async () => {
+        let saved = await AsyncStorage.getAllKeys();
+
+        if (saved != null) {
+            let result = saved.filter((item) => item.includes("card"));
+            setSavedCards(result);
+        } 
+    }
+    LoadKeys();
+
+}, [isSaved])
 
 //set if two player or more in order to change the cell size for 2 players
     useEffect(() => {
@@ -270,7 +288,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             'lightgray';  
 
 
-    const SaveToStorage = () => {
+    const SaveToStorage = async () => {
         let ScorecardDataToLoad = ScorecardData;
         let TeamsToLoad = {
             id: ScorecardData.teams,
@@ -280,6 +298,90 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             id: ScorecardData.scores,
             scores: Scores,
         }
+
+        try {
+            const jsonScorecardData = JSON.stringify(ScorecardDataToLoad)
+            await AsyncStorage.setItem(ScorecardData.id, jsonScorecardData)
+        } catch (e) {
+            // saving error
+        }
+
+        console.log('Done')
+
+        try {
+            const jsonTeams = JSON.stringify(TeamsToLoad)
+            await AsyncStorage.setItem(TeamsToLoad.id, jsonTeams)
+        } catch (e) {
+            // saving error
+        }
+
+        console.log('Done2')
+
+        try {
+            const jsonScores = JSON.stringify(ScoresToLoad)
+            await AsyncStorage.setItem(ScoresToLoad.id, jsonScores)
+        } catch (e) {
+            // saving error
+        }
+
+        console.log('Done3')
+
+        setIsSaved(!isSaved)
+        
+    }
+
+    const LoadCard = async ({item} : any) => {
+
+        try {
+        //load and set the scorecarddata
+            const jsonValue = await AsyncStorage.getItem(item)
+
+            let loadedScorecard =  jsonValue != null ? JSON.parse(jsonValue) : null;
+            
+            setScorecardData(loadedScorecard);
+            
+        //load and set the team data
+            const jsonTeams = await AsyncStorage.getItem(loadedScorecard.teams)
+    
+            let loadedTeams =  jsonTeams != null ? JSON.parse(jsonTeams) : null;
+    
+            setTeams(loadedTeams.teams);
+            if (loadedTeams.teams.length === 2) {setIsTwoPlayer(true)} else {setIsTwoPlayer(false)}
+        
+        //load and set the scores data
+            const jsonScores = await AsyncStorage.getItem(loadedScorecard.scores)
+    
+            let loadedScores =  jsonScores != null ? JSON.parse(jsonScores) : null;
+
+            setScores(loadedScores.scores);
+
+        } catch(e) {
+            // error reading value
+        }
+
+        setUpdateScores(!updateScores);  
+        setTeamState(1);
+        setRoundState(1);  
+        setTeamArray(Scores[0].team);
+        setTeamPlayer('');
+        setPlayers([]);
+        setTeamNames([])
+            for (var i = 0; i < Teams.length; i++) {
+                setTeamNames([...TeamNames, Teams[i].name])
+            }
+        setExtraArray([]);
+        for (var i = 0; i < Teams.length; i++) {
+            setExtraArray([...ExtraArray, ['', '', '']])
+        }
+
+        setScoreArray([]);
+        for (var i = 0; i < Teams.length; i++) {
+            setScoreArray([...ScoreArray, ''])
+        }
+        setRoundUpdate(!roundUpdate)
+
+        
+
     }
 
     const SaveSettings = () => {
@@ -293,6 +395,8 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     const Share = () => {
         alert('share this scorecard on social media')
     }
+
+    
 
 //scroll timer settings to the bottom
     // useEffect(() => {
@@ -504,9 +608,9 @@ const UpdateExtra = () => {
 
     let newUpdateArray = [...Scores];
         newUpdateArray[roundState - 1].extra[teamState - 1 ] = [
-        bidText === '' ? Scores[roundState - 1].extra[teamState - 1][0] : bidText, 
-        meldText === '' ? Scores[roundState - 1].extra[teamState - 1][1] : meldText, 
-        bonusText === '' ? Scores[roundState - 1].extra[teamState - 1][2] : bonusText
+        bidText === '' ? Scores[roundState - 1]?.extra[teamState - 1][0] : bidText, 
+        meldText === '' ? Scores[roundState - 1]?.extra[teamState - 1][1] : meldText, 
+        bonusText === '' ? Scores[roundState - 1]?.extra[teamState - 1][2] : bonusText
     ];
 
     setScores(newUpdateArray);
@@ -539,8 +643,8 @@ const UpdateExtra = () => {
         
             let newArray = [...Scores];
 
-            let i = isLowestPointsEnabled === false ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1].score)) :
-                    isLowestPointsEnabled === true ? newArray[roundState - 1].score.indexOf(Math.min(...Scores[roundState - 1].score)) : null
+            let i = isLowestPointsEnabled === false ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1]?.score)) :
+                    isLowestPointsEnabled === true ? newArray[roundState - 1].score.indexOf(Math.min(...Scores[roundState - 1]?.score)) : null
         
             newArray[roundState - 1].winner = i;
             setScores(newArray);
@@ -579,7 +683,7 @@ const UpdateExtra = () => {
         setScoreArray(['', '']);
         setTeamNames(['Team 1', 'Team 2']);
         setTeamPlayer('');
-        setPlayers([])
+        setPlayers([]);
 
         hideClearModal();    
     };
@@ -776,6 +880,47 @@ const UpdateExtra = () => {
         );
     };
 
+//rendered item for the localstorage load scorecard list
+    
+
+    const SavedItems = ({item} : any) => {
+
+        const [itemname, setitemname] = useState('')
+  
+        const getMyObject = async () => {
+    
+            try {
+                let object = await AsyncStorage.getItem(item);
+                let objs = object ? JSON.parse(object) : null
+                setitemname(objs.name)
+            } catch(e) {
+              // read error
+            }
+            
+        }
+    
+        getMyObject();
+
+        return (
+            <TouchableOpacity onPress={() => {LoadCard({item}); hideLoadModal()}}>
+                <View style={{ marginVertical: 10, marginHorizontal: 5}}>
+                    <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 16}}>
+                        {itemname}
+                    </Text> 
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+//render list of the saved cards
+    const renderSavedCards = ({item}) => {
+        return(
+        <SavedItems
+                item={item}
+            /> 
+        ) 
+    }
+
 //Scorebox Modal
     const [visible, setVisible] = useState(false);
   
@@ -798,14 +943,23 @@ const UpdateExtra = () => {
 
       const nameModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
-//New Scorecard  Modal
-        const [visibleClearModal, setVisibleClearModal] = useState(false);
-        
-        const showClearModal = () => setVisibleClearModal(true);
+//confirm clear Scorecard  Modal
+    const [visibleClearModal, setVisibleClearModal] = useState(false);
+    
+    const showClearModal = () => setVisibleClearModal(true);
 
-        const hideClearModal = () => setVisibleClearModal(false);
+    const hideClearModal = () => setVisibleClearModal(false);
 
-        const clearModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+    const clearModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+
+//load scorecard modal
+    const [visibleLoadModal, setVisibleLoadModal] = useState(false);
+    
+    const showLoadModal = () => setVisibleLoadModal(true);
+
+    const hideLoadModal = () => setVisibleLoadModal(false);
+
+    const loadModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
 //New Scorecard  Modal
 
@@ -842,7 +996,6 @@ const UpdateExtra = () => {
 
     const hideTeamModal = () => setVisibleTeamModal(false);
     const teamModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
-
 
 //team name item for the header row
     const HeaderRow = ({id, name} : {id: any, name: string}) => {
@@ -1043,7 +1196,7 @@ const UpdateExtra = () => {
 
                         <View style={{ alignItems: 'center'}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
-                                {Teams[teamState - 1].name}
+                                {Teams[teamState - 1]?.name}
                             </Text>
                             <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
                                 Round {roundState}
@@ -1078,6 +1231,26 @@ const UpdateExtra = () => {
                     </View>
                 </Modal>
 
+{/* Load Scorecard Modal */}
+                <Modal visible={visibleLoadModal} onDismiss={hideLoadModal} contentContainerStyle={loadModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Saved Scorecards
+                            </Text>
+                        </View>
+                        <View>
+                            <FlatList 
+                                data={SavedCards}
+                                renderItem={renderSavedCards}
+                                style={{ height: 360}}
+                                showsVerticalScrollIndicator={false}
+                                //keyExtractor={item => item}
+                            />
+                        </View>
+                    </View>
+                </Modal>
+
 {/* New Scorecard Modal */}
                 <Modal visible={visibleClearModal} onDismiss={hideClearModal} contentContainerStyle={clearModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
@@ -1103,8 +1276,8 @@ const UpdateExtra = () => {
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
                         <View style={{ alignItems: 'center', marginVertical: 20}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-bold'}}>
-                                {   teamState === 1 ? Teams[0].name :
-                                    teamState === 2 ? Teams[1].name :
+                                {   teamState === 1 ? Teams[0]?.name :
+                                    teamState === 2 ? Teams[1]?.name :
                                     'Some Team'}
                             </Text>
                             <Text style={{fontSize: 16, fontFamily: 'chalkboard-bold'}}>
@@ -1117,7 +1290,7 @@ const UpdateExtra = () => {
                                     Bid
                                 </Text>
                                 <TextInput 
-                                        placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][0] : '0'}
+                                        placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][0] : '0'}
                                         placeholderTextColor='#000000a5'
                                         style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
                                         maxLength={20}
@@ -1131,7 +1304,7 @@ const UpdateExtra = () => {
                                     Meld
                                 </Text>
                                 <TextInput 
-                                    placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][1] : '0'}
+                                    placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][1] : '0'}
                                     placeholderTextColor='#000000a5'
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
                                     maxLength={20}
@@ -1145,7 +1318,7 @@ const UpdateExtra = () => {
                                     Bonus
                                 </Text>
                                 <TextInput 
-                                    placeholder={roundState ? Scores[roundState - 1].extra[teamState - 1][2] : '0'}
+                                    placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][2] : '0'}
                                     placeholderTextColor='#000000a5'
                                     style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
                                     maxLength={20}
@@ -1718,8 +1891,8 @@ const UpdateExtra = () => {
                         <OptionsMenu
                             customButton={MoreIcon}
                             destructiveIndex={1}
-                            options={["New","Save Settings", "Mark as Complete", "Share", "Save Scores"]}
-                            actions={[showClearModal, SaveSettings, MarkComplete, Share, SaveToStorage]}
+                            options={["New","Load Scorecard", "Save Settings", "Save Scores", "Mark as Complete", "Share"]}
+                            actions={[showClearModal, showLoadModal, SaveSettings, SaveToStorage, MarkComplete, Share]}
                         />
                     </View> 
                 </View>
