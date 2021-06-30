@@ -136,30 +136,30 @@ const MainNavStack = ({ navigation }) => {
             />
 
             
-            <HomeStack.Screen
-                name='GamePage'
-                component={GamePageScreen}
-                options={{
-                    headerTitle: null,
-                    headerTitleAlign: 'center',
-                    headerLeft: () => (
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center'
-                                    }}
-                        >
+            // <HomeStack.Screen
+            //     name='GamePage'
+            //     component={GamePageScreen}
+            //     options={{
+            //         headerTitle: null,
+            //         headerTitleAlign: 'center',
+            //         headerLeft: () => (
+            //             <View style={{
+            //                 flexDirection: 'row',
+            //                 alignItems: 'center'
+            //                         }}
+            //             >
                         
-                        <Feather.Button 
-                            name='arrow-left'
-                            size={20}
-                            backgroundColor='#155843'
-                            style={{ paddingLeft: 24 }}
-                            onPress={() => { navigation.goBack() }}
-                        />
-                        </View>
-                    ),
-                }}
-            />
+            //             <Feather.Button 
+            //                 name='arrow-left'
+            //                 size={20}
+            //                 backgroundColor='#155843'
+            //                 style={{ paddingLeft: 24 }}
+            //                 onPress={() => { navigation.goBack() }}
+            //             />
+            //             </View>
+            //         ),
+            //     }}
+            // />
             <HomeStack.Screen
                 name='Profile'
                 component={ ProfileScreen }
@@ -260,27 +260,30 @@ function ScoreNavigator({navigation}) {
         options={{ headerShown: false }}
       />
       <ScoreStack.Screen
-        name="SavedScores"
-        component={SavedScores}
-        options={{ 
-            headerShown: false,
-            headerLeft: () => (
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                            }}
-                >
-                <Feather.Button 
-                    name='chevron-left'
-                    size={20}
-                    backgroundColor='#155843'
-                    style={{ paddingLeft: 25 }}
-                    onPress={navigation.goBack()}
-                />
-                </View>
-            ),
-         }}
-      />
+                name='SavedScores'
+                component={SavedScores}
+                options={{
+                    headerShown: false,
+                    headerTitle: null,
+                    headerTitleAlign: 'center',
+                    headerLeft: () => (
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center'
+                                    }}
+                        >
+                        
+                        <Feather.Button 
+                            name='chevron-left'
+                            size={25}
+                            backgroundColor='#155843'
+                            style={{ paddingLeft: 24 }}
+                            onPress={() => { navigation.goBack() }}
+                        />
+                        </View>
+                    ),
+                }}
+            />
     </ScoreStack.Navigator>
   );
 }

@@ -6,6 +6,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import OptionsMenu from "react-native-option-menu";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
+import { useRoute } from '@react-navigation/native';
 
 import Timer from '../Components/Timer';
 
@@ -51,6 +52,9 @@ const toRoman = require('roman-numerals').toRoman;
 
 //exported scorecard function
 const Scorecard = ({navigation} : {navigation: any}) => {
+
+    const route = useRoute();
+    const {cardID} = route.params;
 
 //for timer to scroll to bottom
     //const scrollViewRef = useRef();
@@ -110,15 +114,6 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             //scores: [Scores]
         },
     );
-
-//set uuid
-    useEffect(() => {
-        let cardIdentity = uuid.v4();
-        let teamIdentity = uuid.v4();
-        let scoreIdentity = uuid.v4();
-        setScorecardData({...ScorecardData, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString() })
-
-    }, [])
 
 // State controllers to force update of components through useEffect and extraData(flatlist)
     const [Updated, setUpdated] = useState(true);
@@ -379,9 +374,6 @@ useEffect(() => {
             setScoreArray([...ScoreArray, ''])
         }
         setRoundUpdate(!roundUpdate)
-
-        
-
     }
 
     const SaveSettings = () => {
@@ -396,6 +388,19 @@ useEffect(() => {
         alert('share this scorecard on social media')
     }
 
+//load a saved scorecard or create a new one by setting new uuids
+    useEffect(() => {
+        if (cardID !== 'new') {
+            let item = cardID
+            LoadCard({item})
+        } else {
+            clearScorecard();
+            let cardIdentity = uuid.v4();
+            let teamIdentity = uuid.v4();
+            let scoreIdentity = uuid.v4();
+            setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString() })
+        }
+    }, [cardID])
     
 
 //scroll timer settings to the bottom

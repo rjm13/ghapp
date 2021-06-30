@@ -19,7 +19,7 @@ const ScorecardMenu = ({navigation}) => {
             </View>
             <View style={{flexDirection: 'row', margin: 20, width: SCREEN_WIDTH, justifyContent: 'space-around', alignSelf: 'center'}}>
                 <View style={{ alignItems: 'center'}}>
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Scorecard')}>
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Scorecard', {cardID: 'new'})}>
                         <View style={styles.quickbutton}>
                                 <Ionicons 
                                     name='md-add-circle'
