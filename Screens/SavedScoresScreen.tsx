@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import { Modal, Portal, Provider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -8,9 +9,11 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const SavedScores = ({navigation} : any) => {
 
-    const [isSaved, setIsSaved] = useState(false)
+    const [isSaved, setIsSaved] = useState(false);
 
-    const [SavedCards, setSavedCards] = useState([''])
+    const [SavedCards, setSavedCards] = useState(['']);
+
+    const [removedItem, setRemovedItem] = useState('');
 
 //fetch saved scorecards to set the dataset for the flatlist
     useEffect(() => {
@@ -25,6 +28,27 @@ const SavedScores = ({navigation} : any) => {
         LoadKeys();
     
     }, [isSaved])
+
+//remove an item from asyncstorage function
+    //set the modal state
+    const [visibleRemoveModal, setVisibleRemoveModal] = useState(false);
+  
+    const showRemoveModal = () => setVisibleRemoveModal(true);
+
+    const hideRemoveModal = () => setVisibleRemoveModal(false);
+
+    const removeModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+
+    //remove the item
+    const RemoveCard = async () => {
+        try {
+          await AsyncStorage.removeItem(removedItem)
+        } catch(e) {
+          // remove error
+        }
+        setIsSaved(!isSaved);
+        hideRemoveModal();
+      }
 
 //rendered item for the localstorage load scorecard list
     const SavedItems = ({item} : any) => {
@@ -55,7 +79,10 @@ const SavedScores = ({navigation} : any) => {
 
         return (
             
-                <TouchableWithoutFeedback onPress={() => navigation.navigate('Scorecard', {cardID: item.toString()})}>
+                <TouchableWithoutFeedback 
+                    onPress={() => navigation.navigate('Scorecard', {cardID: item.toString()})}
+                    onLongPress={() => {showRemoveModal(); setRemovedItem(item);}}
+                >
                     <View style={{ 
                         padding: 12, marginVertical: 10, marginHorizontal: 5, backgroundColor: '#fff',
                         flexDirection: 'row', justifyContent: 'space-between', elevation: 1
@@ -82,44 +109,67 @@ const SavedScores = ({navigation} : any) => {
     }
 
     return (
-        <View>
-            <View style={{}}>
-                
-                <View style={{marginHorizontal: 10}}>
-                    {SavedCards === [''] ? (
-                        <Text>
-                            This is where you find your saved scorecards but there is nothing here!
-                        </Text>
-                    ) :
-                        <FlatList 
-                            data={SavedCards}
-                            renderItem={renderSavedCards}
-                            showsVerticalScrollIndicator={false}
-                            ListHeaderComponent={() => (
-                                <View style={{ alignItems: 'center', marginVertical: 20, flexDirection: 'row'}}>
-                                    <Feather 
-                                        name='chevron-left'
-                                        color='#000'
-                                        size={25}
-                                        style={{paddingRight: 15}}
-                                        onPress={() => navigation.goBack()}
-                                    />
-                                    <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
-                                        Saved Scorecards
+        <Provider>
+            <Portal>
+{/* New Scorecard Modal */}
+                <Modal visible={visibleRemoveModal} onDismiss={hideRemoveModal} contentContainerStyle={removeModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Are you sure you want to delete this scorecard?
+                            </Text>
+                        </View>
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={RemoveCard}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#d92121', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{color: '#fff', fontSize: 22, textAlign: 'center', fontWeight: 'bold'}}>
+                                        Delete
                                     </Text>
                                 </View>
-                            )}
-                            ListFooterComponent={() => (
-                                <View style={{ alignItems: 'center', marginVertical: 20}}>
-                                    
-                                </View>
-                            )}
-                        />
-                    }
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </Portal>
+            <View>
+                <View style={{}}>
                     
+                    <View style={{marginHorizontal: 10}}>
+                        {SavedCards === [''] ? (
+                            <Text>
+                                This is where you find your saved scorecards but there is nothing here!
+                            </Text>
+                        ) :
+                            <FlatList 
+                                data={SavedCards}
+                                renderItem={renderSavedCards}
+                                showsVerticalScrollIndicator={false}
+                                ListHeaderComponent={() => (
+                                    <View style={{ alignItems: 'center', marginVertical: 20, flexDirection: 'row'}}>
+                                        <Feather 
+                                            name='chevron-left'
+                                            color='#000'
+                                            size={25}
+                                            style={{paddingRight: 15}}
+                                            onPress={() => navigation.goBack()}
+                                        />
+                                        <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                            Saved Scorecards
+                                        </Text>
+                                    </View>
+                                )}
+                                ListFooterComponent={() => (
+                                    <View style={{ alignItems: 'center', marginVertical: 20}}>
+                                        
+                                    </View>
+                                )}
+                            />
+                        }
+                        
+                    </View>
                 </View>
             </View>
-        </View>
+        </Provider>
     );
 }
 
