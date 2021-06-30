@@ -315,13 +315,15 @@ useEffect(() => {
         try {
             const jsonScores = JSON.stringify(ScoresToLoad)
             await AsyncStorage.setItem(ScoresToLoad.id, jsonScores)
+            alert('Scorecard saved!')
         } catch (e) {
             // saving error
         }
 
         console.log('Done3')
 
-        setIsSaved(!isSaved)
+        setIsSaved(!isSaved);
+
         
     }
 
@@ -1917,7 +1919,7 @@ const UpdateExtra = () => {
                         <OptionsMenu
                             customButton={MoreIcon}
                             destructiveIndex={1}
-                            options={["New","Load Scorecard", "Save Settings", "Save Scores", "Mark as Complete", "Share"]}
+                            options={["New","Quick Load", "Save Settings", "Save", "Mark as Complete", "Share"]}
                             actions={[showClearModal, showLoadModal, SaveSettings, SaveToStorage, MarkComplete, Share]}
                         />
                     </View> 
