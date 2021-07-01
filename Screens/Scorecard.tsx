@@ -260,33 +260,11 @@ useEffect(() => {
             darkTheme === true ? 'transparent' :
             'lightgray';  
 
-//saved setting state
-    const [SavedSetting, setSavedSetting] = useState({
-        id: '1',
-        NumTeams: Teams.length,
-        isRounds: isRoundWinsEnabled,
-        isPoints: isPointsEnabled, 
-        lowestPoints: isLowestPointsEnabled,
-        isBid: isBidEnabled,
-        isMeld: isMeldEnabled,
-        isBonus: isBonusEnabled,
-        isRoman: isRomanEnabled,
-        roundWinners: isRoundWinnerEnabled,
-        isWhiteTheme: whiteTheme,
-        isDarkTheme: darkTheme,
-        isLegalTheme: legalPadTheme,
-        isChalkTheme: chalkTheme,
-        isTimer: isTimerEnabled,
-        isTimerWarning: isWarningEnabled,
-        isTimerLength: roundLength,
-        isTimerDing: sound,
-        isTimerTicker: ticker,
-    });
 
     const SaveToStorage = async () => {
 
         let Setting = {
-            id: SavedSetting.id, 
+            id: ScorecardData.settings, 
             NumTeams: Teams.length,
             isRounds: isRoundWinsEnabled,
             isPoints: isPointsEnabled, 
@@ -375,8 +353,6 @@ useEffect(() => {
             const jsonSettings = await AsyncStorage.getItem(loadedScorecard.settings)
 
             let loadedSettings =  jsonSettings != null ? JSON.parse(jsonSettings) : null;
-            
-            setSavedSetting(loadedSettings);
 
             setIsRoundWinsEnabled(loadedSettings.isRounds);
             setIsPointsEnabled(loadedSettings.isPoints);
@@ -450,6 +426,27 @@ useEffect(() => {
         alert('share this scorecard on social media')
     }
 
+//default settings
+    const SetDefaultSettings = () => {
+        setIsRoundWinsEnabled(true);
+        setIsPointsEnabled(true);
+        setIsLowestPointsEnabled(false);
+        setIsBidEnabled(false);
+        setIsMeldEnabled(false);
+        setIsBonusEnabled(false);
+        setIsRomanEnabled(true);
+        setIsRoundWinnerEnabled(true);
+        setWhiteTheme(true);
+        setLegalPadTheme(false);
+        setChalkTheme(false);
+        setDarkTheme(false);
+        setIsTimerEnabled(false);
+        setIsWarningEnabled(false);
+        setRoundLength(60);
+        setSound('ting');
+        setTicker('clock');
+    }
+
 //load a saved scorecard or create a new one by setting new uuids
     useEffect(() => {
         if (cardID !== 'new') {
@@ -457,36 +454,37 @@ useEffect(() => {
             LoadCard({item})
         } else {
             clearScorecard();
+            SetDefaultSettings();
             let cardIdentity = uuid.v4();
             let teamIdentity = uuid.v4();
             let scoreIdentity = uuid.v4();
             let settingIdentity = uuid.v4();
             setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString(), settings: 'setting' + settingIdentity.toString() })
-            setSavedSetting({...SavedSetting, id: 'setting' + settingIdentity.toString()});
+            //setSavedSetting({...SavedSetting, id: 'setting' + settingIdentity.toString()});
         }
     }, [cardID])
 
 
 //load the saved settings
-    const LoadSettings = () => {
-        setIsRoundWinsEnabled(SavedSetting.isRounds);
-        setIsPointsEnabled(SavedSetting.isPoints);
-        setIsLowestPointsEnabled(SavedSetting.lowestPoints);
-        setIsBidEnabled(SavedSetting.isBid);
-        setIsMeldEnabled(SavedSetting.isMeld);
-        setIsBonusEnabled(SavedSetting.isBonus);
-        setIsRomanEnabled(SavedSetting.isRoman);
-        setIsRoundWinnerEnabled(SavedSetting.roundWinners);
-        setWhiteTheme(SavedSetting.isWhiteTheme);
-        setLegalPadTheme(SavedSetting.isLegalTheme);
-        setChalkTheme(SavedSetting.isChalkTheme);
-        setDarkTheme(SavedSetting.isDarkTheme);
-        setIsTimerEnabled(SavedSetting.isTimer);
-        setIsWarningEnabled(SavedSetting.isTimerWarning);
-        setRoundLength(SavedSetting.isTimerLength);
-        setSound(SavedSetting.isTimerDing);
-        setTicker(SavedSetting.isTimerTicker);
-    }
+    // const LoadSettings = () => {
+    //     setIsRoundWinsEnabled(SavedSetting.isRounds);
+    //     setIsPointsEnabled(SavedSetting.isPoints);
+    //     setIsLowestPointsEnabled(SavedSetting.lowestPoints);
+    //     setIsBidEnabled(SavedSetting.isBid);
+    //     setIsMeldEnabled(SavedSetting.isMeld);
+    //     setIsBonusEnabled(SavedSetting.isBonus);
+    //     setIsRomanEnabled(SavedSetting.isRoman);
+    //     setIsRoundWinnerEnabled(SavedSetting.roundWinners);
+    //     setWhiteTheme(SavedSetting.isWhiteTheme);
+    //     setLegalPadTheme(SavedSetting.isLegalTheme);
+    //     setChalkTheme(SavedSetting.isChalkTheme);
+    //     setDarkTheme(SavedSetting.isDarkTheme);
+    //     setIsTimerEnabled(SavedSetting.isTimer);
+    //     setIsWarningEnabled(SavedSetting.isTimerWarning);
+    //     setRoundLength(SavedSetting.isTimerLength);
+    //     setSound(SavedSetting.isTimerDing);
+    //     setTicker(SavedSetting.isTimerTicker);
+    // }
     
 
 //scroll timer settings to the bottom
