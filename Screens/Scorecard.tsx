@@ -10,30 +10,6 @@ import { useRoute } from '@react-navigation/native';
 
 import Timer from '../Components/Timer';
 
-//saved setting state
-const SavedSetting = {
-    id: 1,
-    title: '',
-    NumTeams: 2,
-    isRounds: true,
-    isPoints: true, 
-    lowestPoints: false,
-    isBid: false,
-    isMeld: false,
-    isBonus: false,
-    isRoman: true,
-    roundWinners: true,
-    isWhiteTheme: true,
-    isDarkTheme: false,
-    isLegalTheme: false,
-    isChalkTheme: false,
-    isTimer: false,
-    isTimerWarning: false,
-    isTimerLength: 60,
-    isTimerDing: 'ting',
-    isTimerTicker: 'clock'
-}
-
 
 //constants
 const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
@@ -110,6 +86,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             dateCreated: new Date().toDateString(),
             teams: '1',
             scores: '1',
+            settings: '1',
             //teams: [Teams],
             //scores: [Scores]
         },
@@ -124,7 +101,6 @@ const Scorecard = ({navigation} : {navigation: any}) => {
 //round and team state management for updating the score through the modal
     const [roundState, setRoundState] = useState(1);
     const [teamState, setTeamState] = useState(1);
-    const [loadedCards, setLoadedCards] = useState([''])
 
 //blank datasets to reset the scorecard
     const blankScorecard = {
@@ -132,8 +108,10 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         name: new Date().toDateString(),
         updated: false,
         dateCreated: new Date().toDateString(),
-        teams: [Teams],
-        scores: [Scores]
+        teams: '1',
+        scores: '1',
+        settings: '1',
+
     }
 
     const blankTeams = [
@@ -282,8 +260,64 @@ useEffect(() => {
             darkTheme === true ? 'transparent' :
             'lightgray';  
 
+//saved setting state
+    const [SavedSetting, setSavedSetting] = useState({
+        id: '1',
+        NumTeams: Teams.length,
+        isRounds: isRoundWinsEnabled,
+        isPoints: isPointsEnabled, 
+        lowestPoints: isLowestPointsEnabled,
+        isBid: isBidEnabled,
+        isMeld: isMeldEnabled,
+        isBonus: isBonusEnabled,
+        isRoman: isRomanEnabled,
+        roundWinners: isRoundWinnerEnabled,
+        isWhiteTheme: whiteTheme,
+        isDarkTheme: darkTheme,
+        isLegalTheme: legalPadTheme,
+        isChalkTheme: chalkTheme,
+        isTimer: isTimerEnabled,
+        isTimerWarning: isWarningEnabled,
+        isTimerLength: roundLength,
+        isTimerDing: sound,
+        isTimerTicker: ticker,
+    });
 
     const SaveToStorage = async () => {
+
+        let Setting = {
+            id: SavedSetting.id, 
+            NumTeams: Teams.length,
+            isRounds: isRoundWinsEnabled,
+            isPoints: isPointsEnabled, 
+            lowestPoints: isLowestPointsEnabled,
+            isBid: isBidEnabled,
+            isMeld: isMeldEnabled,
+            isBonus: isBonusEnabled,
+            isRoman: isRomanEnabled,
+            roundWinners: isRoundWinnerEnabled,
+            isWhiteTheme: whiteTheme,
+            isDarkTheme: darkTheme,
+            isLegalTheme: legalPadTheme,
+            isChalkTheme: chalkTheme,
+            isTimer: isTimerEnabled,
+            isTimerWarning: isWarningEnabled,
+            isTimerLength: roundLength,
+            isTimerDing: sound,
+            isTimerTicker: ticker,
+        }
+
+        try {
+            const jsonSettings = JSON.stringify(Setting)
+            await AsyncStorage.setItem(Setting.id, jsonSettings)
+            console.log(Setting)
+        } catch (e) {
+            // saving error
+        }
+
+        console.log('done')
+
+
         let ScorecardDataToLoad = ScorecardData;
         let TeamsToLoad = {
             id: ScorecardData.teams,
@@ -336,6 +370,32 @@ useEffect(() => {
             let loadedScorecard =  jsonValue != null ? JSON.parse(jsonValue) : null;
             
             setScorecardData(loadedScorecard);
+
+        //load and set the scorecard settings
+            const jsonSettings = await AsyncStorage.getItem(loadedScorecard.settings)
+
+            let loadedSettings =  jsonSettings != null ? JSON.parse(jsonSettings) : null;
+            
+            setSavedSetting(loadedSettings);
+
+            setIsRoundWinsEnabled(loadedSettings.isRounds);
+            setIsPointsEnabled(loadedSettings.isPoints);
+            setIsLowestPointsEnabled(loadedSettings.lowestPoints);
+            setIsBidEnabled(loadedSettings.isBid);
+            setIsMeldEnabled(loadedSettings.isMeld);
+            setIsBonusEnabled(loadedSettings.isBonus);
+            setIsRomanEnabled(loadedSettings.isRoman);
+            setIsRoundWinnerEnabled(loadedSettings.roundWinners);
+            setWhiteTheme(loadedSettings.isWhiteTheme);
+            setLegalPadTheme(loadedSettings.isLegalTheme);
+            setChalkTheme(loadedSettings.isChalkTheme);
+            setDarkTheme(loadedSettings.isDarkTheme);
+            setIsTimerEnabled(loadedSettings.isTimer);
+            setIsWarningEnabled(loadedSettings.isTimerWarning);
+            setRoundLength(loadedSettings.isTimerLength);
+            setSound(loadedSettings.isTimerDing);
+            setTicker(loadedSettings.isTimerTicker);
+            
             
         //load and set the team data
             const jsonTeams = await AsyncStorage.getItem(loadedScorecard.teams)
@@ -400,9 +460,33 @@ useEffect(() => {
             let cardIdentity = uuid.v4();
             let teamIdentity = uuid.v4();
             let scoreIdentity = uuid.v4();
-            setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString() })
+            let settingIdentity = uuid.v4();
+            setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString(), settings: 'setting' + settingIdentity.toString() })
+            setSavedSetting({...SavedSetting, id: 'setting' + settingIdentity.toString()});
         }
     }, [cardID])
+
+
+//load the saved settings
+    const LoadSettings = () => {
+        setIsRoundWinsEnabled(SavedSetting.isRounds);
+        setIsPointsEnabled(SavedSetting.isPoints);
+        setIsLowestPointsEnabled(SavedSetting.lowestPoints);
+        setIsBidEnabled(SavedSetting.isBid);
+        setIsMeldEnabled(SavedSetting.isMeld);
+        setIsBonusEnabled(SavedSetting.isBonus);
+        setIsRomanEnabled(SavedSetting.isRoman);
+        setIsRoundWinnerEnabled(SavedSetting.roundWinners);
+        setWhiteTheme(SavedSetting.isWhiteTheme);
+        setLegalPadTheme(SavedSetting.isLegalTheme);
+        setChalkTheme(SavedSetting.isChalkTheme);
+        setDarkTheme(SavedSetting.isDarkTheme);
+        setIsTimerEnabled(SavedSetting.isTimer);
+        setIsWarningEnabled(SavedSetting.isTimerWarning);
+        setRoundLength(SavedSetting.isTimerLength);
+        setSound(SavedSetting.isTimerDing);
+        setTicker(SavedSetting.isTimerTicker);
+    }
     
 
 //scroll timer settings to the bottom
@@ -1203,6 +1287,8 @@ const UpdateExtra = () => {
     const [timePlaceholder, setTimePlaceholder] = useState('');
     const [TickerPlaceholder, setTickerPlaceholder] = useState('Clock');
     const [DoneSoundPlaceholder, setDoneSoundPlaceholder] = useState('Ting');
+
+
 
 //FINALLY, THE RETURN FUNCTION OF THE SCORECARD
     return (
