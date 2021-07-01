@@ -418,12 +418,17 @@ useEffect(() => {
         alert('Save the settings of this scorecard as a preset game')
     }
 
-    const MarkComplete = () => {
+    const MarkDone = () => {
         alert('mark this scorecard as complete')
     }
 
     const Share = () => {
         alert('share this scorecard on social media')
+    }
+
+    const MarkAsComplete = () => {
+        hideCompleteModal();
+        showConfettiModal();
     }
 
 //default settings
@@ -463,37 +468,6 @@ useEffect(() => {
             //setSavedSetting({...SavedSetting, id: 'setting' + settingIdentity.toString()});
         }
     }, [cardID])
-
-
-//load the saved settings
-    // const LoadSettings = () => {
-    //     setIsRoundWinsEnabled(SavedSetting.isRounds);
-    //     setIsPointsEnabled(SavedSetting.isPoints);
-    //     setIsLowestPointsEnabled(SavedSetting.lowestPoints);
-    //     setIsBidEnabled(SavedSetting.isBid);
-    //     setIsMeldEnabled(SavedSetting.isMeld);
-    //     setIsBonusEnabled(SavedSetting.isBonus);
-    //     setIsRomanEnabled(SavedSetting.isRoman);
-    //     setIsRoundWinnerEnabled(SavedSetting.roundWinners);
-    //     setWhiteTheme(SavedSetting.isWhiteTheme);
-    //     setLegalPadTheme(SavedSetting.isLegalTheme);
-    //     setChalkTheme(SavedSetting.isChalkTheme);
-    //     setDarkTheme(SavedSetting.isDarkTheme);
-    //     setIsTimerEnabled(SavedSetting.isTimer);
-    //     setIsWarningEnabled(SavedSetting.isTimerWarning);
-    //     setRoundLength(SavedSetting.isTimerLength);
-    //     setSound(SavedSetting.isTimerDing);
-    //     setTicker(SavedSetting.isTimerTicker);
-    // }
-    
-
-//scroll timer settings to the bottom
-    // useEffect(() => {
-    //     if (isTimerEnabled === true) {scrollViewRef.current?.scrollTo({
-    //         y: 700,
-    //         animated: true,
-    //     })}
-    // }, [scrollToEnd])
 
 //conversion function for timer - seconds from textinput to millieconds
     const ConvertToMillis = (val : any) => {
@@ -665,7 +639,6 @@ useEffect(() => {
         }
 
         setUpdated(!Updated);
-        //setUpdateScores(!updateScores);
         setRoundUpdate(!roundUpdate)
         setNewSetting(!newSetting);
         hideSettingModal();  
@@ -996,21 +969,6 @@ const UpdateExtra = () => {
               }
             }, []);
 
-        // let [itemname, setitemname] = useState('');
-  
-        // const getMyObject = async () => {
-    
-        //     try {
-        //         let object = await AsyncStorage.getItem(item);
-        //         let objs = object ? JSON.parse(object) : null
-        //         setitemname(objs.name)
-        //     } catch(e) {
-        //       // read error
-        //     }
-        // }
-    
-        // getMyObject();
-
         return (
             <TouchableOpacity onPress={() => {LoadCard({item}); hideLoadModal()}}>
                 <View style={{ marginVertical: 10, marginHorizontal: 5}}>
@@ -1062,6 +1020,15 @@ const UpdateExtra = () => {
 
     const clearModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
+//marked as complete comfetti modal
+    const [visibleConfettiModal, setVisibleConfettiModal] = useState(false);
+    
+    const showConfettiModal = () => setVisibleConfettiModal(true);
+
+    const hideConfettiModal = () => setVisibleConfettiModal(false);
+
+    const confettiModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+
 //load scorecard modal
     const [visibleLoadModal, setVisibleLoadModal] = useState(false);
     
@@ -1080,6 +1047,16 @@ const UpdateExtra = () => {
     const hideDeleteTeamModal = () => setVisibleDeleteTeamModal(false);
 
     const deleteTeamModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
+
+//Mark as complete Modal
+
+    const [visibleCompleteModal, setVisibleCompleteModal] = useState(false);
+                
+    const showCompleteModal = (id : any) => setVisibleCompleteModal(true);
+
+    const hideCompleteModal = () => setVisibleCompleteModal(false);
+
+    const completeModalContainerStyle = {backgroundColor: 'transparent', padding: 20}; 
 
 //Extras Modal (bid, meld, bonus)
         const [visibleExtrasModal, setVisibleExtrasModal] = useState(false);
@@ -1376,6 +1353,29 @@ const UpdateExtra = () => {
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#d92121', alignItems: 'center', justifyContent: 'center'}}>
                                     <Text style={{color: '#fff', fontSize: 22, textAlign: 'center', fontWeight: 'bold'}}>
                                         Erase
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
+{/* New Scorecard Modal */}
+                <Modal visible={visibleCompleteModal} onDismiss={hideCompleteModal} contentContainerStyle={completeModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15}}>
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 16, fontFamily: 'chalkboard-light', textAlign: 'center'}}>
+                                Once marked as complete, this scorecard will be archived and added to your lifetime record.
+                            </Text>
+                            <Text style={{marginTop: 20, fontSize: 18, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Are you sure you want to end this game?
+                            </Text>
+                        </View>
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={MarkAsComplete}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{color: '#fff', fontSize: 20, textAlign: 'center', fontFamily: 'chalkboard-bold'}}>
+                                        End Game
                                     </Text>
                                 </View>
                             </TouchableOpacity>
@@ -1845,6 +1845,28 @@ const UpdateExtra = () => {
                 </Modal>
 
 {/* New Scorecard Modal */}
+                <Modal visible={visibleConfettiModal} onDismiss={hideConfettiModal} contentContainerStyle={confettiModalContainerStyle}>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15, height: '90%', justifyContent: 'space-between'}}>
+                        <View style={{ alignItems: 'center', marginVertical: 40}}>
+                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
+                                Game Over!
+                            </Text>
+                        </View>
+                        <View style={{ alignItems: 'center'}}>
+                            <TouchableOpacity onPress={MarkDone}>
+                                <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Feather 
+                                        name='check'
+                                        size={25}
+                                        color='#fff'
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
+{/* New Scorecard Modal */}
                 <Modal visible={visibleDeleteTeamModal} onDismiss={hideDeleteTeamModal} contentContainerStyle={deleteTeamModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15,}}>
                         <View style={{ alignItems: 'center', marginVertical: 40}}>
@@ -2004,7 +2026,7 @@ const UpdateExtra = () => {
                             customButton={MoreIcon}
                             destructiveIndex={1}
                             options={["New","Quick Load", "Save Settings", "Save", "Mark as Complete", "Share"]}
-                            actions={[showClearModal, showLoadModal, SaveSettings, SaveToStorage, MarkComplete, Share]}
+                            actions={[showClearModal, showLoadModal, SaveSettings, SaveToStorage, showCompleteModal, Share]}
                         />
                     </View> 
                 </View>
