@@ -7,11 +7,16 @@ import OptionsMenu from "react-native-option-menu";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import { useRoute } from '@react-navigation/native';
+import ConfettiCannon from 'react-native-confetti-cannon';
 
 import Timer from '../Components/Timer';
 
 
 //constants
+const Confetti = () => (
+    <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+  );
+
 const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -419,7 +424,7 @@ useEffect(() => {
     }
 
     const MarkDone = () => {
-        alert('mark this scorecard as complete')
+        hideConfettiModal();
     }
 
     const Share = () => {
@@ -1023,7 +1028,7 @@ const UpdateExtra = () => {
 //marked as complete comfetti modal
     const [visibleConfettiModal, setVisibleConfettiModal] = useState(false);
     
-    const showConfettiModal = () => setVisibleConfettiModal(true);
+    const showConfettiModal = () => {setVisibleConfettiModal(true); Confetti; }
 
     const hideConfettiModal = () => setVisibleConfettiModal(false);
 
@@ -1847,6 +1852,7 @@ const UpdateExtra = () => {
 {/* New Scorecard Modal */}
                 <Modal visible={visibleConfettiModal} onDismiss={hideConfettiModal} contentContainerStyle={confettiModalContainerStyle}>
                     <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15, height: '90%', justifyContent: 'space-between'}}>
+                    <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
                         <View style={{ alignItems: 'center', marginVertical: 40}}>
                             <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
                                 Game Over!
