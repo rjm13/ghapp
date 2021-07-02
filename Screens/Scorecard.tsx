@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase, ScrollViewBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
 import OptionsMenu from "react-native-option-menu";
@@ -13,10 +14,6 @@ import Timer from '../Components/Timer';
 
 
 //constants
-const Confetti = () => (
-    <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
-  );
-
 const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -1028,7 +1025,7 @@ const UpdateExtra = () => {
 //marked as complete comfetti modal
     const [visibleConfettiModal, setVisibleConfettiModal] = useState(false);
     
-    const showConfettiModal = () => {setVisibleConfettiModal(true); Confetti; }
+    const showConfettiModal = () => {setVisibleConfettiModal(true);}
 
     const hideConfettiModal = () => setVisibleConfettiModal(false);
 
@@ -1171,7 +1168,7 @@ const UpdateExtra = () => {
                     </TouchableOpacity>
                 </View>
             );
-        }
+        };
 
 //item for the score row
         const Row = ({item, index, style} : {item: any, index: any, style: any}) => {
@@ -1851,14 +1848,109 @@ const UpdateExtra = () => {
 
 {/* New Scorecard Modal */}
                 <Modal visible={visibleConfettiModal} onDismiss={hideConfettiModal} contentContainerStyle={confettiModalContainerStyle}>
-                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15, height: '90%', justifyContent: 'space-between'}}>
-                    <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
-                        <View style={{ alignItems: 'center', marginVertical: 40}}>
-                            <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
-                                Game Over!
-                            </Text>
+                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15, height: '100%', justifyContent: 'space-between'}}>
+                    <ConfettiCannon count={400} origin={{x: -40, y: 50}} fadeOut={true}/>
+                        <View style={{ alignItems: 'center', marginVertical: 20, paddingBottom: 10,
+                                       borderColor: '#155843', borderRadius: 15, borderWidth: 4,
+                                       backgroundColor: '#155843cc'
+                                    }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10}}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                    <FontAwesome name='star' color='gold' size={16} style={{marginHorizontal: 4}} />
+                                    <FontAwesome name='star' color='gold' size={16} style={{marginHorizontal: 4}} />
+                                    <FontAwesome name='star' color='gold' size={16} style={{marginHorizontal: 4}} />
+                                </View>
+                                 <Text style={{color: '#fff', fontSize: 22, fontFamily: 'chalkboard-bold', textAlign: 'center', marginHorizontal: 10}}>
+                                    Winner
+                                </Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                    <FontAwesome name='star' color='gold' size={16} style={{marginHorizontal: 4}} />
+                                    <FontAwesome name='star' color='gold' size={16} style={{marginHorizontal: 4}} />
+                                    <FontAwesome name='star' color='gold' size={16} style={{marginHorizontal: 4}} />
+                                </View>
+                            </View>
+                            <View>
+                                <Text style={{color: '#fff', fontSize: 26, fontFamily: 'chalkboard-bold', textAlign: 'center', marginHorizontal: 10}}>
+                                    {Teams[0].name}
+                                </Text>
+                                <Text style={{color: '#fff', fontFamily: 'chalkboard-light', fontSize: 20, flexWrap: 'wrap', textAlign: 'center'}}>
+                                    {Teams[0].playerNames?.join(' - ')}
+                                </Text>
+                                <Text style={{
+                                    color: '#155843', fontFamily: 'chalkboard-bold', fontSize: 24, flexWrap: 'wrap', textAlign: 'center',
+                                    backgroundColor: '#fff', borderRadius: 20, paddingVertical: 0, paddingHorizontal: 15, marginVertical: 10
+                                    }}>
+                                    121 Points
+                                </Text>
+                            </View>
                         </View>
-                        <View style={{ alignItems: 'center'}}>
+                        <View>
+                            <FlatList 
+                                data={Teams}
+                                keyExtractor={(item, index) => index.toString()}
+                                style={{ height: 320}}
+                                showsVerticalScrollIndicator={false}
+                                contentContainerStyle={{width: '100%'}}
+                                renderItem={({item, index}) => 
+                                    <View style={{marginTop: 20}}>  
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                            <Text style={{fontFamily: 'chalkboard-regular', fontSize: 18}}>
+                                                {item.name}
+                                            </Text>
+                                            <Text style={{fontFamily: 'chalkboard-regular', fontSize: 18}}>
+                                                22 points
+                                            </Text>
+                                        </View>
+                                        <Text style={{fontFamily: 'chalkboard-light', fontSize: 14, marginTop: 0}}>
+                                            {Teams[0].playerNames?.join(' - ')}
+                                        </Text>
+                                    </View> 
+                                    }
+                                ListFooterComponent={() => (
+                                    <View style={{borderTopWidth: 0.5, borderColor: 'lightgray', marginTop: 20}}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
+                                            <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100, elevation: 2, justifyContent: 'center'}}>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'chalkboard-bold', fontSize: 26, }}>
+                                                    22
+                                                </Text>
+                                                <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14,}}>
+                                                    Rounds Played
+                                                </Text>
+                                            </View>
+                                            <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100,elevation: 2, justifyContent: 'center'}}>
+                                                <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-bold', fontSize: 26, }}>
+                                                    562
+                                                </Text>
+                                                <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14,  }}>
+                                                    Points Scored
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20, marginBottom: 20}}>
+                                            <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100, elevation: 2, justifyContent: 'center'}}>
+                                                <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-bold', fontSize: 26,  }}>
+                                                    12.4%
+                                                </Text>
+                                                <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14, }}>
+                                                    Std Dev
+                                                </Text>
+                                            </View>
+                                            <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100, elevation: 2, justifyContent: 'center'}}>
+                                                <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-bold', fontSize: 26, }}>
+                                                    221%
+                                                </Text>
+                                                <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14, }}>
+                                                    1st to 2nd
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        
+                                        
+                                    </View>
+                                )}
+                            />
+                        </View>
+                        <View style={{ alignItems: 'center', marginVertical: 10}}>
                             <TouchableOpacity onPress={MarkDone}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
                                     <Feather 
