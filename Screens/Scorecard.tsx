@@ -1848,9 +1848,9 @@ const UpdateExtra = () => {
 
 {/* New Scorecard Modal */}
                 <Modal visible={visibleConfettiModal} onDismiss={hideConfettiModal} contentContainerStyle={confettiModalContainerStyle}>
-                    <View style={{ padding: 20, backgroundColor: '#fff', borderRadius: 15, height: '100%', justifyContent: 'space-between'}}>
+                    <View style={{ paddingHorizontal: 20, paddingVertical: 0, backgroundColor: '#fff', borderRadius: 15, height: '100%', justifyContent: 'space-between'}}>
                     <ConfettiCannon count={400} origin={{x: -40, y: 50}} fadeOut={true}/>
-                        <View style={{ alignItems: 'center', marginVertical: 20, paddingBottom: 10,
+                        <View style={{ alignItems: 'center', marginVertical: 20, paddingBottom: 30,
                                        borderColor: '#155843', borderRadius: 15, borderWidth: 4,
                                        backgroundColor: '#155843cc'
                                     }}>
@@ -1877,7 +1877,7 @@ const UpdateExtra = () => {
                                     {Teams[0].playerNames?.join(' - ')}
                                 </Text>
                                 <Text style={{
-                                    color: '#155843', fontFamily: 'chalkboard-bold', fontSize: 24, flexWrap: 'wrap', textAlign: 'center',
+                                    color: '#155843', fontFamily: 'chalkboard-bold', fontSize: 20, flexWrap: 'wrap', textAlign: 'center',
                                     backgroundColor: '#fff', borderRadius: 20, paddingVertical: 0, paddingHorizontal: 15, marginVertical: 10
                                     }}>
                                     121 Points
@@ -1950,7 +1950,7 @@ const UpdateExtra = () => {
                                 )}
                             />
                         </View>
-                        <View style={{ alignItems: 'center', marginVertical: 10}}>
+                        <View style={{ alignItems: 'center', marginBottom: 10}}>
                             <TouchableOpacity onPress={MarkDone}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
                                     <Feather 
