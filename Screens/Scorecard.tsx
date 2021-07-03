@@ -82,13 +82,13 @@ const Scorecard = ({navigation} : {navigation: any}) => {
 //scorecard dataset
     const [ScorecardData, setScorecardData] = useState(
         {
-            id: '1',
+            id: 'card' + uuid.v4().toString(),
             name: new Date().toDateString(),
             updated: false,
             dateCreated: new Date().toDateString(),
-            teams: '1',
-            scores: '1',
-            settings: '1',
+            teams: uuid.v4().toString(),
+            scores: uuid.v4().toString(),
+            settings: uuid.v4().toString(),
             leader: '0',
             //teams: [Teams],
             //scores: [Scores]
@@ -295,7 +295,6 @@ useEffect(() => {
         try {
             const jsonSettings = JSON.stringify(Setting)
             await AsyncStorage.setItem(Setting.id, jsonSettings)
-            console.log(Setting)
         } catch (e) {
             // saving error
         }
@@ -342,6 +341,8 @@ useEffect(() => {
         console.log('Done3')
 
         setIsSaved(!isSaved);
+
+        console.log(ScorecardData)
 
         
     }
@@ -461,10 +462,7 @@ useEffect(() => {
 
 //load a saved scorecard or create a new one by setting new uuids
     useEffect(() => {
-        if (cardID !== 'new') {
-            let item = cardID
-            LoadCard({item})
-        } else {
+        if (cardID.includes('new')) {
             clearScorecard();
             SetDefaultSettings();
             let cardIdentity = uuid.v4();
@@ -474,6 +472,10 @@ useEffect(() => {
             setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString(), settings: 'setting' + settingIdentity.toString() })
             //setSavedSetting({...SavedSetting, id: 'setting' + settingIdentity.toString()});
         }
+        else {
+            let item = cardID
+            LoadCard({item})
+        } 
     }, [cardID])
 
 //conversion function for timer - seconds from textinput to millieconds
@@ -717,7 +719,6 @@ const UpdateExtra = () => {
         
             newArray[roundState - 1].winner = i;
             setScores(newArray);
-            console.log(Scores)
         }
     }, [roundUpdate])
 

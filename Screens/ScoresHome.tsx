@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Tou
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MatericalCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import uuid from 'react-native-uuid';
+
 
 import ActiveGames from '../Components/ActiveGames';
 import GamesStatsList from '../Components/GameStatsList';
@@ -19,7 +21,7 @@ const ScorecardMenu = ({navigation}) => {
             </View>
             <View style={{flexDirection: 'row', margin: 20, width: SCREEN_WIDTH, justifyContent: 'space-around', alignSelf: 'center'}}>
                 <View style={{ alignItems: 'center'}}>
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Scorecard', {cardID: 'new'})}>
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Scorecard', {cardID: 'new' + uuid.v4()})}>
                         <View style={styles.quickbutton}>
                                 <Ionicons 
                                     name='md-add-circle'
