@@ -58,10 +58,9 @@ const ProfileScreen = ({ navigation } : any) => {
             </View>
           <Avatar.Image
                 source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}}
-                size={100}
+                size={120}
                 style={{ 
                   elevation: 2,
-                  marginTop: 16,
                   marginBottom: 4,
                   alignSelf: 'center',
                 }}
@@ -84,9 +83,11 @@ const ProfileScreen = ({ navigation } : any) => {
                   Edit
             </Chip>
           </TouchableOpacity>
-          <View style={ styles.winloss }>
+
+          {/* <View style={ styles.winloss }>
             <WinLossHeader />
-          </View>
+          </View> */}
+
         </View>
 
         <View style={{ width: '90%', alignSelf: 'center'}}>
@@ -167,8 +168,7 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
-    //marginTop: 16, 
-    marginBottom: 16,
+    marginBottom: 20,
     justifyContent: "flex-start",
     alignSelf: 'center',
     alignItems: "center",
@@ -176,7 +176,9 @@ const styles = StyleSheet.create({
     width: '100%',
     elevation: 1,
     backgroundColor: '#155843',
-    //borderRadius: 8,
+    paddingBottom: 20,
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
   },
   share: {
     marginTop: 12, 
