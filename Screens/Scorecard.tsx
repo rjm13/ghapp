@@ -1464,11 +1464,12 @@ const UpdateExtra = () => {
                             </Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 20}}>
-                            <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
-                                <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
-                                    Bid
-                                </Text>
-                                <TextInput 
+                            {isBidEnabled === true ? (
+                                <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                        Bid
+                                    </Text>
+                                    <TextInput 
                                         placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][0] : '0'}
                                         placeholderTextColor='#000000a5'
                                         style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
@@ -1477,35 +1478,40 @@ const UpdateExtra = () => {
                                         autoFocus={false}
                                         onChangeText={text => setBidText(text)}
                                     /> 
-                            </View>
-                            <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
-                                <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
-                                    Meld
-                                </Text>
-                                <TextInput 
-                                    placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][1] : '0'}
-                                    placeholderTextColor='#000000a5'
-                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
-                                    maxLength={20}
-                                    keyboardType='number-pad'
-                                    autoFocus={false}
-                                    onChangeText={val =>setMeldText(val)}
-                                /> 
-                            </View>
-                            <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
-                                <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
-                                    Bonus
-                                </Text>
-                                <TextInput 
-                                    placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][2] : '0'}
-                                    placeholderTextColor='#000000a5'
-                                    style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
-                                    maxLength={20}
-                                    keyboardType='number-pad'
-                                    autoFocus={false}
-                                    onChangeText={val =>setBonusText(val)}
-                                /> 
-                            </View>
+                                </View>
+                            ) : null}
+                            {isMeldEnabled === true ? (
+                                <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                        Meld
+                                    </Text>
+                                    <TextInput 
+                                        placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][1] : '0'}
+                                        placeholderTextColor='#000000a5'
+                                        style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
+                                        maxLength={20}
+                                        keyboardType='number-pad'
+                                        autoFocus={false}
+                                        onChangeText={val =>setMeldText(val)}
+                                    /> 
+                                </View>
+                            ) : null}
+                            {isBonusEnabled === true ? (
+                                <View style={{marginVertical: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={{fontSize: 20, fontFamily: 'chalkboard-bold'}}>
+                                        Bonus
+                                    </Text>
+                                    <TextInput 
+                                        placeholder={roundState ? Scores[roundState - 1]?.extra[teamState - 1][2] : '0'}
+                                        placeholderTextColor='#000000a5'
+                                        style={{borderBottomWidth: 0.5, borderColor: 'lightgray', textAlign: 'center', height: 40, width: 60, fontFamily: 'chalkboard-bold', fontSize: 24, marginVertical: 10, color: '#363636a5'}}
+                                        maxLength={20}
+                                        keyboardType='number-pad'
+                                        autoFocus={false}
+                                        onChangeText={val =>setBonusText(val)}
+                                    /> 
+                                </View>
+                            ) : null}
                         </View>
                         <View style={{ alignItems: 'center'}}>
                             <TouchableOpacity onPress={UpdateExtra}>
