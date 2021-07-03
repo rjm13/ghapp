@@ -234,6 +234,11 @@ useEffect(() => {
 
     const CELL_HEIGHT = isBidEnabled === true || isMeldEnabled === true || isBonusEnabled === true ? 100 : 50;
 
+//placeholder text states for textInputs
+    const [timePlaceholder, setTimePlaceholder] = useState('');
+    const [TickerPlaceholder, setTickerPlaceholder] = useState('Clock');
+    const [DoneSoundPlaceholder, setDoneSoundPlaceholder] = useState('Ting');
+
     
 
 //themes
@@ -405,11 +410,12 @@ useEffect(() => {
         setRoundState(1);  
         setTeamArray(Scores[0].team);
         setTeamPlayer('');
+
         setPlayers([]);
-        setTeamNames([])
-            for (var i = 0; i < Teams.length; i++) {
-                setTeamNames([...TeamNames, Teams[i].name])
-            }
+        for (var i = 0; i < Teams.length; i++) {
+            if (i === 0) {setTeamNames([Teams[i].name])}
+            else setTeamNames([...TeamNames, Teams[i].name])
+        }
         setExtraArray([]);
         for (var i = 0; i < Teams.length; i++) {
             setExtraArray([...ExtraArray, ['', '', '']])
@@ -919,7 +925,7 @@ const UpdateExtra = () => {
                 <TouchableOpacity onPress={() => showTeamModal({name, id})} onLongPress={() => showDeleteTeamModal(id)}>
                     <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', margin: 10}}>
                         <Text style={{fontFamily: 'chalkboard-bold', fontSize: 16, color: '#000000a5'}}>
-                            {TeamNames[id - 1]}
+                            {Teams[id - 1].name}
                         </Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                                 <Feather 
@@ -1324,12 +1330,6 @@ const UpdateExtra = () => {
             </View>
         );
     }
-
-//placeholder text states for textInputs
-    const [timePlaceholder, setTimePlaceholder] = useState('');
-    const [TickerPlaceholder, setTickerPlaceholder] = useState('Clock');
-    const [DoneSoundPlaceholder, setDoneSoundPlaceholder] = useState('Ting');
-
 
 
 //FINALLY, THE RETURN FUNCTION OF THE SCORECARD
