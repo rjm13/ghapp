@@ -61,7 +61,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     const [Teams, setTeams] = useState(
         [
             {
-                id: 1,
+                id: '1',
                 name: 'Team 1',
                 playerNames: [],
                 playerID: [],
@@ -89,6 +89,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
             teams: '1',
             scores: '1',
             settings: '1',
+            leader: '0',
             //teams: [Teams],
             //scores: [Scores]
         },
@@ -99,6 +100,7 @@ const Scorecard = ({navigation} : {navigation: any}) => {
     const [roundUpdate, setRoundUpdate] = useState(false);
     const [updateScores, setUpdateScores] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
+    const [isComplete, setIsComplete] = useState(false);
 
 //round and team state management for updating the score through the modal
     const [roundState, setRoundState] = useState(1);
@@ -113,22 +115,25 @@ const Scorecard = ({navigation} : {navigation: any}) => {
         teams: '1',
         scores: '1',
         settings: '1',
+        leader: '0',
 
     }
 
     const blankTeams = [
         {
-            id: 1,
+            id: '1',
             name: 'Team 1',
+            playerNames: [],
             playerID: [],
             total: 0 ,
-            roundWins: 0, 
+            roundWins: 0,
         },
         {
             id: '2',
             name: 'Team 2',
+            playerNames: [],
             playerID: [],
-            total:  0 ,
+            total: 0,
             roundWins: 0,
         },
     ]
@@ -531,11 +536,11 @@ useEffect(() => {
     const SetShowTeamModal = () => {
 
         let teams = Teams.length
-        let id = teams + 1;
+        let id = (teams + 1);
         let name = 'Team' + ' ' + id.toString();
 
         setTeams([...Teams, {
-            id: id,
+            id: id.toString(),
             name: name,
             playerNames: [],
             playerID: [],
@@ -606,7 +611,7 @@ useEffect(() => {
 //subtract 1 from the id of every team in the list that is after the deleted team
         for (var i = id; i < numbTeams; i++ ) {
             //let newIdArray = [...Teams];
-            newArray[i - 1].id = newArray[i - 1].id - 1
+            newArray[i - 1].id = (parseInt(newArray[i - 1].id) - 1).toString()
 
             setTeams(newArray);
         }
@@ -691,7 +696,7 @@ const UpdateExtra = () => {
     const NewScore = () => {    
 
         let newSArray = [...Scores];
-        newSArray[roundState - 1].score[teamState - 1 ] = textNum;
+        newSArray[roundState - 1].score[teamState - 1 ] = textNum
         setScores(newSArray);
 
         hideModal();
@@ -700,31 +705,35 @@ const UpdateExtra = () => {
         setRoundUpdate(!roundUpdate);
     }
 
-    //when the round is updated, this function will determine the total round winner
+//when the round is updated, this function will determine the total round winner
     useEffect(() => {
 
         if (roundState) {
         
             let newArray = [...Scores];
 
-            let i = isLowestPointsEnabled === false ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1]?.score)) :
-                    isLowestPointsEnabled === true ? newArray[roundState - 1].score.indexOf(Math.min(...Scores[roundState - 1]?.score)) : null
+            let i = isLowestPointsEnabled === false ? newArray[roundState - 1].score.indexOf(Math.max(...Scores[roundState - 1].score)) :
+                    isLowestPointsEnabled === true ? newArray[roundState - 1].score.indexOf(Math.min(...Scores[roundState - 1].score)) : 0
         
             newArray[roundState - 1].winner = i;
             setScores(newArray);
+            console.log(Scores)
         }
     }, [roundUpdate])
+
+    
 
 //when the scorecard is updated, this function will add together the scores and round wins and update the dataset
     useEffect(() => {
 
-        for (var i=0; i < TeamArray.length; i++) {
+        for (var i=0; i < Teams.length; i++) {
 
             let newArray = [...Teams];
 
-            newArray[i].total = Scores.reduce((a,v) => a = a + (v.score[i] === '' ? 0 : v.score[i]), 0),
+            newArray[i].total = Scores.reduce((a,v) => a = a + (v.score[i] === '' ? 0 : parseInt(v.score[i])), 0),
             newArray[i].roundWins = Scores.reduce((count, item) => count + (item.winner === i ? 1 : 0), 0);
             setTeams(newArray);
+            
         }
     },[roundUpdate]);
 
@@ -790,7 +799,7 @@ const UpdateExtra = () => {
         })
     }
 
-//display who the leader of the rounds and totals are
+//display who the xf of the rounds and totals are
 
     const [leader, setLeader] = useState(0);
     const [roundLeader, setRoundLeader] = useState(0);
@@ -808,7 +817,62 @@ const UpdateExtra = () => {
             setLeader( Math.min(...totalarray));
             setRoundLeader( Math.max(...roundarray));
         }
+    }, [roundUpdate]);
+
+    useEffect(() => {
+
+        let newLeaderArray = {...ScorecardData};
+
+        let totalarray = Teams.map(i => i.total);
+
+        let w = isLowestPointsEnabled === false ? totalarray.indexOf(Math.max(...totalarray)).toString() :
+                isLowestPointsEnabled === true ? totalarray.indexOf(Math.min(...totalarray)).toString() : '0'
+
+        newLeaderArray.leader = w;
+        setScorecardData(newLeaderArray);
+
     }, [roundUpdate])
+
+//create a separate list to display the teams minus the winner
+    const [theRest, setTheRest] = useState([
+        {
+            id: '1',
+            name: 'Team 1',
+            playerNames: [],
+            playerID: [],
+            total: 0 ,
+            roundWins: 0,
+        },
+        {
+            id: '2',
+            name: 'Team 2',
+            playerNames: [],
+            playerID: [],
+            total: 0,
+            roundWins: 0,
+        },
+    ])
+
+//splice out the winner
+    useEffect(() => {
+        let rest = [...Teams];
+        let leader = parseInt(ScorecardData.leader)
+
+        rest.splice(leader, 1);
+        setTheRest(rest);
+    }, [isComplete]);
+
+//determine the total points scored in the game
+    const ArrayTotal = Teams.map(i => i.total)
+
+    const secondArrayTotal = theRest.map(i => i.total);
+
+    const TotalPoints = ArrayTotal.reduce((a,v) => a = a + v, 0)
+
+    const StdDev = (!ArrayTotal || ArrayTotal.length === 0) ? 0 : Math.sqrt(ArrayTotal.map(x => Math.pow(x - TotalPoints/ArrayTotal.length, 2)).reduce((a, b) => a + b) / ArrayTotal.length)
+    
+    const Spread = Math.round(((Teams[parseInt(ScorecardData.leader)]?.total - Math.max(...secondArrayTotal)) / Math.max(...secondArrayTotal)) * 100)
+
 
 //footer that displays the team score totals
     const Footer = ({total, style}: {total: any, style: any}) => {
@@ -1054,7 +1118,7 @@ const UpdateExtra = () => {
 
     const [visibleCompleteModal, setVisibleCompleteModal] = useState(false);
                 
-    const showCompleteModal = (id : any) => setVisibleCompleteModal(true);
+    const showCompleteModal = (id : any) => {setVisibleCompleteModal(true); setIsComplete(!isComplete);}
 
     const hideCompleteModal = () => setVisibleCompleteModal(false);
 
@@ -1849,7 +1913,7 @@ const UpdateExtra = () => {
 {/* New Scorecard Modal */}
                 <Modal visible={visibleConfettiModal} onDismiss={hideConfettiModal} contentContainerStyle={confettiModalContainerStyle}>
                     <View style={{ paddingHorizontal: 20, paddingVertical: 0, backgroundColor: '#fff', borderRadius: 15, height: '100%', justifyContent: 'space-between'}}>
-                    <ConfettiCannon count={400} origin={{x: -40, y: 50}} fadeOut={true}/>
+                    <ConfettiCannon count={400} origin={{x: -40, y: 50}} fadeOut={true} fallSpeed={6000}/>
                         <View style={{ alignItems: 'center', marginVertical: 20, paddingBottom: 30,
                                        borderColor: '#155843', borderRadius: 15, borderWidth: 4,
                                        backgroundColor: '#155843cc'
@@ -1871,22 +1935,22 @@ const UpdateExtra = () => {
                             </View>
                             <View>
                                 <Text style={{color: '#fff', fontSize: 26, fontFamily: 'chalkboard-bold', textAlign: 'center', marginHorizontal: 10}}>
-                                    {Teams[0].name}
+                                    {Teams[parseInt(ScorecardData.leader)]?.name}
                                 </Text>
                                 <Text style={{color: '#fff', fontFamily: 'chalkboard-light', fontSize: 20, flexWrap: 'wrap', textAlign: 'center'}}>
-                                    {Teams[0].playerNames?.join(' - ')}
+                                    {Teams[parseInt(ScorecardData.leader)]?.playerNames?.join(' - ')}
                                 </Text>
                                 <Text style={{
                                     color: '#155843', fontFamily: 'chalkboard-bold', fontSize: 20, flexWrap: 'wrap', textAlign: 'center',
                                     backgroundColor: '#fff', borderRadius: 20, paddingVertical: 0, paddingHorizontal: 15, marginVertical: 10
                                     }}>
-                                    121 Points
+                                    {Teams[parseInt(ScorecardData.leader)]?.total} Points
                                 </Text>
                             </View>
                         </View>
                         <View>
                             <FlatList 
-                                data={Teams}
+                                data={theRest}
                                 keyExtractor={(item, index) => index.toString()}
                                 style={{ height: 320}}
                                 showsVerticalScrollIndicator={false}
@@ -1898,11 +1962,11 @@ const UpdateExtra = () => {
                                                 {item.name}
                                             </Text>
                                             <Text style={{fontFamily: 'chalkboard-regular', fontSize: 18}}>
-                                                22 points
+                                                {item.total} points
                                             </Text>
                                         </View>
                                         <Text style={{fontFamily: 'chalkboard-light', fontSize: 14, marginTop: 0}}>
-                                            {Teams[0].playerNames?.join(' - ')}
+                                            {Teams[index].playerNames?.join(' - ')}
                                         </Text>
                                     </View> 
                                     }
@@ -1911,7 +1975,7 @@ const UpdateExtra = () => {
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
                                             <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100, elevation: 2, justifyContent: 'center'}}>
                                                 <Text style={{ textAlign: 'center', fontFamily: 'chalkboard-bold', fontSize: 26, }}>
-                                                    22
+                                                    {Scores.length}
                                                 </Text>
                                                 <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14,}}>
                                                     Rounds Played
@@ -1919,7 +1983,7 @@ const UpdateExtra = () => {
                                             </View>
                                             <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100,elevation: 2, justifyContent: 'center'}}>
                                                 <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-bold', fontSize: 26, }}>
-                                                    562
+                                                    {TotalPoints}
                                                 </Text>
                                                 <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14,  }}>
                                                     Points Scored
@@ -1929,7 +1993,7 @@ const UpdateExtra = () => {
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20, marginBottom: 20}}>
                                             <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100, elevation: 2, justifyContent: 'center'}}>
                                                 <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-bold', fontSize: 26,  }}>
-                                                    12.4%
+                                                    {StdDev}
                                                 </Text>
                                                 <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14, }}>
                                                     Std Dev
@@ -1937,7 +2001,7 @@ const UpdateExtra = () => {
                                             </View>
                                             <View style={{backgroundColor: '#e3e3e3', borderRadius: 10, width: 120, height: 100, elevation: 2, justifyContent: 'center'}}>
                                                 <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-bold', fontSize: 26, }}>
-                                                    221%
+                                                    {Spread}%
                                                 </Text>
                                                 <Text style={{ textAlign: 'center',fontFamily: 'chalkboard-regular', fontSize: 14, }}>
                                                     1st to 2nd
