@@ -42,9 +42,19 @@ const SavedScores = ({navigation} : any) => {
     //remove the item
     const RemoveCard = async () => {
         try {
-          await AsyncStorage.removeItem(removedItem)
+          await AsyncStorage.removeItem(removedItem);
         } catch(e) {
           // remove error
+        }
+        try {
+            let object = await AsyncStorage.getItem(removedItem);
+            let objs = object ? JSON.parse(object) : null
+            await AsyncStorage.removeItem(objs.teams);
+            await AsyncStorage.removeItem(objs.scores);
+            await AsyncStorage.removeItem(objs.settings);
+        }
+        catch(e) {
+            // read error
         }
         setIsSaved(!isSaved);
         hideRemoveModal();
@@ -56,6 +66,7 @@ const SavedScores = ({navigation} : any) => {
         let [itemname, setitemname] = useState('');
         let [itemdate, setitemdate] = useState('');
 
+
         useEffect(() => {
             let componentMounted = true;
             const fetchData = async () => {
@@ -64,7 +75,7 @@ const SavedScores = ({navigation} : any) => {
                     let objs = object ? JSON.parse(object) : null
                     if(componentMounted) {
                     setitemname(objs.name);
-                    setitemdate(objs.dateCreated)
+                    setitemdate(objs.dateCreated);
                 }
                 } catch(e) {
                     // read error
