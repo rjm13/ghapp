@@ -6,7 +6,9 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContent } from './DrawerContent';
 
 import MainNavStack from './MainNavStack';
-import Scorecard from '../Screens/Scorecard'
+import Scorecard from '../Screens/Scorecard';
+import ProfileScreen from '../Screens/ProfileScreen';
+import EditProfileScreen from '../Screens/EditProfileScreen';
 
 const Drawer = createDrawerNavigator ();
 
@@ -26,6 +28,14 @@ const AppNavigation = () => {
                     <Drawer.Screen
                         name='Scorecard'
                         component={Scorecard}
+                    />
+                    <Drawer.Screen
+                        name='Profile'
+                        component={ProfileScreen}
+                    />
+                    <Drawer.Screen
+                        name='EditProfile'
+                        component={EditProfileScreen}
                     />
                 </Drawer.Navigator>
             </NavigationContainer>

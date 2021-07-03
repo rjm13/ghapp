@@ -108,13 +108,13 @@ const Scorecard = ({navigation} : {navigation: any}) => {
 
 //blank datasets to reset the scorecard
     const blankScorecard = {
-        id: '1',
+        id: 'card' + uuid.v4().toString(),
         name: new Date().toDateString(),
         updated: false,
         dateCreated: new Date().toDateString(),
-        teams: '1',
-        scores: '1',
-        settings: '1',
+        teams: uuid.v4().toString(),
+        scores: uuid.v4().toString(),
+        settings: uuid.v4().toString(),
         leader: '0',
 
     }
@@ -428,11 +428,21 @@ useEffect(() => {
         setRoundUpdate(!roundUpdate)
     }
 
+    const CommitScorecard = () => {
+        let object = {...ScorecardData}
+        object.id = 'completed' + uuid.v4();
+        setScorecardData(object);
+
+        SaveToStorage();
+    }
+
     const SaveSettings = () => {
         alert('Save the settings of this scorecard as a preset game')
     }
 
     const MarkDone = () => {
+        CommitScorecard();
+        clearScorecard();
         hideConfettiModal();
     }
 
