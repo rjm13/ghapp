@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, Platform, Dimensions, ImageBackground } from 'react-native';
 import { getUser } from '../src/graphql/queries';
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { updateUser } from '../src/graphql/mutations';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
-
-import { Modal, Portal, Button, Provider } from 'react-native-paper';
+import {StatusBar} from 'expo-status-bar';
+import Feather from 'react-native-vector-icons/Feather'
+import * as Animatable from 'react-native-animatable';
+import { Modal, Portal, Provider } from 'react-native-paper';
 
 
 const EditProfile = ({navigation} : any) => {
@@ -81,111 +83,109 @@ const handleUpdateAttributes = async () => {
     return (
         <Provider>
             <View>
-            <View style={styles.container } >
+                <Portal>
+                    <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                        <View style={{ alignItems: 'center'}}>
+                            <Text style={{fontFamily: 'chalkboard-bold', fontSize: 22, paddingVertical: 20}}>
+                                Change Photo
+                            </Text>
+                            <Image 
+                                source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
+                                style={styles.modalavatar} 
+                            />
+                            <Text style={{fontFamily: 'chalkboard-regular', fontSize: 20, paddingVertical: 16}}>
+                                Upload new photo
+                            </Text>
 
-            <Portal>
-                <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                    <View style={{ alignItems: 'center'}}>
-                        <Text style={{
-                            fontFamily: 'futura-bold',
-                            fontSize: 22,
-                            paddingVertical: 16,
-                            }}>Change Photo
-                        </Text>
-                        <Image 
-                            source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
-                            style={styles.modalavatar} 
-                        />
-                        <Text style={{
-                            fontFamily: 'futura',
-                            fontSize: 20,
-                            paddingVertical: 16,
-                            }}>Upload new photo
-                        </Text>
-                        <View style={styles.button}>
-                            <TouchableOpacity
-                                onPress={hideModal}>
-                                <LinearGradient
-                                    colors={['#55B142', '#155843']}
-                                    style={styles.savebutton} >
+                            <TouchableOpacity onPress={hideModal}>
+                                <View style={styles.savebutton} >
                                     <Text style={styles.savewords}>Submit</Text>
-                                </LinearGradient>
+                                </View>
+                            </TouchableOpacity>
+
+                        </View>
+                    </Modal>
+                </Portal>
+
+                <View>
+
+                    <Animatable.View animation='bounceInDown' style={{ flexDirection: 'row', height: 90, borderBottomRightRadius: 20, borderBottomLeftRadius: 20,
+                                    backgroundColor: '#155843', alignItems: 'flex-end', paddingBottom: 20, paddingLeft: 20}}>
+                        <TouchableWithoutFeedback onPress={() => navigation.goBack()} style={{ flexDirection: 'row'}}>
+                            <Feather name='chevron-left' color='#fff' size={25}/>
+                            <Text style={{fontFamily: 'chalkboard-regular', color: '#fff', fontSize: 18, marginLeft: 10 }}>
+                                Edit Profile
+                            </Text>
+                        </TouchableWithoutFeedback>
+                    </Animatable.View>
+
+                    <View style={{ justifyContent: 'space-between', height: Dimensions.get('window').height - 90}}>
+                        <View>
+                            <TouchableWithoutFeedback onPress={showModal}>
+                                <View style={styles.photocontainer }>
+                                    <Text style={ styles.words }>Photo</Text>
+                                    <Image 
+                                        source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
+                                        style={styles.avatar} 
+                                    />
+                                </View>
+                            </TouchableWithoutFeedback> 
+
+                            <View style={styles.namecontainer }>
+                                    <Text style={ styles.words }>Display Name</Text>
+                                    <TextInput
+                                        placeholder={user?.name || 'Player 1'}
+                                        style={styles.nametext}
+                                        maxLength={20}
+                                        multiline={false}
+                                        onChangeText={displayName => setDisplayName(displayName)}
+                                    />
+                            </View>
+
+                            <View style={{ marginHorizontal: 20}}>
+                                <ImageBackground 
+                                    source={require('../assets/chalkboard.jpg')} 
+                                    imageStyle={{ resizeMode: 'cover', width: '100%', height: '100%'}}
+                                    style={{marginTop: 10, flexDirection: 'row', backgroundColor: '#155843',
+                                        alignSelf: 'center', borderWidth: 4, borderColor: 'tan'}}>
+                                    <TextInput
+                                        placeholder={user?.status || 'Say something about yourself'}
+                                        placeholderTextColor='#fff'
+                                        style={[{flex: 1, height: 100, marginHorizontal: 10, fontFamily: 'chalkboard-regular', fontSize: 16, color: '#fff'}]}
+                                        maxLength={50}
+                                        multiline={true}
+                                        numberOfLines={2}
+                                        onChangeText={displayStatus => setDisplayStatus(displayStatus)}
+                                    />
+                                </ImageBackground>
+                            </View>
+                          
+
+                            <TouchableOpacity onPress={() => {navigation.navigate('UpdateEmail')}}>
+                                <View style={styles.emailcontainer }> 
+                                    <Text style={ styles.words }>Update Email</Text>
+                                </View>
+                            </TouchableOpacity>
+                    
+                            <TouchableOpacity
+                                onPress={() => {navigation.navigate('ChangePassword')}}>
+                                <View style={styles.emailcontainer }>
+                                    <Text style={ styles.words }>Reset Password</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View>
+                            <TouchableOpacity onPress={handleUpdateAttributes}>
+                                <View style={[styles.savebutton]} >
+                                    <Text style={styles.savewords}>Save Changes</Text>
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </View>
-                </Modal>
-            </Portal>
-
-                <TouchableWithoutFeedback onPress={showModal}>
-                    <View style={styles.photocontainer }>
-                        <Text style={ styles.words }>Photo</Text>
-                        <Image 
-                            source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
-                            style={styles.avatar} 
-                        />
-                    </View>
-                </TouchableWithoutFeedback> 
-
-                <View style={styles.namecontainer }>
-                    <Text style={ styles.words }>Display Name</Text>
-                    <TextInput
-                        placeholder={user?.name}
-                        style={styles.nametext}
-                        maxLength={20}
-                        multiline={false}
-                        onChangeText={displayName => setDisplayName(displayName)}
-                        //defaultValue={user?.name}
-                    />
+                    
                 </View>
-
-                <View style={styles.statuscontainer}>
-                    <TextInput
-                                placeholder={user?.status || 'Say something about yourself'}
-                                style={styles.textInput}
-                                maxLength={50}
-                                multiline={true}
-                                numberOfLines={2}
-                                onChangeText={displayStatus => setDisplayStatus(displayStatus)}
-                                //defaultValue={user?.status || ''}
-                    />
-                </View>
-
-                <TouchableOpacity onPress={() => {navigation.navigate('UpdateEmail')}}>
-                    <View style={styles.emailcontainer }> 
-                         <Text style={ styles.words }>Update Email</Text>
-                        {/* <Text style={ styles.nametext }>{user?.email}</Text> */}
-                    </View>
-                </TouchableOpacity>
-               
-                <TouchableOpacity
-                    onPress={() => {navigation.navigate('ChangePassword')}}>
-                    <View style={styles.smallcontainer }>
-                        <Text style={ styles.words }>Reset Password</Text>
-                    </View>
-                </TouchableOpacity>
-
-                <View style={styles.button}>
-                    <TouchableOpacity 
-                        onPress={handleUpdateAttributes}
-                        >
-                        <LinearGradient
-                            colors={['#55B142', '#155843']}
-                            style={styles.savebutton}
-                        >
-                            <Text style={styles.savewords}>Save Changes</Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-                {/* <View style={styles.deletecontainer }>
-                    <View>
-                        <TouchableOpacity 
-                            onPress={() => alert('This will permenantly delete your account. Are you sure you want to continue?')}>
-                                <Text style={ styles.deletewords }>Delete Account</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View> */}
+                <StatusBar style='light'/>
             </View>
         </Provider> 
 );}
@@ -193,81 +193,57 @@ const handleUpdateAttributes = async () => {
 export default EditProfile;
 
 const styles = StyleSheet.create({
-    container: {
-       //backgroundColor: 'green',
-       //height: '100%',
-    },
     photocontainer: {
-        marginVertical: 16,
+        marginVertical: 20,
         flexDirection: 'row',
         justifyContent: "space-between",
         alignSelf: 'center',
         alignItems: "center",
-        //flexDirection: 'row',
         width: '100%',
-        elevation: 1,
-        backgroundColor: '#fff',
-        paddingHorizontal: 16,
+        paddingHorizontal: 20,
     },
     namecontainer: {
-        //marginTop: 16,
         flexDirection: 'row',
         justifyContent: "space-between",
-        alignSelf: 'center',
         alignItems: "center",
-        //flexDirection: 'row',
         width: '100%',
-        elevation: 1,
-        backgroundColor: '#fff',
-        paddingHorizontal: 16,
+        paddingHorizontal: 20,
+        marginBottom: 20,
+        marginTop: 10,
     },
     statuscontainer: {
-        marginTop: 16,
+        marginTop: 10,
         flexDirection: 'row',
-        //margin: 12,
-        backgroundColor: 'white',
-        padding: 40,
-        width: '100%',
+        backgroundColor: '#155843b3',
+        padding: 30,
+        alignSelf: 'center',
+        width: '90%',
+        borderRadius: 15,
+        borderWidth: 2,
+        borderColor: 'tan'
     },
     emailcontainer: {
-        marginTop: 16,
+        marginTop: 20,
         flexDirection: 'row',
-        justifyContent: "center",
-        alignSelf: 'center',
         alignItems: "center",
-        //flexDirection: 'row',
-        width: '100%',
-        elevation: 1,
-        backgroundColor: '#fff',
-        paddingHorizontal: 16,
-    },
-    smallcontainer: {
-        marginVertical: 16,
-        justifyContent: "space-between",
-        alignSelf: 'center',
-        alignItems: "center",
-        //flexDirection: 'row',
-        width: '100%',
-        elevation: 1,
-        backgroundColor: '#fff',
+        paddingHorizontal: 20,
     },
     nametext: {
-        fontFamily: 'futura-bold',
+        fontFamily: 'chalkboard-bold',
         fontSize: 16,
-        color: 'green',
+        color: '#155843',
         textAlign: 'right',
+        width: 100,
     },
     words: {
-        fontFamily: 'futura',
+        fontFamily: 'chalkboard-regular',
         fontSize: 18,
-        padding: 16,
-        color: 'gray',
+        color: '#000',
     },
     avatar: {
         width: 60,
         height: 60,
         borderRadius: 50,
-        margin: 16,
       },
       modalavatar: {
         width: 120,
@@ -278,44 +254,19 @@ const styles = StyleSheet.create({
         borderColor: '#155843',
         
       },
-      textInput: {
-        flex: 1,
-        marginTop: Platform.OS === 'ios' ? 0 : -12,
-        color: 'green',
-        fontFamily: 'futura',
-        fontSize: 18,
-    },
-    button: {
-        alignItems: 'center',
-        paddingTop: 48,
-    },
     savebutton: {
         width: 200,
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
+        backgroundColor: '#155843',
+        alignSelf: 'center'
     },
     savewords: {
-        fontFamily: 'futura-bold',
+        fontFamily: 'chalkboard-bold',
         fontSize: 18,
         padding: 16,
         color: 'white',
-    },
-    deletecontainer: {
-        margin: 50,
-        //backgroundColor: 'yellow',
-        //height: '100%',
-        alignItems: 'center',
-        //flexDirection: 'column-reverse'
-        
-        
-    },
-    deletewords: {
-        fontFamily: 'futura',
-        fontSize: 18,
-        padding: 16,
-        color: 'gray',
-        //alignSelf: 'center',
     },
 })
