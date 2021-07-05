@@ -37,7 +37,8 @@
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
     "roman-numerals": "^0.3.2",
-    "s": "^1.0.0"
+    "s": "^1.0.0",
+    "expo-image-picker": "~10.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

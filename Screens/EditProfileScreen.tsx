@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, Platform, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, Platform, Dimensions, ImageBackground, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { getUser } from '../src/graphql/queries';
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { updateUser } from '../src/graphql/mutations';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import {StatusBar} from 'expo-status-bar';
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable';
 import { Modal, Portal, Provider } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker';
+import uuid from 'react-native-uuid';
 
 
 const EditProfile = ({navigation} : any) => {
 
-//Modal
-    const [visible, setVisible] = React.useState(false);
-
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
-    const containerStyle = {
-        backgroundColor: '#fff', 
-        padding: 20,
-    };
+    const [avatarKey, setAvatarKey] = useState('');
+    const [isUploading, setIsUploading ] = useState(false);
+    const [image, setImage] = useState('');
 
 //Fetch user information
     const [user, setUser] = useState();
@@ -45,64 +40,138 @@ const EditProfile = ({navigation} : any) => {
         fetchUser();
     }, [])
 
-    //Attribute state
+//signout function
+    async function handleSignOut() {
+        try {
+            await Auth.signOut()
+            .then(() => navigation.navigate('SignIn'))
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
+    }
+
+//give the camera roll perissions
+    useEffect(() => {
+        (async () => {
+          if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+              alert('Sorry, we need camera roll permissions to make this work!');
+            }
+          }
+        })();
+      }, []);
+
+      const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.cancelled) {
+          setImage(result.uri);
+        }
+      };
+
+//update the image
+    const handleUpdateImage = async ()=> {
+        try {
+            const response = await fetch(image);
+            const blob = await response.blob();
+            const filename =  uuid.v4();
+            const s3Response = await Storage.put(filename, blob);
+            setAvatarKey(s3Response.key);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+//publish avatar
+    const PublishAvatar = async () => {
+        setIsUploading(true);
+        await handleUpdateImage();
+        if ( avatarKey !== '' ) {
+            const userInfo = await Auth.currentAuthenticatedUser();
+            const response = await Storage.get(avatarKey);
+            const updatedUser = { id: userInfo.attributes.sub, imageUri: response }
+            if (userInfo) {
+                let result = await API.graphql(
+                graphqlOperation(updateUser, { input: updatedUser }))
+            console.log(result);
+            }
+        }
+        setIsUploading(false);
+    };
+
+//Modal
+    const [visible, setVisible] = React.useState(false);
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const containerStyle = {
+        backgroundColor: '#fff', 
+        padding: 20,
+    };
+
+//SignOutModal
+    const [visible2, setVisible2] = useState(false);
+    const showSignOutModal = () => setVisible2(true);
+    const hideSignOutModal = () => setVisible2(false);
+    const signoutcontainerStyle = {
+        backgroundColor: '#363636', 
+        padding: 20,
+        margin: 20,
+        borderRadius: 15,
+};
+
+//Attribute state
     const [ displayName, setDisplayName ] = useState('');
     const [ displayStatus, setDisplayStatus ] = useState('');
     const [ displayEmail, setDisplayEmail ] = useState('');
 
 //handle change attribute using graphql operation
-const handleUpdateAttributes = async () => {
-      //get authenticated user from Auth
-      const userInfo = await Auth.currentAuthenticatedUser(
-        { bypassCache: true }
-      );
+    const handleUpdateAttributes = async () => {
+        //get authenticated user from Auth
+        const userInfo = await Auth.currentAuthenticatedUser(
+            { bypassCache: true }
+        );
 
-      const updatedUser = {
-        id: userInfo.attributes.sub,
-        name: displayName.length === 0 ? user?.name : displayName,
-        //imageUri: 
-        status: displayStatus.length === 0 ? user?.status : displayStatus,
-        //email: displayEmail.length === 0 ? user?.email : displayEmail,
-      }
-      
-      if (userInfo) {
-      //get the user from Backend with the user SUB from Auth
-        let result = await API.graphql(
-          graphqlOperation(
-            updateUser, { input: updatedUser }
-          )
-        )
+        const updatedUser = {
+            id: userInfo.attributes.sub,
+            name: displayName.length === 0 ? user?.name : displayName,
+            //imageUri: 
+            status: displayStatus.length === 0 ? user?.status : displayStatus,
+            //email: displayEmail.length === 0 ? user?.email : displayEmail,
+        }
         
-        let action = navigation.navigate('Profile')
+        if (userInfo) {
+        //get the user from Backend with the user SUB from Auth
+            let result = await API.graphql(
+            graphqlOperation(
+                updateUser, { input: updatedUser }
+            )
+            )
+            
+            let action = navigation.navigate('Profile')
 
-        console.log(result);
-      }
-  }
+            console.log(result);
+        }
+    }
 
 
     return (
         <Provider>
             <View>
                 <Portal>
-                    <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                        <View style={{ alignItems: 'center'}}>
-                            <Text style={{fontFamily: 'chalkboard-bold', fontSize: 22, paddingVertical: 20}}>
-                                Change Photo
+                    <Modal visible={visible2} onDismiss={hideSignOutModal} contentContainerStyle={signoutcontainerStyle}>
+                        <View>
+                            <Text>
+                                test
                             </Text>
-                            <Image 
-                                source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
-                                style={styles.modalavatar} 
-                            />
-                            <Text style={{fontFamily: 'chalkboard-regular', fontSize: 20, paddingVertical: 16}}>
-                                Upload new photo
-                            </Text>
-
-                            <TouchableOpacity onPress={hideModal}>
-                                <View style={styles.savebutton} >
-                                    <Text style={styles.savewords}>Submit</Text>
-                                </View>
-                            </TouchableOpacity>
-
                         </View>
                     </Modal>
                 </Portal>
@@ -111,21 +180,26 @@ const handleUpdateAttributes = async () => {
 
                     <Animatable.View animation='bounceInDown' style={{ flexDirection: 'row', height: 90, borderBottomRightRadius: 20, borderBottomLeftRadius: 20,
                                     backgroundColor: '#155843', alignItems: 'flex-end', paddingBottom: 20, paddingLeft: 20}}>
-                        <TouchableWithoutFeedback onPress={() => navigation.goBack()} style={{ flexDirection: 'row'}}>
-                            <Feather name='chevron-left' color='#fff' size={25}/>
-                            <Text style={{fontFamily: 'chalkboard-regular', color: '#fff', fontSize: 18, marginLeft: 10 }}>
-                                Edit Profile
-                            </Text>
+                        <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+                            <View style={{flexDirection: 'row'}}>
+                               <Feather name='chevron-left' color='#fff' size={25}/>
+                                <Text style={{fontFamily: 'chalkboard-regular', color: '#fff', fontSize: 18, marginLeft: 10 }}>
+                                    Edit Profile
+                                </Text> 
+                            </View>
+                            
                         </TouchableWithoutFeedback>
                     </Animatable.View>
 
                     <View style={{ justifyContent: 'space-between', height: Dimensions.get('window').height - 90}}>
                         <View>
-                            <TouchableWithoutFeedback onPress={showModal}>
+                            <TouchableWithoutFeedback onPress={pickImage}>
                                 <View style={styles.photocontainer }>
                                     <Text style={ styles.words }>Photo</Text>
                                     <Image 
-                                        source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
+                                        //source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
+                                        source={{ uri: image || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
+
                                         style={styles.avatar} 
                                     />
                                 </View>
@@ -171,6 +245,13 @@ const handleUpdateAttributes = async () => {
                                 onPress={() => {navigation.navigate('ChangePassword')}}>
                                 <View style={styles.emailcontainer }>
                                     <Text style={ styles.words }>Reset Password</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={showSignOutModal}>
+                                <View style={styles.emailcontainer }>
+                                    <Text style={ styles.words }>Sign Out</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
