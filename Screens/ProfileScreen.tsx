@@ -153,12 +153,6 @@ const ProfileScreen = ({ navigation } : any) => {
                         />
                     </View>
                 </TouchableWithoutFeedback>
-        
-                <TouchableWithoutFeedback onPress={handleSignOut}>
-                    <View style={ styles.box }>
-                        <Text style={ styles.boxText }>Sign Out</Text>
-                    </View>
-                </TouchableWithoutFeedback>
             </View>
         </ScrollView>
         <StatusBar style='light'/>

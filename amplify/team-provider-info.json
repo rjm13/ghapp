@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-ghapp-dev-120623-authRole",
-      "UnauthRoleArn": "arn:aws:iam::216786839363:role/amplify-ghapp-dev-120623-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::216786839363:role/amplify-ghapp-dev-120623-authRole",
+      "AuthRoleName": "amplify-ghapp-dev-105506-authRole",
+      "UnauthRoleArn": "arn:aws:iam::216786839363:role/amplify-ghapp-dev-105506-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::216786839363:role/amplify-ghapp-dev-105506-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-ghapp-dev-120623-deployment",
-      "UnauthRoleName": "amplify-ghapp-dev-120623-unauthRole",
-      "StackName": "amplify-ghapp-dev-120623",
-      "StackId": "arn:aws:cloudformation:us-east-1:216786839363:stack/amplify-ghapp-dev-120623/8a45cf30-bd7b-11eb-b30a-0ed5356bca17",
-      "AmplifyAppId": "dhcw5t63n8pq3"
+      "DeploymentBucketName": "amplify-ghapp-dev-105506-deployment",
+      "UnauthRoleName": "amplify-ghapp-dev-105506-unauthRole",
+      "StackName": "amplify-ghapp-dev-105506",
+      "StackId": "arn:aws:cloudformation:us-east-1:216786839363:stack/amplify-ghapp-dev-105506/b44b2460-df3b-11eb-bbac-0a81d8a007c7",
+      "AmplifyAppId": "d3czwvax4ub4ae"
     },
     "categories": {
       "auth": {
-        "ghappf0eec7d1": {}
+        "ghapp919bd02d919bd02d": {}
       }
     }
   }

@@ -1,4 +1,12 @@
 {
+  "auth": {
+    "ghapp919bd02d919bd02d": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
   "api": {
     "ghapp": {
       "service": "AppSync",
@@ -9,20 +17,12 @@
             "authenticationType": "API_KEY",
             "apiKeyConfig": {
               "apiKeyExpirationDays": 365,
-              "description": ""
+              "description": "GH"
             }
           },
           "additionalAuthenticationProviders": []
         }
       }
-    }
-  },
-  "auth": {
-    "ghappf0eec7d1": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false
     }
   }
 }

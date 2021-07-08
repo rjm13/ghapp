@@ -1,12 +1,12 @@
 {
-    "identityPoolName": "ghappf0eec7d1_identitypool_f0eec7d1",
-    "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "ghappf0eec7d1",
-    "userPoolName": "ghappf0eec7d1_userpool_f0eec7d1",
+    "identityPoolName": "ghapp919bd02d_identitypool_919bd02d",
+    "allowUnauthenticatedIdentities": true,
+    "resourceNameTruncated": "ghapp919bd02d",
+    "userPoolName": "ghapp919bd02d_userpool_919bd02d",
     "autoVerifiedAttributes": [
         "email"
     ],
-    "mfaConfiguration": "OFF",
+    "mfaConfiguration": "OPTIONAL",
     "mfaTypes": [
         "SMS Text Message"
     ],
@@ -14,24 +14,25 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": false,
-    "passwordPolicyMinLength": 8,
+    "defaultPasswordPolicy": true,
+    "passwordPolicyMinLength": "6",
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-        "email"
+        "email",
+        "name"
     ],
     "userpoolClientGenerateSecret": false,
-    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientRefreshTokenValidity": "90",
     "userpoolClientWriteAttributes": [
         "email"
     ],
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "ghappff0eec7d1_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "ghapp9919bd02d_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "f0eec7d1",
-    "resourceName": "ghappf0eec7d1",
+    "sharedId": "919bd02d",
+    "resourceName": "ghapp919bd02d919bd02d",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -45,8 +46,15 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
+    "useDefault": "manual",
+    "thirdPartyAuth": false,
+    "usernameAttributes": [
+        "email"
+    ],
+    "userPoolGroups": false,
+    "adminQueries": false,
     "triggers": "{}",
+    "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,

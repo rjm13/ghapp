@@ -48,6 +48,7 @@ const EditProfile = ({navigation} : any) => {
         } catch (error) {
             console.log('error signing out: ', error);
         }
+        hideSignOutModal();
     }
 
 //give the camera roll perissions
@@ -114,7 +115,7 @@ const EditProfile = ({navigation} : any) => {
     const hideModal = () => setVisible(false);
     const containerStyle = {
         backgroundColor: '#fff', 
-        padding: 20,
+        margin: 20,
     };
 
 //SignOutModal
@@ -122,8 +123,7 @@ const EditProfile = ({navigation} : any) => {
     const showSignOutModal = () => setVisible2(true);
     const hideSignOutModal = () => setVisible2(false);
     const signoutcontainerStyle = {
-        backgroundColor: '#363636', 
-        padding: 20,
+        backgroundColor: '#fff', 
         margin: 20,
         borderRadius: 15,
 };
@@ -168,10 +168,18 @@ const EditProfile = ({navigation} : any) => {
             <View>
                 <Portal>
                     <Modal visible={visible2} onDismiss={hideSignOutModal} contentContainerStyle={signoutcontainerStyle}>
-                        <View>
-                            <Text>
-                                test
+                        <View style={{padding: 20, height: 200, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 16}}>
+                                Are you sure you want to sign out?
                             </Text>
+                            <TouchableOpacity onPress={handleSignOut}>
+                                <View style={{ marginTop: 40, paddingHorizontal: 30, paddingVertical: 10, backgroundColor: '#ff0000', borderRadius: 20}}>
+                                    <Text style={{fontFamily: 'chalkboard-bold', fontSize: 16, color: '#fff'}}>
+                                        Sign Out
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            
                         </View>
                     </Modal>
                 </Portal>
@@ -318,7 +326,7 @@ const styles = StyleSheet.create({
     },
     words: {
         fontFamily: 'chalkboard-regular',
-        fontSize: 18,
+        fontSize: 16,
         color: '#000',
     },
     avatar: {
@@ -346,7 +354,7 @@ const styles = StyleSheet.create({
     },
     savewords: {
         fontFamily: 'chalkboard-bold',
-        fontSize: 18,
+        fontSize: 16,
         padding: 16,
         color: 'white',
     },

@@ -62,13 +62,13 @@ export type ModelSizeInput = {
 
 export type User = {
   __typename: "User",
-  id?: string,
-  name?: string,
-  email?: string,
+  id: string,
+  name: string,
+  email: string,
   imageUri?: string | null,
   status?: string | null,
-  createdAt?: string,
-  updatedAt?: string,
+  createdAt: string,
+  updatedAt: string,
 };
 
 export type UpdateUserInput = {
@@ -103,14 +103,14 @@ export type ModelGameConditionInput = {
 
 export type Game = {
   __typename: "Game",
-  id?: string,
-  name?: string,
-  category?: string,
-  players?: string,
-  highlight?: string,
-  sections?: ModelGameSectionConnection,
-  createdAt?: string,
-  updatedAt?: string,
+  id: string,
+  name: string,
+  category: string,
+  players: string,
+  highlight: string,
+  sections?: ModelGameSectionConnection | null,
+  createdAt: string,
+  updatedAt: string,
 };
 
 export type ModelGameSectionConnection = {
@@ -121,13 +121,13 @@ export type ModelGameSectionConnection = {
 
 export type GameSection = {
   __typename: "GameSection",
-  id?: string,
-  title?: string,
+  id: string,
+  title: string,
   data?: Array< string | null > | null,
-  gameID?: string,
-  game?: Game,
-  createdAt?: string,
-  updatedAt?: string,
+  gameID: string,
+  game?: Game | null,
+  createdAt: string,
+  updatedAt: string,
 };
 
 export type UpdateGameInput = {
@@ -228,7 +228,7 @@ export type ModelGameSectionFilterInput = {
 };
 
 export type CreateUserMutationVariables = {
-  input?: CreateUserInput,
+  input: CreateUserInput,
   condition?: ModelUserConditionInput | null,
 };
 
@@ -246,7 +246,7 @@ export type CreateUserMutation = {
 };
 
 export type UpdateUserMutationVariables = {
-  input?: UpdateUserInput,
+  input: UpdateUserInput,
   condition?: ModelUserConditionInput | null,
 };
 
@@ -264,7 +264,7 @@ export type UpdateUserMutation = {
 };
 
 export type DeleteUserMutationVariables = {
-  input?: DeleteUserInput,
+  input: DeleteUserInput,
   condition?: ModelUserConditionInput | null,
 };
 
@@ -282,7 +282,7 @@ export type DeleteUserMutation = {
 };
 
 export type CreateGameMutationVariables = {
-  input?: CreateGameInput,
+  input: CreateGameInput,
   condition?: ModelGameConditionInput | null,
 };
 
@@ -313,7 +313,7 @@ export type CreateGameMutation = {
 };
 
 export type UpdateGameMutationVariables = {
-  input?: UpdateGameInput,
+  input: UpdateGameInput,
   condition?: ModelGameConditionInput | null,
 };
 
@@ -344,7 +344,7 @@ export type UpdateGameMutation = {
 };
 
 export type DeleteGameMutationVariables = {
-  input?: DeleteGameInput,
+  input: DeleteGameInput,
   condition?: ModelGameConditionInput | null,
 };
 
@@ -375,7 +375,7 @@ export type DeleteGameMutation = {
 };
 
 export type CreateGameSectionMutationVariables = {
-  input?: CreateGameSectionInput,
+  input: CreateGameSectionInput,
   condition?: ModelGameSectionConditionInput | null,
 };
 
@@ -406,7 +406,7 @@ export type CreateGameSectionMutation = {
 };
 
 export type UpdateGameSectionMutationVariables = {
-  input?: UpdateGameSectionInput,
+  input: UpdateGameSectionInput,
   condition?: ModelGameSectionConditionInput | null,
 };
 
@@ -437,7 +437,7 @@ export type UpdateGameSectionMutation = {
 };
 
 export type DeleteGameSectionMutationVariables = {
-  input?: DeleteGameSectionInput,
+  input: DeleteGameSectionInput,
   condition?: ModelGameSectionConditionInput | null,
 };
 
@@ -468,7 +468,7 @@ export type DeleteGameSectionMutation = {
 };
 
 export type GetUserQueryVariables = {
-  id?: string,
+  id: string,
 };
 
 export type GetUserQuery = {
@@ -508,7 +508,7 @@ export type ListUsersQuery = {
 };
 
 export type GetGameQueryVariables = {
-  id?: string,
+  id: string,
 };
 
 export type GetGameQuery = {
@@ -565,7 +565,7 @@ export type ListGamesQuery = {
 };
 
 export type GetGameSectionQueryVariables = {
-  id?: string,
+  id: string,
 };
 
 export type GetGameSectionQuery = {

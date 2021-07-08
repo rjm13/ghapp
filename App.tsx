@@ -46,21 +46,21 @@ const App = () => {
           return;
         };
 
-        const newUser = {
-          id: userInfo.attributes.sub,
-          name: userInfo.attributes.name,
-          imageUri: 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg',
-          email: userInfo.attributes.email,
-          status: '',
-        }
+        // const newUser = {
+        //   id: userInfo.attributes.sub,
+        //   name: userInfo.attributes.name,
+        //   imageUri: 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg',
+        //   email: userInfo.attributes.email,
+        //   status: '',
+        // }
 
       //if there is no user in DB with the id, then create one
-        await API.graphql(
-          graphqlOperation(
-            createUser,
-            { input: newUser }
-          )
-        )
+        // await API.graphql(
+        //   graphqlOperation(
+        //     createUser,
+        //     { input: newUser }
+        //   )
+        // )
       }
     }
     fetchUser();
@@ -79,7 +79,7 @@ const App = () => {
     return <AppLoading />;
     } else {
   return (
-    <AppNavigation />
+    <AppNavigation/>
   );
 }}
 
