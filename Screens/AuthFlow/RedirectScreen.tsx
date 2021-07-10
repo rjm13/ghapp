@@ -9,8 +9,9 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 
-const Redirect = ({navigation} : any) => {
+const Redirect = ({route, navigation} : any) => {
 
+    const trigger = route.params
 
     useLayoutEffect(() => {
         const fetchUser = async () => {
@@ -29,7 +30,7 @@ const Redirect = ({navigation} : any) => {
         }
         fetchUser();
         
-    }, [])
+    }, [trigger])
 
     // const { userID } = useContext(AppContext);
 

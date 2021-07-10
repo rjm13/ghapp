@@ -44,7 +44,7 @@ const SignIn = ({navigation} : any) => {
                 setUserID(userData.data.getUser);
                 setIsErr(false);
                 setTrigger(!trigger);
-                navigation.navigate('Redirect');
+                navigation.navigate('Redirect', {trigger: Math.random()});
                 return;
             };
     
