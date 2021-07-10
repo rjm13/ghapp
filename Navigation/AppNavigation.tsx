@@ -1,11 +1,10 @@
 //this is the main navigation function that contains the navigation container
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContent } from './DrawerContent';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
-
 
 import MainNavStack from './MainNavStack';
 import Scorecard from '../Screens/Scorecard';
@@ -16,7 +15,9 @@ import ForgotPasswordScreen from '../Screens/AuthFlow/ForgotPassword';
 import SignUpScreen from '../Screens/AuthFlow/SignUp';
 import ForgotPasswordConScreen from '../Screens/AuthFlow/ForgotPasswordCon';
 import ConfirmEmailScreen from '../Screens/AuthFlow/ConfirmEmail';
+import RedirectScreen from '../Screens/AuthFlow/RedirectScreen';
 
+import { AppContext } from '../AppContext';
 
 
 
@@ -24,20 +25,18 @@ const Drawer = createDrawerNavigator ();
 
 const AppNavigation = () => {
 
-        const fetchUser = async () => {
-            //get authenticated user from Auth
-            const userInfo = await Auth.currentAuthenticatedUser(
-              { bypassCache: true }
-            );
-            return userInfo ? true : false
-        }
-    
+    //get context for storyID
+    const { userID } = useContext(AppContext);
+
+    console.log(userID)
+
     return (  
             <NavigationContainer>
                 <Drawer.Navigator
                     drawerContent={props => <DrawerContent { ...props} />}
                     drawerPosition='left'
-                    initialRouteName={fetchUser() ? 'HomeDrawer' : 'SignIn'}
+                    //initialRouteName={userID === null ? 'SignIn' : 'HomeDrawer'}
+                    initialRouteName='Redirect'
                 >
                     <Drawer.Screen
                         name='HomeDrawer'
@@ -74,6 +73,10 @@ const AppNavigation = () => {
                     <Drawer.Screen
                         name='ConfirmEmail'
                         component={ConfirmEmailScreen}
+                    />
+                    <Drawer.Screen
+                        name='Redirect'
+                        component={RedirectScreen}
                     />
                 </Drawer.Navigator>
             </NavigationContainer>

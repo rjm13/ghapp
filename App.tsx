@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, View, Text, StatusBar } from 'react-native';
 import { useFonts } from 'expo-font';
 import AppLoading  from 'expo-app-loading';
+import { AppContext } from './AppContext';
 
 import Amplify from '@aws-amplify/core';
 import config from './src/aws-exports';
@@ -18,15 +19,19 @@ StatusBar.setBarStyle("light-content");
 
 const App = () => {
 
+  const [userID, setUserID] = useState(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       //get authenticated user from Auth
       const userInfo = await Auth.currentAuthenticatedUser(
         { bypassCache: true }
-      );
-      console.log(userInfo.attributes.sub);
+      )
+      .catch(err=>err)
+      //console.log(userInfo.attributes.sub);
 
       if (!userInfo) {
+        setUserID(null)
         return;
       }
 
@@ -42,9 +47,12 @@ const App = () => {
 
 
         if (userData.data.getUser) {
-          console.log("User is already registered in database");
+          console.log(userData.data.getUser);
+          setUserID(userData.data.getUser)
           return;
-        };
+        } else {
+          setUserID(null);
+        }
 
         // const newUser = {
         //   id: userInfo.attributes.sub,
@@ -79,7 +87,13 @@ const App = () => {
     return <AppLoading />;
     } else {
   return (
-    <AppNavigation/>
+    <AppContext.Provider value={{
+      userID,
+      setUserID: ({}) => setUserID(null),
+
+    }}>
+      <AppNavigation/>
+    </AppContext.Provider>
   );
 }}
 

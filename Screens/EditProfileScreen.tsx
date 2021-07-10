@@ -4,15 +4,19 @@ import { getUser } from '../src/graphql/queries';
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { updateUser } from '../src/graphql/mutations';
 import { LinearGradient } from 'expo-linear-gradient';
-import {StatusBar} from 'expo-status-bar';
+import {setStatusBarHidden, StatusBar} from 'expo-status-bar';
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import uuid from 'react-native-uuid';
 
+const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking')
+
+
 
 const EditProfile = ({navigation} : any) => {
+
 
     const [avatarKey, setAvatarKey] = useState('');
     const [isUploading, setIsUploading ] = useState(false);
@@ -45,6 +49,7 @@ const EditProfile = ({navigation} : any) => {
         try {
             await Auth.signOut()
             .then(() => navigation.navigate('SignIn'))
+            RCTNetworking.clearCookies((hasCookies) => hasCookies)
         } catch (error) {
             console.log('error signing out: ', error);
         }

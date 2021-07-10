@@ -1,29 +1,34 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../../src/graphql/queries';
 import { createUser } from '../../src/graphql/mutations';
+import { AppContext } from '../../AppContext';
+
 
 
 
 const SignIn = ({navigation} : any) => {
 
-    const [auth, setAuth] = useState(false);
+    const [isErr, setIsErr] = useState(false);
+
+    const { userID, setUserID } = useContext(AppContext);
+
+    const [trigger, setTrigger] = useState(false);
 
     const CreateUser = async () => {
     
         const userInfo = await Auth.currentAuthenticatedUser(
             { bypassCache: true }
           );
-          console.log();
     
-          if (!userInfo) {
+          if (userInfo === 'The user is not authenticated') {
             return;
           }
     
-          if (userInfo) {
+          else if (userInfo) {
           //get the user from Backend with the user SUB from Auth
             const userData = await API.graphql(
               graphqlOperation(
@@ -35,8 +40,12 @@ const SignIn = ({navigation} : any) => {
     
     
             if (userData.data.getUser) {
-              console.log("User is already registered in database");
-              return;
+                //console.log("User is already registered in database");
+                setUserID(userData.data.getUser);
+                setIsErr(false);
+                setTrigger(!trigger);
+                navigation.navigate('Redirect');
+                return;
             };
     
             // const newUser = {
@@ -76,23 +85,17 @@ const SignIn = ({navigation} : any) => {
         });
     }
 
-
-
     async function signIn() {
         const {username, password} = data;
         try {
-            const user = await Auth.signIn(username, password)
-            .then (CreateUser)
-            // .then(auth === true ? navigation.navigate('HomeDrawer') : alert('Incorrect email or password. Please try again.'))
-            console.log(user);
+            await Auth.signIn(username, password)
+            .then (CreateUser)     
+            //.then(userID !== null ? navigation.navigate('Redirect') : null)
         } 
         catch (error) {
-            console.log('error signing in', error);
-        }
-        if (auth === true) {
-            navigation.navigate('HomeDrawer')
-        } else {
-            alert('Incorrect email or password. Please try again.')
+            console.log('error signing in', error)
+            alert(error.message)
+            setIsErr(true)
         }
     }
 
@@ -106,6 +109,13 @@ const SignIn = ({navigation} : any) => {
                 end={{ x: 1, y: 1 }}
             >
                 <View style={{ margin: 20}}>
+                    {isErr ? (
+                    <View style={{ alignItems: 'center', justifyContent: 'center', margin: 10}}>
+                        <Text style={{borderRadius: 15, backgroundColor: '#ffffffa5', paddingHorizontal: 20, paddingVertical: 10, color: 'red', fontFamily: 'chalkboard-regular', fontSize: 13, }}>
+                            Error signing in. Please try again.
+                        </Text>
+                    </View>
+                    ) : null}
                     <View>
                         <Text style={styles.header}>
                             Email
