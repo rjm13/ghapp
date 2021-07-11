@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Feather from 'react-native-vector-icons/Feather';
 
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../../src/graphql/queries';
@@ -11,6 +12,8 @@ import { AppContext } from '../../AppContext';
 
 
 const SignIn = ({navigation} : any) => {
+
+    const [seePass, setSeePass] = useState(false);
 
     const [isErr, setIsErr] = useState(false);
 
@@ -94,7 +97,7 @@ const SignIn = ({navigation} : any) => {
         } 
         catch (error) {
             console.log('error signing in', error)
-            alert(error.message)
+            //alert(error.message)
             setIsErr(true)
         }
     }
@@ -111,7 +114,7 @@ const SignIn = ({navigation} : any) => {
                 <View style={{ margin: 20}}>
                     {isErr ? (
                     <View style={{ alignItems: 'center', justifyContent: 'center', margin: 10}}>
-                        <Text style={{borderRadius: 15, backgroundColor: '#ffffffa5', paddingHorizontal: 20, paddingVertical: 10, color: 'red', fontFamily: 'chalkboard-regular', fontSize: 13, }}>
+                        <Text style={{borderRadius: 15, backgroundColor: '#ffffff', paddingHorizontal: 20, paddingVertical: 10, color: 'red', fontFamily: 'chalkboard-regular', fontSize: 13, }}>
                             Error signing in. Please try again.
                         </Text>
                     </View>
@@ -127,6 +130,7 @@ const SignIn = ({navigation} : any) => {
                                 style={styles.textInputTitle}
                                 maxLength={30}
                                 onChangeText={handleUsername}
+                                autoCapitalize='none'
                             />
                         </View>
                     </View>
@@ -135,27 +139,56 @@ const SignIn = ({navigation} : any) => {
                         <Text style={styles.header}>
                             Password
                         </Text>
-                        <View style={styles.inputfield}>
+                        <View style={[styles.inputfield, {flexDirection: 'row', justifyContent: 'space-between'}]}>
                             <TextInput 
                                 placeholder='....'
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
-                                secureTextEntry={true}
+                                secureTextEntry={seePass === true ? false : true}
                                 onChangeText={handlePassword}
+                                autoCapitalize='none'
+                            />
+                            <Feather 
+                                name={seePass === true ? 'eye' : 'eye-off'}
+                                color='#fff'
+                                size={18}
+                                style={{marginRight: 10}}
+                                onPress={() => setSeePass(!seePass)}
                             />
                         </View>
                     </View>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                        <View style={{ borderBottomWidth: 1, borderColor: '#ffffffa5', marginBottom: 0, marginTop: 30, marginHorizontal: 20}}>
-                            <Text style={{ fontSize: 16, fontFamily: 'chalkboard-regular', color: '#fff', alignSelf: 'center', margin: 20}}>
-                                Forgot Password
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <View style={{marginHorizontal: -20, justifyContent: 'space-between', flexDirection: 'row', marginTop: 30}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                            <View style={{  }}>
+                                <Text style={{ fontSize: 16, fontFamily: 'chalkboard-regular', color: '#ffffffa5', alignSelf: 'center', margin: 20}}>
+                                    Forgot password
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => navigation.navigate('HomeDrawer')}>
+                            <View style={{ }}>
+                                <Text style={{ width: 150, flexWrap: 'wrap', fontSize: 16, fontFamily: 'chalkboard-regular', color: '#ffffffa5', alignSelf: 'center', margin: 20}}>
+                                    Continue logged out
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{width: Dimensions.get('window').width - 40, borderTopWidth: 1, borderColor: '#ffffffa5',}}>
+
+                    </View>
+                    
 
                 </View>
+
+                <TouchableOpacity onPress={() => navigation.navigate('SignUp') }>
+                    <Text style={{ fontFamily: 'chalkboard-bold', fontSize: 16, color: '#fff', alignSelf: 'center', margin: 20}}>
+                        Create an account
+                    </Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={signIn}>
                     <View style={styles.button}>
@@ -165,17 +198,7 @@ const SignIn = ({navigation} : any) => {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('SignUp') }>
-                    <Text style={{ fontFamily: 'chalkboard-bold', fontSize: 18, color: '#fff', alignSelf: 'center', margin: 20}}>
-                        Create an account
-                    </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => navigation.navigate('HomeDrawer')}>
-                        <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 16, color: '#ffffffa5', alignSelf: 'center', margin: 20}}>
-                            Continue without logging in
-                        </Text>
-                </TouchableOpacity>
+                
             </LinearGradient>
             
         </View>
@@ -198,7 +221,8 @@ const styles = StyleSheet.create ({
     },
     textInputTitle: {
         color: '#fff',
-        fontFamily: 'chalkboard-regular'
+        fontFamily: 'chalkboard-regular',
+        width: 220,
     },
     inputfield: {
         width: '90%',
@@ -210,14 +234,14 @@ const styles = StyleSheet.create ({
     },
     button: {
        alignItems: 'center',
-       margin: 20,
+       marginTop: 40
     },
     buttontext: {
         backgroundColor: '#fff',
         borderRadius: 30,
-        paddingVertical: 10,
+        paddingVertical: 6,
         paddingHorizontal: 30,
-        fontFamily: 'chalkboard-bold',
+        fontFamily: 'chalkboard-regular',
         color: '#000',
         fontSize: 16,
 

@@ -137,6 +137,7 @@ const ConfirmEmail = ({navigation} : any) => {
                                 style={styles.textInputTitle}
                                 maxLength={30}
                                 onChangeText={(val) => handleCode(val)}
+                                autoCapitalize='none'
                                 
                             />
                         </View>

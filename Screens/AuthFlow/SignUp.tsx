@@ -172,7 +172,7 @@ const SignUp = ({navigation} : any) => {
                         </Text>
                         <View style={styles.inputfield}>
                             <TextInput 
-                                placeholder='Use your real name or pen name'
+                                placeholder='...'
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
@@ -192,6 +192,7 @@ const SignUp = ({navigation} : any) => {
                                 style={styles.textInputTitle}
                                 maxLength={30}
                                 onChangeText={(val) => textInputChange(val)}
+                                autoCapitalize='none'
                             />
                         </View>
                     </View>
@@ -245,7 +246,7 @@ const SignUp = ({navigation} : any) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate('SignIn') }>
-                    <Text style={{ fontSize: 16, fontFamily: 'chalkboard-regular', color: '#fff', alignSelf: 'center', margin: 20}}>
+                    <Text style={{ fontSize: 16, fontFamily: 'chalkboard-bold', color: '#fff', alignSelf: 'center', margin: 20}}>
                         I already have an account.
                     </Text>
                 </TouchableOpacity>
@@ -289,7 +290,7 @@ const styles = StyleSheet.create ({
     buttontext: {
         backgroundColor: '#fff',
         borderRadius: 30,
-        paddingVertical: 10,
+        paddingVertical: 6,
         paddingHorizontal: 30,
         fontFamily: 'chalkboard-regular',
         fontSize: 16

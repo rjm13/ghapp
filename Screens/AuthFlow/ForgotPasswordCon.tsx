@@ -55,6 +55,7 @@ const ForgotPassword = ({navigation, route} : {navigation : any, route : any}) =
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
+                                autoCapitalize='none'
                                 onChangeText={val => setUpdatePass({...updatePass, code: val})}
                             />
                         </View>
@@ -72,6 +73,7 @@ const ForgotPassword = ({navigation, route} : {navigation : any, route : any}) =
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
+                                autoCapitalize='none'
                                 onChangeText={val => setUpdatePass({...updatePass, password: val})}
                             />
                         </View>
@@ -89,6 +91,7 @@ const ForgotPassword = ({navigation, route} : {navigation : any, route : any}) =
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
+                                autoCapitalize='none'
                                 onChangeText={val => setUpdatePass({...updatePass, confirmPass: val})}
                             />
                         </View>
