@@ -50,7 +50,7 @@ const ForgotPassword = ({navigation} : any) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.goBack() }>
-                    <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 16, color: '#fff', alignSelf: 'center', margin: 20}}>
+                    <Text style={{ fontFamily: 'chalkboard-bold', fontSize: 16, color: '#fff', alignSelf: 'center', marginTop: 30}}>
                         Go Back
                     </Text>
                 </TouchableOpacity>
@@ -88,14 +88,14 @@ const styles = StyleSheet.create({
     },
     button: {
        alignItems: 'center',
-       margin: 20,
+       marginTop: 40
     },
     buttontext: {
         borderRadius: 30,
-        paddingVertical: 10,
+        paddingVertical: 6,
         paddingHorizontal: 30,
-        fontFamily: 'chalkboard-bold',
-        fontSize: 18,
+        fontFamily: 'chalkboard-regular',
+        fontSize: 16,
         backgroundColor: '#fff',
     },
 });
