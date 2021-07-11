@@ -159,10 +159,10 @@ const SignIn = ({navigation} : any) => {
                         </View>
                     </View>
 
-                    <View style={{marginHorizontal: -20, justifyContent: 'space-between', flexDirection: 'row', marginTop: 30}}>
+                    <View style={{width: Dimensions.get('window').width - 60, alignSelf: 'center', marginVertical: 20, justifyContent: 'space-between', flexDirection: 'row', marginTop: 30}}>
                         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                             <View style={{  }}>
-                                <Text style={{ fontSize: 16, fontFamily: 'chalkboard-regular', color: '#ffffffa5', alignSelf: 'center', margin: 20}}>
+                                <Text style={{ fontSize: 14, fontFamily: 'chalkboard-regular', color: '#ffffffa5', alignSelf: 'center'}}>
                                     Forgot password
                                 </Text>
                             </View>
@@ -170,14 +170,14 @@ const SignIn = ({navigation} : any) => {
 
                         <TouchableOpacity onPress={() => navigation.navigate('HomeDrawer')}>
                             <View style={{ }}>
-                                <Text style={{ width: 150, flexWrap: 'wrap', fontSize: 16, fontFamily: 'chalkboard-regular', color: '#ffffffa5', alignSelf: 'center', margin: 20}}>
+                                <Text style={{ fontSize: 14, fontFamily: 'chalkboard-regular', color: '#ffffffa5', alignSelf: 'center'}}>
                                     Continue logged out
                                 </Text>
                             </View>
                         </TouchableOpacity>
                     </View>
 
-                    <View style={{width: Dimensions.get('window').width - 40, borderTopWidth: 1, borderColor: '#ffffffa5',}}>
+                    <View style={{alignSelf: 'center', width: Dimensions.get('window').width - 60, borderTopWidth: 1, borderColor: '#ffffffa5',}}>
 
                     </View>
                     

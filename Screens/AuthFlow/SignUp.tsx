@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Feather from 'react-native-vector-icons/Feather';
 
 import {Auth, graphqlOperation, API} from 'aws-amplify';
 import { getUser } from '../../src/graphql/queries';
@@ -12,6 +13,10 @@ import { createUser } from '../../src/graphql/mutations';
 const SignUp = ({navigation} : any) => {
 
     const [auth, setAuth] = useState(false);
+
+    const [seePass, setSeePass] = useState(false);
+
+    const [seeConPass, setSeeConPass] = useState(false);
 
     const CreateUser = async () => {
         const userInfo = await Auth.currentAuthenticatedUser(
@@ -205,15 +210,22 @@ const SignUp = ({navigation} : any) => {
                         <Text style={styles.header}>
                             Password
                         </Text>
-                        <View style={styles.inputfield}>
+                        <View style={[styles.inputfield, {flexDirection: 'row', justifyContent: 'space-between'}]}>
                             <TextInput 
                                 placeholder='....'
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={20}
                                 autoCapitalize='none'
-                                secureTextEntry={data.secureTextEntry ? true : false }
+                                secureTextEntry={seePass === true ? true : false }
                                 onChangeText={(val) => handlePasswordChange(val)}
+                            />
+                            <Feather 
+                                name={seePass === true ? 'eye' : 'eye-off'}
+                                color='#fff'
+                                size={18}
+                                style={{marginRight: 10}}
+                                onPress={() => setSeePass(!seePass)}
                             />
                         </View>
                     </View>
@@ -222,15 +234,22 @@ const SignUp = ({navigation} : any) => {
                         <Text style={styles.header}>
                             Confirm Password
                         </Text>
-                        <View style={styles.inputfield}>
+                        <View style={[styles.inputfield, {flexDirection: 'row', justifyContent: 'space-between'}]}>
                             <TextInput 
                                 placeholder='....'
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={20}
                                 autoCapitalize='none'
-                                secureTextEntry={data.confirm_secureTextEntry ? true : false }
+                                secureTextEntry={seeConPass === true ? true : false }
                                 onChangeText={(val) => handleConfirmPasswordChange(val)}
+                            />
+                            <Feather 
+                                name={seeConPass === true ? 'eye' : 'eye-off'}
+                                color='#fff'
+                                size={18}
+                                style={{marginRight: 10}}
+                                onPress={() => setSeeConPass(!seeConPass)}
                             />
                         </View>
                     </View>
@@ -273,7 +292,7 @@ const styles = StyleSheet.create ({
     textInputTitle: {
         color: '#fff',
         fontFamily: 'chalkboard-regular',
-        fontSize: 13
+        width: 220, 
     },
     inputfield: {
         width: '90%',
