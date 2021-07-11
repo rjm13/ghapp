@@ -1,10 +1,20 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+
 
 const ForgotPassword = ({navigation} : any) => {
 
     const [email, setEmail] = useState('');
+
+    const handleForgotPassword = () => {
+        Auth.forgotPassword(
+            email,
+        )
+        .then(navigation.navigate('ForgotPasswordCon', {email: email}))
+        .catch(err => console.log(err));
+      }
 
     return (
         <View style={styles.container}>
@@ -31,7 +41,7 @@ const ForgotPassword = ({navigation} : any) => {
                     </View>
                 </View>
 
-                <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordCon', {email: email})}>
+                <TouchableOpacity onPress={handleForgotPassword}>
                     <View style={styles.button}>
                         <Text style={styles.buttontext}>
                             Send Reset Code

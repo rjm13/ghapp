@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
-import {useNavigation} from '@react-navigation/native'
 import {Auth} from '@aws-amplify/auth'
 
-const ForgotPassword = ({email} : any) => {
+const ForgotPassword = ({navigation, route} : {navigation : any, route : any}) => {
 
-    const navigation = useNavigation();
+    const {email} = route.params
 
     const [updatePass, setUpdatePass] = useState({
         username: email,
@@ -23,15 +21,17 @@ const ForgotPassword = ({email} : any) => {
 
         try {
             console.log(username, code, password);
-            let result = await Auth.forgotPasswordSubmit(username, code, password);
+            let result = await Auth.forgotPasswordSubmit(username, code, password)
+
+            console.log(result);
 
             if(result !== null) {
-                () => navigation.navigate('SignIn');
+                navigation.navigate('SignIn');
             }
         } catch (e) {
             console.log(Error);
         }} else {
-            () => alert('Passwords do not match')
+            alert('Passwords do not match')
         }
     }
 
