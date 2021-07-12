@@ -7,6 +7,7 @@ import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../../src/graphql/queries';
 import { createUser } from '../../src/graphql/mutations';
 import { AppContext } from '../../AppContext';
+import { ActivityIndicator } from 'react-native-paper';
 
 
 
@@ -16,6 +17,8 @@ const SignIn = ({navigation} : any) => {
     const [seePass, setSeePass] = useState(false);
 
     const [isErr, setIsErr] = useState(false);
+
+    const [signingIn, setSigningIn] = useState(false);
 
     const { userID, setUserID } = useContext(AppContext);
 
@@ -89,6 +92,7 @@ const SignIn = ({navigation} : any) => {
     }
 
     async function signIn() {
+        setSigningIn(true);
         const {username, password} = data;
         try {
             await Auth.signIn(username, password)
@@ -100,6 +104,7 @@ const SignIn = ({navigation} : any) => {
             //alert(error.message)
             setIsErr(true)
         }
+        setSigningIn(false);
     }
 
     return (
@@ -192,9 +197,13 @@ const SignIn = ({navigation} : any) => {
 
                 <TouchableOpacity onPress={signIn}>
                     <View style={styles.button}>
-                        <Text style={styles.buttontext}>
-                            Sign In
-                        </Text>
+                        {signingIn === true ? (
+                            <ActivityIndicator size="small" color="#155843"/>
+                        ) : (
+                            <Text style={styles.buttontext}>
+                                Sign In
+                            </Text>
+                        )}
                     </View>
                 </TouchableOpacity>
 
@@ -233,14 +242,16 @@ const styles = StyleSheet.create ({
         alignSelf: 'center',
     },
     button: {
-       alignItems: 'center',
-       marginTop: 40
-    },
-    buttontext: {
+        alignItems: 'center',
+        marginTop: 40,
         backgroundColor: '#fff',
         borderRadius: 30,
         paddingVertical: 6,
         paddingHorizontal: 30,
+        width: 120,
+        alignSelf: 'center'
+    },
+    buttontext: {
         fontFamily: 'chalkboard-regular',
         color: '#000',
         fontSize: 16,
