@@ -1,32 +1,33 @@
 //contains all of the stlying for the drawer
 
 import React, { useEffect, useState, useContext } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Avatar, Caption, Paragraph, Drawer, Text } from 'react-native-paper';
-
 
 import { getUser } from '../src/graphql/queries'
 import { API, graphqlOperation, Auth } from "aws-amplify";
 
-import Icon from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Feather from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import uuid from 'react-native-uuid';
 
-import ExpandableViewSeparate from '../Components/ExpandableViewSeparate';
+
 import WinLossHeader from '../Components/WinLossHeader';
 import { AppContext } from '../AppContext';
 
-
-export function DrawerContent(props) {
+export function DrawerContent({navigation} : any) {
 
     const [user, setUser] = useState();
 
-    
-
     const { ScorecardID } = useContext(AppContext);
-    //const { setScorecardID } = useContext(AppContext);
 
     const [CurrentCard, setCurrentCard] = useState(ScorecardID);
+
+    const [gamesExpanded, setGamesExpanded] = useState(false);
+
+    const [scorecardExpanded, setScorecardExpanded] = useState(false);
+
 
     useEffect(() => {
         setCurrentCard(ScorecardID);
@@ -53,19 +54,19 @@ export function DrawerContent(props) {
     }, [])
 
 
-    function getExpandableView(props : any){
-        return (
-            <ExpandableViewSeparate navObj={props.navigation}/>
-          );
-    };
+    // function getExpandableView(props : any){
+    //     return (
+    //         <ExpandableViewSeparate navObj={props.navigation}/>
+    //       );
+    // };
 
     return(
         <View style={{ flex:1 }}>
-            <DrawerContentScrollView { ... props } >
+            <DrawerContentScrollView>
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection} >
                         <TouchableOpacity
-                            onPress={() => {props.navigation.navigate('QR Code')}}>
+                            onPress={() => {navigation.navigate('QR Code')}}>
                             <View style={{ marginTop: 45 }}>
                                 <View style={{alignSelf: 'center', height: 104, width: 104, backgroundColor: '#fff', borderRadius: 52, alignItems: 'center', justifyContent: 'center'}}>
                                     <Avatar.Image
@@ -89,52 +90,102 @@ export function DrawerContent(props) {
                         
 
                     <Drawer.Section style={styles.drawerSection}>
-                        <DrawerItem
-                            icon={({ color, size }) => (
-                                <Icon
-                                    name='user'
-                                    color={color}
-                                    size={size}
-                                />
-                            )}
-                            label='Profile'
-                            labelStyle={ styles.itemText}
-                            onPress={() => {props.navigation.navigate('Profile')}}
-                        />
-                        {getExpandableView(props)}
-                       
-                        {/* <DrawerItem
-                            icon={({ color, size }) => (
-                                <Icon
-                                    name='settings'
-                                    color={color}
-                                    size={size}
-                                />
-                            )}
-                                label='Settings'
-                                labelStyle={ styles.itemText}
-                                onPress={() => {props.navigation.navigate('Settings')}}
-                        /> */}
-                        <DrawerItem
-                            icon={({ color, size }) => (
-                                <Ionicons
-                                    name='help-circle-outline'
-                                    color={color}
-                                    size={size}
-                                />
-                            )}
-                                label='Help'
-                                labelStyle={ styles.itemText}
-                                onPress={() => { props.navigation.navigate('Help') }}
-                        />
+                        <TouchableWithoutFeedback onPress={() => navigation.navigate('Profile')}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20}}>
+                                <View style={styles.box}>
+                                    <Feather name='user' color='#636363' size={25} />
+                                    <Text style={styles.itemtext}>
+                                        Profile
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback onPress={() => setGamesExpanded(!gamesExpanded)}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20}}>
+                                <View style={styles.box}>
+                                    <MaterialCommunityIcons name='cards-playing-outline' color='#636363' size={25} />
+                                    <Text style={styles.itemtext}>
+                                        Games
+                                    </Text>
+                                </View>
+                                <Feather name={gamesExpanded ? 'chevron-down' : 'chevron-right'} color='#636363' size={20} />
+                            </View>
+                        </TouchableWithoutFeedback>
+                    
+                        {gamesExpanded ? (
+                            <View>
+                                <TouchableHighlight onPress={() => navigation.navigate('HomeDrawer')}>
+                                    <View style={styles.expandedbox}>
+                                        <Text style={styles.expandedtext}>Discover</Text> 
+                                    </View>
+                                </TouchableHighlight>
+                                
+                                <View style={styles.expandedbox}>
+                                    <Text style={styles.expandedtext}>Favorites</Text> 
+                                </View>
+                                <View style={styles.expandedbox}>
+                                    <Text style={styles.expandedtext}>Submit new</Text> 
+                                </View>
+                            </View>
+                        ) : null}
+
+                        <TouchableWithoutFeedback onPress={() => setScorecardExpanded(!scorecardExpanded)}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20}}>
+                                <View style={styles.box}>
+                                    <MaterialCommunityIcons name='grid' color='#636363' size={22} />
+                                    <Text style={styles.itemtext}>
+                                        Scorecards
+                                    </Text>
+                                </View>
+                                <Feather name={scorecardExpanded ? 'chevron-down' : 'chevron-right'} color='#636363' size={20} />
+                            </View>
+                        </TouchableWithoutFeedback>
+                    
+                        {scorecardExpanded ? (
+                            <View>
+                                <TouchableHighlight onPress={() => navigation.navigate('Scorecard', {cardID: 'new' + uuid.v4()})}>
+                                    <View style={styles.expandedbox}>
+                                        <Text style={styles.expandedtext}>New</Text> 
+                                    </View>
+                                </TouchableHighlight>
+                                
+                                <TouchableHighlight>
+                                    <View style={styles.expandedbox}>
+                                        <Text style={styles.expandedtext}>Presets</Text> 
+                                    </View>
+                                </TouchableHighlight>  
+
+                                <TouchableHighlight onPress={() => navigation.navigate('ScoresHome', {screen: 'SavedScores'})}>
+                                    <View style={styles.expandedbox}>
+                                        <Text style={styles.expandedtext}>Saved</Text> 
+                                    </View>
+                                </TouchableHighlight>  
+                                    
+                                
+                                
+                            </View>
+                        ) : null}
+
+                        <TouchableWithoutFeedback onPress={() => navigation.navigate('Help')}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20}}>
+                                <View style={styles.box}>
+                                    <Feather name='help-circle' color='#636363' size={22} />
+                                    <Text style={styles.itemtext}>
+                                        Help
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
                     </Drawer.Section>
                 </View>
             </DrawerContentScrollView>
+
             <Drawer.Section style={styles.bottomDrawerSection}>
                 {CurrentCard !== null ? (
                     <DrawerItem
                         icon={({ color, size }) => (
-                            <Icon
+                            <Feather
                                 name='book'
                                 color={color}
                                 size={size}
@@ -142,7 +193,7 @@ export function DrawerContent(props) {
                         )}
                             label='Current Game'
                             labelStyle={ styles.itemText}
-                            onPress={() => props.navigation.navigate('Scorecard')}
+                            onPress={() => navigation.navigate('Scorecard')}
                     />
                 ) : null}
                 
@@ -172,6 +223,31 @@ const styles = StyleSheet.create({
         lineHeight: 14,
         color: '#000000',
         fontFamily: 'chalkboard-regular'
+    },
+    box: {
+        paddingVertical: 14, 
+        paddingHorizontal: 20, 
+        flexDirection: 'row', 
+        alignItems: 'center'
+    },
+    expandedbox: {
+        paddingVertical: 12, 
+        paddingHorizontal: 20, 
+        flexDirection: 'row', 
+        alignItems: 'center',
+        backgroundColor: '#ededed'
+    },
+    itemtext: {
+        marginLeft: 30, 
+        color: '#636363', 
+        fontFamily: 'chalkboard-regular', 
+        fontSize: 16
+    },
+    expandedtext: {
+        marginLeft: 30, 
+        color: '#636363', 
+        fontFamily: 'chalkboard-regular', 
+        fontSize: 16
     },
     row: {
         marginTop: 20,
