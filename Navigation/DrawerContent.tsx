@@ -1,6 +1,6 @@
 //contains all of the stlying for the drawer
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Avatar, Caption, Paragraph, Drawer, Text } from 'react-native-paper';
@@ -14,37 +14,46 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ExpandableViewSeparate from '../Components/ExpandableViewSeparate';
 import WinLossHeader from '../Components/WinLossHeader';
+import { AppContext } from '../AppContext';
+
 
 export function DrawerContent(props) {
 
     const [user, setUser] = useState();
 
+    
+
+    const { ScorecardID } = useContext(AppContext);
+    //const { setScorecardID } = useContext(AppContext);
+
+    const [CurrentCard, setCurrentCard] = useState(ScorecardID);
+
+    useEffect(() => {
+        setCurrentCard(ScorecardID);
+    }, [ScorecardID])
+
     useEffect(() => {
         const fetchUser = async () => {
-        const userInfo = await Auth.currentAuthenticatedUser({ bypassCache: true});
-            if (!userInfo) {
-            return;
+            const userInfo = await Auth.currentAuthenticatedUser({ bypassCache: true});
+                if (!userInfo) {
+                return;
+                }
+    
+            try {
+                const userData = await API.graphql(graphqlOperation(
+                getUser, {id: userInfo.attributes.sub}))
+                if (userData) {
+                    setUser(userData.data.getUser);
+                }
+            } catch (e) {
+                console.log(e);
             }
-        try {
-            const userData = await API.graphql(graphqlOperation(
-            getUser, {id: userInfo.attributes.sub}))
-            if (userData) {
-                setUser(userData.data.getUser);
-            }
-        } catch (e) {
-            console.log(e);
-        }
         }
         fetchUser();
     }, [])
 
-    const handleSignOut = () => {
-        Auth.signOut()
-          .then(() => props.navigation.navigate('WelcomeScreen'))
-          .catch(err => console.log(err));
-      }
 
-    function getExpandableView(props){
+    function getExpandableView(props : any){
         return (
             <ExpandableViewSeparate navObj={props.navigation}/>
           );
@@ -58,17 +67,16 @@ export function DrawerContent(props) {
                         <TouchableOpacity
                             onPress={() => {props.navigation.navigate('QR Code')}}>
                             <View style={{ marginTop: 45 }}>
-                                <Avatar.Image
-                                    source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}}
-                                    size={100}
-                                    style={{ 
-                                        alignSelf: 'center',
-                                        
-                                }}
-                                />
+                                <View style={{alignSelf: 'center', height: 104, width: 104, backgroundColor: '#fff', borderRadius: 52, alignItems: 'center', justifyContent: 'center'}}>
+                                    <Avatar.Image
+                                        source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}}
+                                        size={100}
+                                    />
+                                </View>
+                                
                             <View style={{ alignSelf: 'center' }}>
                                 <Text style={styles.title}>
-                                    {!!user ? user.name : 'Player One'}
+                                    {!!user ? user?.name : 'Player One'}
                                 </Text>
                             </View>
                             </View>
@@ -95,7 +103,7 @@ export function DrawerContent(props) {
                         />
                         {getExpandableView(props)}
                        
-                        <DrawerItem
+                        {/* <DrawerItem
                             icon={({ color, size }) => (
                                 <Icon
                                     name='settings'
@@ -106,7 +114,7 @@ export function DrawerContent(props) {
                                 label='Settings'
                                 labelStyle={ styles.itemText}
                                 onPress={() => {props.navigation.navigate('Settings')}}
-                        />
+                        /> */}
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <Ionicons
@@ -115,26 +123,30 @@ export function DrawerContent(props) {
                                     size={size}
                                 />
                             )}
-                                label='Help & Support'
+                                label='Help'
                                 labelStyle={ styles.itemText}
                                 onPress={() => { props.navigation.navigate('Help') }}
                         />
                     </Drawer.Section>
                 </View>
             </DrawerContentScrollView>
-            <Drawer.Section styles={styles.bottomDrawerSection}>
-                <DrawerItem
-                    icon={({ color, size }) => (
-                        <Icon
-                            name='book'
-                            color={color}
-                            size={size}
-                        />
-                    )}
-                        label='Current Game'
-                        labelStyle={ styles.itemText}
-                        onPress={() => props.navigation.navigate('Scorecard')}
-                />
+            <Drawer.Section style={styles.bottomDrawerSection}>
+                {CurrentCard !== null ? (
+                    <DrawerItem
+                        icon={({ color, size }) => (
+                            <Icon
+                                name='book'
+                                color={color}
+                                size={size}
+                            />
+                        )}
+                            label='Current Game'
+                            labelStyle={ styles.itemText}
+                            onPress={() => props.navigation.navigate('Scorecard')}
+                    />
+                ) : null}
+                
+
             </Drawer.Section>
         </View>
     )
@@ -184,7 +196,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     bottomDrawerSection: {
-        marginBottom: 15,
+        marginBottom: 0,
         borderTopColor: '#f4f4f4',
         borderTopWidth: 1,
     },

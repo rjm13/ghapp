@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase, ScrollViewBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -7,13 +7,14 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import OptionsMenu from "react-native-option-menu";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
-import { useRoute } from '@react-navigation/native';
 import ConfettiCannon from 'react-native-confetti-cannon';
+import { AppContext } from '../AppContext';
 
 import Timer from '../Components/Timer';
 
 
 //constants
+
 const MoreIcon = ( <Feather name='more-vertical' color='#fff' size={20}/> )
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -29,9 +30,12 @@ const toRoman = require('roman-numerals').toRoman;
 [ 42, new Number(42), '42', new String('42')].forEach(function (x, i) {});
 
 //exported scorecard function
-const Scorecard = ({navigation} : {navigation: any}) => {
+const Scorecard = ({navigation, route} : {navigation: any, route: any}) => {
 
-    const route = useRoute();
+    const { ScorecardID } = useContext(AppContext);
+    const { setScorecardID } = useContext(AppContext);
+
+    //const route = useRoute();
     const {cardID} = route.params;
 
 //for timer to scroll to bottom
@@ -485,7 +489,7 @@ useEffect(() => {
             let teamIdentity = uuid.v4();
             let scoreIdentity = uuid.v4();
             let settingIdentity = uuid.v4();
-            setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString(), settings: 'setting' + settingIdentity.toString() })
+            setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString(), settings: 'setting' + settingIdentity.toString() });
             //setSavedSetting({...SavedSetting, id: 'setting' + settingIdentity.toString()});
         }
         else {
@@ -1340,6 +1344,11 @@ const UpdateExtra = () => {
             </View>
         );
     }
+
+    useEffect(() => {
+        setScorecardID(ScorecardData.id);
+        console.log('my id is' + ScorecardID)
+    }, [ScorecardData.id])
 
 
 //FINALLY, THE RETURN FUNCTION OF THE SCORECARD

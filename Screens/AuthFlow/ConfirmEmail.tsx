@@ -89,7 +89,7 @@ const ConfirmEmail = ({navigation, route} : {navigation: any, route : any}) => {
         const {username} = data;
         try {
             await Auth.resendSignUp(username);
-            console.log('Confirmation code resent');
+            alert('Confirmation code resent. Please check your email.');
         } catch (err) {
             console.log('error resending code: ', err);
         }

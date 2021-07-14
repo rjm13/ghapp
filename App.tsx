@@ -20,6 +20,7 @@ StatusBar.setBarStyle("light-content");
 const App = () => {
 
   const [userID, setUserID] = useState(null);
+  const [ScorecardID, setScorecardID] = useState<string|null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -90,7 +91,8 @@ const App = () => {
     <AppContext.Provider value={{
       userID,
       setUserID: ({}) => setUserID(null),
-
+      ScorecardID,
+      setScorecardID: (id: string | null) => setScorecardID(id),
     }}>
       <AppNavigation/>
     </AppContext.Provider>

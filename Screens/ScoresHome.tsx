@@ -11,7 +11,7 @@ import GamesStatsList from '../Components/GameStatsList';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const ScorecardMenu = ({navigation}) => {
+const ScorecardMenu = ({navigation} : any) => {
     return(
         <View>
             <View style={{marginTop: 20, marginHorizontal: 20}}>
