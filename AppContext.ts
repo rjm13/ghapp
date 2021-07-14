@@ -1,7 +1,7 @@
 import React from 'react';
 
 const context = {
-    userID: {} || null,
+    userID: {},
     setUserID: ({}) => {},
 
     ScorecardID: '' || null,

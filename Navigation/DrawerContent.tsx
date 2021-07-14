@@ -20,6 +20,9 @@ export function DrawerContent({navigation} : any) {
 
     const [user, setUser] = useState();
 
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
+
     const { ScorecardID } = useContext(AppContext);
 
     const [CurrentCard, setCurrentCard] = useState(ScorecardID);
@@ -51,7 +54,7 @@ export function DrawerContent({navigation} : any) {
             }
         }
         fetchUser();
-    }, [])
+    }, [userID])
 
 
     // function getExpandableView(props : any){

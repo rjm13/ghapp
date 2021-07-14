@@ -16,6 +16,7 @@ import SignUpScreen from '../Screens/AuthFlow/SignUp';
 import ForgotPasswordConScreen from '../Screens/AuthFlow/ForgotPasswordCon';
 import ConfirmEmailScreen from '../Screens/AuthFlow/ConfirmEmail';
 import RedirectScreen from '../Screens/AuthFlow/RedirectScreen';
+import FavoritesScreen from '../Screens/FavoritesScreen';
 
 import { AppContext } from '../AppContext';
 
@@ -73,6 +74,10 @@ const AppNavigation = () => {
                     <Drawer.Screen
                         name='ConfirmEmail'
                         component={ConfirmEmailScreen}
+                    />
+                    <Drawer.Screen
+                        name='Favorites'
+                        component={FavoritesScreen}
                     />
                     <Drawer.Screen
                         name='Redirect'

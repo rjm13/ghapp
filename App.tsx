@@ -19,7 +19,7 @@ StatusBar.setBarStyle("light-content");
 
 const App = () => {
 
-  const [userID, setUserID] = useState(null);
+  const [userID, setUserID] = useState({});
   const [ScorecardID, setScorecardID] = useState<string|null>(null);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const App = () => {
   return (
     <AppContext.Provider value={{
       userID,
-      setUserID: ({}) => setUserID(null),
+      setUserID: (user: {}) => setUserID(user),
       ScorecardID,
       setScorecardID: (id: string | null) => setScorecardID(id),
     }}>

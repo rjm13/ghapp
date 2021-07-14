@@ -194,7 +194,7 @@ const EditProfile = ({navigation} : any) => {
                     <Animatable.View animation='bounceInDown' style={{ flexDirection: 'row', height: 90, borderBottomRightRadius: 20, borderBottomLeftRadius: 20,
                                     backgroundColor: '#155843', alignItems: 'flex-end', paddingBottom: 20, paddingLeft: 20}}>
                         <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-                            <View style={{flexDirection: 'row'}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                <Feather name='chevron-left' color='#fff' size={25}/>
                                 <Text style={{fontFamily: 'chalkboard-regular', color: '#fff', fontSize: 18, marginLeft: 10 }}>
                                     Edit Profile
