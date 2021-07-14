@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, Platform, Dimensions, ImageBackground, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { ActivityIndicator, View, Text, Image, StyleSheet, TextInput, Platform, Dimensions, ImageBackground, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { getUser } from '../src/graphql/queries';
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { updateUser } from '../src/graphql/mutations';
@@ -10,6 +10,7 @@ import * as Animatable from 'react-native-animatable';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import uuid from 'react-native-uuid';
+import {AppContext} from '../AppContext';
 
 const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking')
 
@@ -17,8 +18,14 @@ const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking')
 
 const EditProfile = ({navigation} : any) => {
 
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
+
 
     const [avatarKey, setAvatarKey] = useState('');
+    const [updating, setUpdating] = useState(false);
+    const [updatingPass, setUpdatingPass] = useState(false);
+
     const [isUploading, setIsUploading ] = useState(false);
     const [image, setImage] = useState('');
 
@@ -49,7 +56,6 @@ const EditProfile = ({navigation} : any) => {
         try {
             await Auth.signOut()
             .then(() => navigation.navigate('SignIn'))
-            RCTNetworking.clearCookies((hasCookies) => hasCookies)
         } catch (error) {
             console.log('error signing out: ', error);
         }
@@ -121,6 +127,7 @@ const EditProfile = ({navigation} : any) => {
     const containerStyle = {
         backgroundColor: '#fff', 
         margin: 20,
+        borderRadius: 15
     };
 
 //SignOutModal
@@ -140,6 +147,8 @@ const EditProfile = ({navigation} : any) => {
 
 //handle change attribute using graphql operation
     const handleUpdateAttributes = async () => {
+
+        setUpdating(true);
         //get authenticated user from Auth
         const userInfo = await Auth.currentAuthenticatedUser(
             { bypassCache: true }
@@ -160,11 +169,46 @@ const EditProfile = ({navigation} : any) => {
                 updateUser, { input: updatedUser }
             )
             )
-            
-            let action = navigation.navigate('Profile')
-
             console.log(result);
+            setUserID(result.data.updateUser);
         }
+        setUpdating(false);
+    }
+
+    const [passwordData, setPasswordData] = useState({
+        oldPassword: '',
+        newPassword: ''
+    });
+
+    const [confirmPass, setConfirmPass] = useState('');
+
+    const [noMatch, setNoMatch] = useState(false);
+
+    const [seePass1, setSeePass1] = useState(false);
+    const [seePass2, setSeePass2] = useState(false);
+    const [seePass3, setSeePass3] = useState(false);
+
+
+    const handleChangePassword = async () => {
+        setUpdatingPass(true);
+
+        const { oldPassword, newPassword } = passwordData;
+
+        if (confirmPass === newPassword) {
+            setNoMatch(false);
+            await Auth.currentAuthenticatedUser()
+                .then(user => {
+                return Auth.changePassword(user, oldPassword, newPassword)
+                })
+                .then(data => console.log(data))
+                .catch(err => console.log(err))
+            setUpdatingPass(false);
+            hideModal();
+        } else {
+            setNoMatch(true);
+            setUpdatingPass(false);
+        }
+        
     }
 
 
@@ -178,13 +222,79 @@ const EditProfile = ({navigation} : any) => {
                                 Are you sure you want to sign out?
                             </Text>
                             <TouchableOpacity onPress={handleSignOut}>
-                                <View style={{ marginTop: 40, paddingHorizontal: 30, paddingVertical: 10, backgroundColor: '#ff0000', borderRadius: 20}}>
+                                <View style={{ marginTop: 40, paddingHorizontal: 30, paddingVertical: 10, backgroundColor: '#e81a1a', borderRadius: 30}}>
                                     <Text style={{fontFamily: 'chalkboard-bold', fontSize: 16, color: '#fff'}}>
                                         Sign Out
                                     </Text>
                                 </View>
                             </TouchableOpacity>
                             
+                        </View>
+                    </Modal>
+
+                    <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                        <View style={{padding: 20,justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{ fontFamily: 'chalkboard-bold', fontSize: 18, marginBottom: 20}}>
+                                Change Password
+                            </Text>
+
+                            {noMatch === true ? (
+                                <Text>
+                                    Passwords do not match.
+                                </Text>
+                            ) : null}
+
+                            <View style={{marginVertical: 20, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5, padding: 5}}>
+                                <TextInput 
+                                    placeholder='Enter old password'
+                                    style={{fontFamily: 'chalkboard-regular', width: 220}}
+                                    maxLength={20}
+                                    multiline={false}
+                                    autoCapitalize='none'
+                                    secureTextEntry={seePass1 === true ? false : true}
+                                    onChangeText={val => setPasswordData({...passwordData, oldPassword: val })}
+                                />
+                                <Feather onPress={() => setSeePass1(!seePass1)} name={seePass1 === true ? 'eye-off' : 'eye'} color='#000' size={20} style={{marginRight: 5}}/>
+                            </View>
+
+                            <View style={{marginVertical: 20, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5, padding: 5}}>
+                                <TextInput 
+                                    placeholder='Enter new password'
+                                    style={{fontFamily: 'chalkboard-regular', width: 220}}
+                                    maxLength={20}
+                                    multiline={false}
+                                    autoCapitalize='none'
+                                    secureTextEntry={seePass2 === true ? false : true}
+                                    onChangeText={val => setPasswordData({...passwordData, newPassword: val })}
+                                />
+                                <Feather onPress={() => setSeePass2(!seePass2)} name={seePass2 === true ? 'eye-off' : 'eye'} color='#000' size={20} style={{marginRight: 5}}/>
+                            </View>
+
+                            <View style={{marginVertical: 0, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5, padding: 5}}>
+                                <TextInput 
+                                    placeholder='Confirm new password'
+                                    style={{fontFamily: 'chalkboard-regular', width: 220,}}
+                                    maxLength={20}
+                                    multiline={false}
+                                    autoCapitalize='none'
+                                    secureTextEntry={seePass3 === true ? false : true}
+                                    onChangeText={val => setConfirmPass(val)}
+                                />
+                                <Feather onPress={() => setSeePass3(!seePass3)} name={seePass3 === true ? 'eye-off' : 'eye'} color='#000' size={20} style={{marginRight: 5}}/>
+                            </View>
+
+                            
+                            <TouchableOpacity onPress={handleChangePassword}>
+                                <View style={{ marginTop: 40, paddingHorizontal: 30, paddingVertical: 10, backgroundColor: '#155843', borderRadius: 30}}>
+                                    {updatingPass ? (
+                                        <ActivityIndicator size='small' color='#fff'/>
+                                    ) :
+                                        <Text style={{fontFamily: 'chalkboard-bold', fontSize: 16, color: '#fff'}}>
+                                            Submit
+                                        </Text>
+                                    }
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     </Modal>
                 </Portal>
@@ -255,7 +365,7 @@ const EditProfile = ({navigation} : any) => {
                             </TouchableOpacity>
                     
                             <TouchableOpacity
-                                onPress={() => {navigation.navigate('ChangePassword')}}>
+                                onPress={showModal}>
                                 <View style={styles.emailcontainer }>
                                     <Text style={ styles.words }>Reset Password</Text>
                                 </View>
@@ -272,7 +382,11 @@ const EditProfile = ({navigation} : any) => {
                         <View>
                             <TouchableOpacity onPress={handleUpdateAttributes}>
                                 <View style={[styles.savebutton]} >
-                                    <Text style={styles.savewords}>Save Changes</Text>
+                                    {updating ? (
+                                        <ActivityIndicator size='small' color='#fff'/>
+                                    ) : (
+                                        <Text style={styles.savewords}>Save Changes</Text>
+                                    )}
                                 </View>
                             </TouchableOpacity>
                         </View>

@@ -4,6 +4,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Avatar, Caption, Paragraph, Drawer, Text } from 'react-native-paper';
+import * as Animatable from 'react-native-animatable';
+
 
 import { getUser } from '../src/graphql/queries'
 import { API, graphqlOperation, Auth } from "aws-amplify";
@@ -117,7 +119,7 @@ export function DrawerContent({navigation} : any) {
                         </TouchableWithoutFeedback>
                     
                         {gamesExpanded ? (
-                            <View>
+                            <Animatable.View animation='flipInX'>
                                 <TouchableHighlight onPress={() => navigation.navigate('HomeDrawer')}>
                                     <View style={styles.expandedbox}>
                                         <Text style={styles.expandedtext}>Discover</Text> 
@@ -130,7 +132,7 @@ export function DrawerContent({navigation} : any) {
                                 <View style={styles.expandedbox}>
                                     <Text style={styles.expandedtext}>Submit new</Text> 
                                 </View>
-                            </View>
+                            </Animatable.View>
                         ) : null}
 
                         <TouchableWithoutFeedback onPress={() => setScorecardExpanded(!scorecardExpanded)}>
@@ -146,7 +148,7 @@ export function DrawerContent({navigation} : any) {
                         </TouchableWithoutFeedback>
                     
                         {scorecardExpanded ? (
-                            <View>
+                            <Animatable.View animation='flipInX'>
                                 <TouchableHighlight onPress={() => navigation.navigate('Scorecard', {cardID: 'new' + uuid.v4()})}>
                                     <View style={styles.expandedbox}>
                                         <Text style={styles.expandedtext}>New</Text> 
@@ -167,7 +169,7 @@ export function DrawerContent({navigation} : any) {
                                     
                                 
                                 
-                            </View>
+                            </Animatable.View>
                         ) : null}
 
                         <TouchableWithoutFeedback onPress={() => navigation.navigate('Help')}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import WinLossHeader from '../Components/WinLossHeader';
@@ -8,17 +8,16 @@ import { API, graphqlOperation, Auth } from "aws-amplify";
 import { getUser } from '../src/graphql/queries';
 import {StatusBar} from 'expo-status-bar';
 import * as Animatable from 'react-native-animatable';
+import {AppContext} from '../AppContext';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const ProfileScreen = ({ navigation } : any) => {
 
-  const handleSignOut = () => {
-    Auth.signOut()
-      //.then(() => props.navigation.navigate('WelcomeScreen'))
-      .catch(err => console.log(err));
-  }
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
+
 
   const [user, setUser] = useState();
 
@@ -39,7 +38,7 @@ const ProfileScreen = ({ navigation } : any) => {
       }
     }
     fetchUser();
-  }, [])
+  }, [userID])
 
   return (
     <View>
@@ -110,7 +109,7 @@ const ProfileScreen = ({ navigation } : any) => {
                     </View>
                 </TouchableWithoutFeedback>
 
-                <TouchableWithoutFeedback onPress={() => {navigation.navigate('Framed')}}>
+                <TouchableWithoutFeedback onPress={() => {navigation.navigate('Archived')}}>
                     <View style={ styles.box }>
                         <Text style={ styles.boxText }>Archived</Text>
                         <Feather 
