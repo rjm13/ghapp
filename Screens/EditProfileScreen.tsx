@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { ActivityIndicator, View, Text, Image, StyleSheet, TextInput, Platform, Dimensions, ImageBackground, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { getUser } from '../src/graphql/queries';
-import { API, graphqlOperation, Auth } from "aws-amplify";
+import { API, graphqlOperation, Auth, sectionFooterPrimaryContent } from "aws-amplify";
 import { updateUser } from '../src/graphql/mutations';
 import { LinearGradient } from 'expo-linear-gradient';
 import {setStatusBarHidden, StatusBar} from 'expo-status-bar';
@@ -120,11 +120,22 @@ const EditProfile = ({navigation} : any) => {
     };
 
 //Modal
-    const [visible, setVisible] = React.useState(false);
+    const [visible, setVisible] = useState(false);
 
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
     const containerStyle = {
+        backgroundColor: '#fff', 
+        margin: 20,
+        borderRadius: 15
+    };
+
+//Update email modal
+    const [visible3, setVisible3] = useState(false);
+
+    const showModal3 = () => setVisible3(true);
+    const hideModal3 = () => setVisible3(false);
+    const EmailContainerStyle = {
         backgroundColor: '#fff', 
         margin: 20,
         borderRadius: 15
@@ -208,9 +219,54 @@ const EditProfile = ({navigation} : any) => {
             setNoMatch(true);
             setUpdatingPass(false);
         }
-        
     }
 
+    const [codeSent, setCodeSent] = useState(false);
+
+    const [confirmCode, setConfirmCode] = useState('');
+
+    const [err, setErr] = useState(false);
+
+    const handleUpdateEmail = async () => {
+
+        setUpdating(true);
+
+        if ( displayEmail.length !== 0) {
+
+            let user = await Auth.currentAuthenticatedUser({bypassCache: true}) ;
+
+            let result = await Auth.updateUserAttributes(user, {
+                'email': displayEmail,
+            });
+            console.log(result); // SUCCESS
+            setErr(false);
+
+        } else {
+            setErr(true);
+        }
+
+        setCodeSent(true);
+        setUpdating(false);
+    }
+
+    const handleConfirmCode = async () => {
+
+        setUpdatingPass(true);
+
+        let result = await Auth.verifyCurrentUserAttributeSubmit(
+            'email',
+            confirmCode,
+            );
+        
+        if (result) {
+            setErr(false);
+            hideModal3();
+        } else if (!result) {
+            setErr(true)
+        }
+        console.log(result); // SUCCESS
+        setUpdatingPass(false);
+    }
 
     return (
         <Provider>
@@ -232,6 +288,75 @@ const EditProfile = ({navigation} : any) => {
                         </View>
                     </Modal>
 
+                    <Modal visible={visible3} onDismiss={hideModal3} contentContainerStyle={EmailContainerStyle}>
+                        <View style={{padding: 20,justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{ fontFamily: 'chalkboard-bold', fontSize: 18, marginBottom: 20}}>
+                                Change Email
+                            </Text>
+
+                            {err === true ? (
+                                <Text style={{ color: 'red', fontFamily: 'chalkboard-regular'}}>
+                                    Error. Please try again.
+                                </Text>
+                            ) : null}
+                            
+
+                            <View style={{marginVertical: 20, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5, padding: 5}}>
+                                <TextInput 
+                                    placeholder='Enter new email address'
+                                    style={{fontFamily: 'chalkboard-regular', width: 220}}
+                                    maxLength={20}
+                                    multiline={false}
+                                    autoCapitalize='none'
+                                    onChangeText={val => setDisplayEmail(val)}
+                                />
+                            </View>
+
+                            <TouchableOpacity onPress={handleUpdateEmail}>
+                                <View style={{ marginTop: 0, paddingHorizontal: 30, paddingVertical: 6, backgroundColor: '#155843', borderRadius: 30}}>
+                                    {updating ? (
+                                        <ActivityIndicator size='small' color='#fff'/>
+                                    ) :
+                                        <Text style={{fontFamily: 'chalkboard-regular', fontSize: 16, color: '#fff'}}>
+                                            Submit
+                                        </Text>
+                                    }
+                                </View>
+                            </TouchableOpacity>
+
+                            {codeSent === true ? (
+                                <View style={{padding: 20,justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={{fontFamily: 'chalkboard-regular', marginVertical: 10}}>
+                                        Please check your email for the confirmation code.
+                                    </Text>
+                                    <View style={{marginTop: 40, marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5, padding: 5}}>
+                                        <TextInput 
+                                            placeholder='Enter confirmation code'
+                                            style={{fontFamily: 'chalkboard-regular', width: 220}}
+                                            maxLength={20}
+                                            multiline={false}
+                                            autoCapitalize='none'
+                                            onChangeText={val => setConfirmCode(val)}
+                                        />
+                                    </View>
+
+                                    <TouchableOpacity onPress={handleConfirmCode}>
+                                        <View style={{ marginTop: 0, paddingHorizontal: 30, paddingVertical: 6, backgroundColor: '#155843', borderRadius: 30}}>
+                                            {updatingPass ? (
+                                                <ActivityIndicator size='small' color='#fff'/>
+                                            ) :
+                                                <Text style={{fontFamily: 'chalkboard-regular', fontSize: 16, color: '#fff'}}>
+                                                    Confirm
+                                                </Text>
+                                            }
+                                        </View>
+                                    </TouchableOpacity> 
+                                </View>
+                            ) : null}
+
+                        </View>
+                    </Modal>
+
                     <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
                         <View style={{padding: 20,justifyContent: 'center', alignItems: 'center'}}>
                             <Text style={{ fontFamily: 'chalkboard-bold', fontSize: 18, marginBottom: 20}}>
@@ -239,7 +364,7 @@ const EditProfile = ({navigation} : any) => {
                             </Text>
 
                             {noMatch === true ? (
-                                <Text>
+                                <Text style={{fontFamily: 'chalkboard-regular', color: 'red'}}>
                                     Passwords do not match.
                                 </Text>
                             ) : null}
@@ -358,7 +483,7 @@ const EditProfile = ({navigation} : any) => {
                             </View>
                           
 
-                            <TouchableOpacity onPress={() => {navigation.navigate('UpdateEmail')}}>
+                            <TouchableOpacity onPress={showModal3}>
                                 <View style={styles.emailcontainer }> 
                                     <Text style={ styles.words }>Update Email</Text>
                                 </View>
