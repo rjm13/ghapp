@@ -342,7 +342,6 @@ useEffect(() => {
         try {
             const jsonScores = JSON.stringify(ScoresToLoad)
             await AsyncStorage.setItem(ScoresToLoad.id, jsonScores)
-            alert('Scorecard saved!')
         } catch (e) {
             // saving error
         }
@@ -432,12 +431,22 @@ useEffect(() => {
         setRoundUpdate(!roundUpdate)
     }
 
-    const CommitScorecard = () => {
+    const CommitScorecard = async () => {
+        let oldID = ScorecardData.id
         let object = {...ScorecardData}
         object.id = 'completed' + uuid.v4();
         setScorecardData(object);
 
-        SaveToStorage();
+        try {
+            const jsonScorecardData = JSON.stringify(object)
+            await AsyncStorage.setItem(oldID, jsonScorecardData)
+            console.log(oldID)
+            console.log(object)
+        } catch (e) {
+            // saving error
+        }
+
+        //SaveToStorage();
     }
 
     const SaveSettings = () => {

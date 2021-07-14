@@ -89,7 +89,7 @@ const ProfileScreen = ({ navigation } : any) => {
             <View>
                 <TouchableWithoutFeedback onPress={() => {navigation.navigate('FriendsList')}}>
                     <View style={ styles.box }>
-                        <Text style={ styles.boxText }>Friends</Text>
+                        <Text style={ styles.boxText }>My Friends</Text>
                         <Feather
                             name='chevron-right'
                             size={20}
@@ -100,7 +100,7 @@ const ProfileScreen = ({ navigation } : any) => {
 
                 <TouchableWithoutFeedback onPress={() => {navigation.navigate('Favorites')}}>
                     <View style={ styles.box }>
-                        <Text style={ styles.boxText }>Favorites</Text>
+                        <Text style={ styles.boxText }>Favorite Games</Text>
                         <Feather 
                             name='chevron-right'
                             size={20}
@@ -111,7 +111,7 @@ const ProfileScreen = ({ navigation } : any) => {
 
                 <TouchableWithoutFeedback onPress={() => {navigation.navigate('Archived')}}>
                     <View style={ styles.box }>
-                        <Text style={ styles.boxText }>Archived</Text>
+                        <Text style={ styles.boxText }>Completed Scorecards</Text>
                         <Feather 
                         name='chevron-right'
                         size={20}
