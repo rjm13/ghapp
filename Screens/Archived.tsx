@@ -1,12 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { RefreshControl, Dimensions, View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../AppContext';
 
 
 const Archived = ({navigation} : any) => {
+
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
+
+    const { ScorecardID } = useContext(AppContext);
+    const { setScorecardID } = useContext(AppContext);
 
     const [isArchived, setIsArchived] = useState(false);
 
@@ -34,13 +41,13 @@ const Archived = ({navigation} : any) => {
             let saved = await AsyncStorage.getAllKeys();
     
             if (saved != null) {
-                let result = saved.filter((item) => item.includes("completed"));
+                let result = saved.filter((item) => item.includes("completed" + userID.id));
                 setSavedCards(result);
             } 
         }
         LoadKeys();
     
-    }, [isArchived])
+    }, [isArchived, ScorecardID])
 
 //remove an item from asyncstorage function
     //set the modal state
@@ -101,26 +108,26 @@ const SavedItems = ({item} : any) => {
         }
         }, []);
 
-        return (
-            
-            <TouchableWithoutFeedback 
-                onPress={() => navigation.navigate('Scorecard', {cardID: item.toString()})}
-                onLongPress={() => {showRemoveModal(); setRemovedItem(item);}}
-            >
-                <View style={{ 
-                    padding: 12, marginVertical: 10, marginHorizontal: 5, backgroundColor: '#fff',
-                    flexDirection: 'row', justifyContent: 'space-between', elevation: 1
-                }}>
-                    <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 16, flexWrap: 'wrap', width: (SCREEN_WIDTH - 20) / 2}}>
-                        {itemname}
-                    </Text> 
-                    <Text style={{ fontFamily: 'chalkboard-light', fontSize: 14, color: 'gray'}}>
-                        {itemdate}
-                    </Text>
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }
+    return (
+        
+        <TouchableWithoutFeedback 
+            onPress={() => navigation.navigate('Scorecard', {cardID: item.toString()})}
+            onLongPress={() => {showRemoveModal(); setRemovedItem(item);}}
+        >
+            <View style={{ 
+                padding: 12, marginVertical: 10, marginHorizontal: 5, backgroundColor: '#fff',
+                flexDirection: 'row', justifyContent: 'space-between', elevation: 1
+            }}>
+                <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 16, flexWrap: 'wrap', width: (SCREEN_WIDTH - 20) / 2}}>
+                    {itemname}
+                </Text> 
+                <Text style={{ fontFamily: 'chalkboard-light', fontSize: 14, color: 'gray'}}>
+                    {itemdate}
+                </Text>
+            </View>
+        </TouchableWithoutFeedback>
+    )
+}
 
 //render list of the saved cards
     const renderSavedCards = ({item} : any) => {
@@ -170,11 +177,7 @@ const SavedItems = ({item} : any) => {
                 </Animatable.View> 
 
                 <View style={{marginHorizontal: 10, marginTop: 20}}>
-                        {SavedCards === [''] ? (
-                            <Text>
-                                This is where you find your saved scorecards but there is nothing here!
-                            </Text>
-                        ) :
+                        
                             <FlatList 
                                 data={SavedCards}
                                 renderItem={renderSavedCards}
@@ -186,13 +189,22 @@ const SavedItems = ({item} : any) => {
                                       onRefresh={onRefresh}
                                     />
                                 }
+                                ListHeaderComponent={() => (
+                                    <View style={{ alignItems: 'center', marginVertical: 10}}>
+                                        {SavedCards.length === 0 ? (
+                                            <Text style={{textAlign: 'center', fontFamily: 'chalkboard-regular', margin: 20}}>
+                                                This is where you find your completed scorecards but there is nothing here!
+                                            </Text>
+                                        ) : null}    
+                                    </View>
+                                )}
                                 ListFooterComponent={() => (
                                     <View style={{ alignItems: 'center', marginVertical: 20}}>
                                         
                                     </View>
                                 )}
                             />
-                        } 
+                        
                 </View>
             </View>
         </Provider>

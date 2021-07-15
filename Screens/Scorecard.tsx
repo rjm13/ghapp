@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import { View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase, ScrollViewBase } from 'react-native';
+import { ActivityIndicator, View, Text, Switch, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableWithoutFeedback, Animated, SectionList, FlatList, TouchableOpacity, TextInput, RefreshControlBase, ScrollViewBase } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Modal, Portal, Provider } from 'react-native-paper';
@@ -32,8 +32,13 @@ const toRoman = require('roman-numerals').toRoman;
 //exported scorecard function
 const Scorecard = ({navigation, route} : {navigation: any, route: any}) => {
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const { ScorecardID } = useContext(AppContext);
     const { setScorecardID } = useContext(AppContext);
+
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
 
     //const route = useRoute();
     const {cardID} = route.params;
@@ -86,7 +91,7 @@ const Scorecard = ({navigation, route} : {navigation: any, route: any}) => {
 //scorecard dataset
     const [ScorecardData, setScorecardData] = useState(
         {
-            id: 'card' + uuid.v4().toString(),
+            id: 'card' + userID.id + uuid.v4().toString(),
             name: new Date().toDateString(),
             updated: false,
             dateCreated: new Date().toDateString(),
@@ -112,7 +117,7 @@ const Scorecard = ({navigation, route} : {navigation: any, route: any}) => {
 
 //blank datasets to reset the scorecard
     const blankScorecard = {
-        id: 'card' + uuid.v4().toString(),
+        id: 'card' + userID.id + uuid.v4().toString(),
         name: new Date().toDateString(),
         updated: false,
         dateCreated: new Date().toDateString(),
@@ -349,6 +354,7 @@ useEffect(() => {
         console.log('Done3')
 
         setIsSaved(!isSaved);
+        setScorecardID(ScorecardData.id);
 
         console.log(ScorecardData)
 
@@ -435,10 +441,12 @@ useEffect(() => {
        
         let oldID = ScorecardData.id
         let object = ScorecardData
-        object.id = 'completed' + uuid.v4();
+        object.id = 'completed' + userID.id + uuid.v4();
         setScorecardData(object);
 
         try {
+            setIsLoading(true);
+            SaveToStorage();
             const jsonScorecardData = JSON.stringify(object)
             await AsyncStorage.setItem(cardID, jsonScorecardData)
             console.log('my old id is ' + oldID)
@@ -450,18 +458,21 @@ useEffect(() => {
 
         try {
             await AsyncStorage.removeItem(oldID);
+            setIsLoading(false);
+            hideCompleteModal();
+            showConfettiModal();
           } catch(e) {
             // remove error
           }
+          
+        
     }
 
     const SaveSettings = () => {
         alert('Save the settings of this scorecard as a preset game')
     }
 
-    const MarkDone = () => {
-        SaveToStorage();
-        CommitScorecard();
+    const MarkDone = () => { 
         clearScorecard();
         hideConfettiModal();
     }
@@ -471,8 +482,13 @@ useEffect(() => {
     }
 
     const MarkAsComplete = () => {
-        hideCompleteModal();
-        showConfettiModal();
+        
+        //SaveToStorage();
+        CommitScorecard();
+        
+
+        // hideCompleteModal();
+        // showConfettiModal();
     }
 
 //default settings
@@ -505,7 +521,7 @@ useEffect(() => {
             let teamIdentity = uuid.v4();
             let scoreIdentity = uuid.v4();
             let settingIdentity = uuid.v4();
-            setScorecardData({...blankScorecard, id: 'card' + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString(), settings: 'setting' + settingIdentity.toString() });
+            setScorecardData({...blankScorecard, id: 'card' + userID.id + cardIdentity.toString(), teams: teamIdentity.toString(), scores: scoreIdentity.toString(), settings: 'setting' + settingIdentity.toString() });
             //setSavedSetting({...SavedSetting, id: 'setting' + settingIdentity.toString()});
         }
         else {
@@ -777,6 +793,7 @@ const UpdateExtra = () => {
 
 //clear scorecard function
     const clearScorecard = () => {
+
 
         let array = {...blankScorecard};
         array.name = new Date().toDateString();
@@ -1474,13 +1491,17 @@ const UpdateExtra = () => {
                             </Text>
                         </View>
                         <View style={{ alignItems: 'center'}}>
-                            <TouchableOpacity onPress={MarkAsComplete}>
+                            <TouchableWithoutFeedback onPress={MarkAsComplete}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Text style={{color: '#fff', fontSize: 20, textAlign: 'center', fontFamily: 'chalkboard-bold'}}>
-                                        End Game
-                                    </Text>
+                                {isLoading === true ? (
+                                        <ActivityIndicator size='small' color='#fff'/>
+                                    ) : (
+                                        <Text style={{color: '#fff', fontSize: 20, textAlign: 'center', fontFamily: 'chalkboard-bold'}}>
+                                            End Game
+                                        </Text>
+                                    )}
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableWithoutFeedback>
                         </View>
                     </View>
                 </Modal>
@@ -1955,7 +1976,7 @@ const UpdateExtra = () => {
 {/* New Scorecard Modal */}
                 <Modal visible={visibleConfettiModal} onDismiss={hideConfettiModal} contentContainerStyle={confettiModalContainerStyle}>
                     <View style={{ paddingHorizontal: 20, paddingVertical: 0, backgroundColor: '#fff', borderRadius: 15, height: '100%', justifyContent: 'space-between'}}>
-                    <ConfettiCannon count={400} origin={{x: -40, y: 50}} fadeOut={true} fallSpeed={6000}/>
+                    <ConfettiCannon count={400} origin={{x: -40, y: 50}} fadeOut={true} fallSpeed={4000}/>
                         <View style={{ alignItems: 'center', marginVertical: 20, paddingBottom: 30,
                                        borderColor: '#155843', borderRadius: 15, borderWidth: 4,
                                        backgroundColor: '#155843cc'
@@ -2059,11 +2080,11 @@ const UpdateExtra = () => {
                         <View style={{ alignItems: 'center', marginBottom: 10}}>
                             <TouchableOpacity onPress={MarkDone}>
                                 <View style={{ width: 200, height: 50, borderRadius: 25, backgroundColor: '#155843', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Feather 
-                                        name='check'
-                                        size={25}
-                                        color='#fff'
-                                    />
+                                    {isLoading === true ? (
+                                        <ActivityIndicator size='small' color='#fff'/>
+                                    ) : (
+                                        <Feather name='check' size={25} color='#fff' />
+                                    )}
                                 </View>
                             </TouchableOpacity>
                         </View>

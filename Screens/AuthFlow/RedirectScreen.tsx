@@ -2,6 +2,8 @@ import React, {useState, useEffect, useContext, useLayoutEffect} from "react";
 import { View, Text, ActivityIndicator, Dimensions } from "react-native";
 import { AppContext } from '../../AppContext';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { getUser } from '../../src/graphql/queries';
+
 
 
 
@@ -13,7 +15,13 @@ const Redirect = ({route, navigation} : any) => {
 
     const trigger = route.params
 
-    useLayoutEffect(() => {
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
+
+    const { ScorecardID } = useContext(AppContext);
+    const { setScorecardID } = useContext(AppContext);
+
+    useEffect(() => {
         const fetchUser = async () => {
             const userInfo = await Auth.currentAuthenticatedUser(
             { bypassCache: true }
@@ -25,7 +33,25 @@ const Redirect = ({route, navigation} : any) => {
                 navigation.navigate('SignIn')
           }
           else {
-                navigation.navigate('HomeDrawer')    
+            const userData = await API.graphql(graphqlOperation(getUser,{ id: userInfo.attributes.sub}))
+      
+                if (userData.data.getUser) {
+                    console.log(userData.data.getUser);
+                    setUserID(userData.data.getUser);
+                    navigation.reset({
+                        //index: 0,
+                        routes: [{ name: 'HomeDrawer' }],
+                    });
+                    //navigation.navigate('HomeDrawer')
+                    
+                } else {
+                    setUserID(null);
+                    navigation.reset({
+                        //index: 0,
+                        routes: [{ name: 'HomeDrawer' }],
+                    });
+                    //navigation.navigate('HomeDrawer')
+                }
           }
         }
         fetchUser();

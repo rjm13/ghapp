@@ -55,7 +55,10 @@ const EditProfile = ({navigation} : any) => {
     async function handleSignOut() {
         try {
             await Auth.signOut()
-            .then(() => navigation.navigate('SignIn'))
+            .then(() => navigation.reset({
+                //index: 0,
+                routes: [{ name: 'SignIn' }],
+            }))
         } catch (error) {
             console.log('error signing out: ', error);
         }

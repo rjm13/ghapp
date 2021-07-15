@@ -1,14 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { RefreshControl, View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
+import { AppContext } from '../AppContext';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 
 const SavedScores = ({navigation} : any) => {
+
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
+
+    const { ScorecardID } = useContext(AppContext);
+    const { setScorecardID } = useContext(AppContext);
 
 //pull to refresh
     const wait = (timeout : any) => {
@@ -34,13 +42,13 @@ const SavedScores = ({navigation} : any) => {
             let saved = await AsyncStorage.getAllKeys();
     
             if (saved != null) {
-                let result = saved.filter((item) => item.includes("card"));
+                let result = saved.filter((item) => item.includes("card" + userID.id));
                 setSavedCards(result);
             } 
         }
         LoadKeys();
     
-    }, [isSaved])
+    }, [isSaved, ScorecardID])
 
 //remove an item from asyncstorage function
     //set the modal state
@@ -170,11 +178,7 @@ const SavedScores = ({navigation} : any) => {
                 <View style={{}}>
                     
                     <View style={{marginHorizontal: 10}}>
-                        {SavedCards === [''] ? (
-                            <Text>
-                                This is where you find your saved scorecards but there is nothing here!
-                            </Text>
-                        ) :
+                       
                             <FlatList 
                                 data={SavedCards}
                                 renderItem={renderSavedCards}
@@ -187,14 +191,22 @@ const SavedScores = ({navigation} : any) => {
                                     />
                                 }
                                 style={{marginTop: 20}}
-                                
+                                ListHeaderComponent={() => (
+                                    <View style={{ alignItems: 'center', marginVertical: 10}}>
+                                        {SavedCards.length === 0 ? (
+                                            <Text style={{textAlign: 'center', fontFamily: 'chalkboard-regular', margin: 20}}>
+                                                This is where you find your saved scorecards but there is nothing here!
+                                            </Text>
+                                        ) : null}    
+                                    </View>
+                                )}
                                 ListFooterComponent={() => (
                                     <View style={{ alignItems: 'center', marginVertical: 20}}>
                                         
                                     </View>
                                 )}
                             />
-                        }
+                        
                         
                     </View>
                 </View>
