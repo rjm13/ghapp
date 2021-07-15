@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
         borderColor: 'tan'
     },
     emailcontainer: {
-        marginTop: 20,
+        marginTop: 30,
         flexDirection: 'row',
         alignItems: "center",
         paddingHorizontal: 20,

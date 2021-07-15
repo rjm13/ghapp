@@ -70,8 +70,8 @@ export function DrawerContent({navigation} : any) {
             <DrawerContentScrollView>
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection} >
-                        <TouchableOpacity
-                            onPress={() => {navigation.navigate('QR Code')}}>
+                        {/* <TouchableOpacity
+                            onPress={() => {navigation.navigate('QR Code')}}> */}
                             <View style={{ marginTop: 45 }}>
                                 <View style={{alignSelf: 'center', height: 104, width: 104, backgroundColor: '#fff', borderRadius: 52, alignItems: 'center', justifyContent: 'center'}}>
                                     <Avatar.Image
@@ -86,7 +86,7 @@ export function DrawerContent({navigation} : any) {
                                 </Text>
                             </View>
                             </View>
-                        </TouchableOpacity>
+                        {/* </TouchableOpacity> */}
                     </View>
                         <View style={ styles.row }>
                             <WinLossHeader />
@@ -126,9 +126,12 @@ export function DrawerContent({navigation} : any) {
                                     </View>
                                 </TouchableHighlight>
                                 
-                                <View style={styles.expandedbox}>
-                                    <Text style={styles.expandedtext}>Favorites</Text> 
-                                </View>
+                                <TouchableHighlight onPress={() => navigation.navigate('Favorites')}>
+                                    <View style={styles.expandedbox}>
+                                        <Text style={styles.expandedtext}>Favorites</Text> 
+                                    </View>
+                                </TouchableHighlight>
+
                                 <View style={styles.expandedbox}>
                                     <Text style={styles.expandedtext}>Submit new</Text> 
                                 </View>
@@ -155,11 +158,11 @@ export function DrawerContent({navigation} : any) {
                                     </View>
                                 </TouchableHighlight>
                                 
-                                <TouchableHighlight>
+                                {/* <TouchableHighlight>
                                     <View style={styles.expandedbox}>
                                         <Text style={styles.expandedtext}>Presets</Text> 
                                     </View>
-                                </TouchableHighlight>  
+                                </TouchableHighlight>   */}
 
                                 <TouchableHighlight onPress={() => navigation.navigate('ScoresHome', {screen: 'SavedScores'})}>
                                     <View style={styles.expandedbox}>

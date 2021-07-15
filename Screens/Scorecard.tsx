@@ -432,21 +432,21 @@ useEffect(() => {
     }
 
     const CommitScorecard = async () => {
+       
         let oldID = ScorecardData.id
-        let object = {...ScorecardData}
+        let object = ScorecardData
         object.id = 'completed' + uuid.v4();
         setScorecardData(object);
 
         try {
             const jsonScorecardData = JSON.stringify(object)
-            await AsyncStorage.setItem(oldID, jsonScorecardData)
-            console.log(oldID)
+            await AsyncStorage.setItem(cardID, jsonScorecardData)
+            console.log('my old id is ' + oldID)
+            console.log('my object is:')
             console.log(object)
         } catch (e) {
             // saving error
         }
-
-        //SaveToStorage();
     }
 
     const SaveSettings = () => {
@@ -454,6 +454,7 @@ useEffect(() => {
     }
 
     const MarkDone = () => {
+        SaveToStorage();
         CommitScorecard();
         clearScorecard();
         hideConfettiModal();

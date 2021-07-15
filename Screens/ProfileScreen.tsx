@@ -87,7 +87,7 @@ const ProfileScreen = ({ navigation } : any) => {
 
         <ScrollView>
             <View>
-                <TouchableWithoutFeedback onPress={() => {navigation.navigate('FriendsList')}}>
+                {/* <TouchableWithoutFeedback onPress={() => {navigation.navigate('FriendsList')}}>
                     <View style={ styles.box }>
                         <Text style={ styles.boxText }>My Friends</Text>
                         <Feather
@@ -96,7 +96,7 @@ const ProfileScreen = ({ navigation } : any) => {
                             color='#000'
                         />
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback> */}
 
                 <TouchableWithoutFeedback onPress={() => {navigation.navigate('Favorites')}}>
                     <View style={ styles.box }>
@@ -142,7 +142,7 @@ const ProfileScreen = ({ navigation } : any) => {
                     </View>
                 </TouchableWithoutFeedback>
 
-                <TouchableWithoutFeedback>
+                {/* <TouchableWithoutFeedback>
                     <View style={ styles.box }>
                         <Text style={ styles.boxText }>Settings</Text>
                         <Feather 
@@ -151,7 +151,7 @@ const ProfileScreen = ({ navigation } : any) => {
                             color='#000'
                         />
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback> */}
             </View>
         </ScrollView>
         <StatusBar style='light'/>
