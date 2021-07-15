@@ -1,13 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import { RefreshControl, View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
+import * as Animatable from 'react-native-animatable';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 
 const SavedScores = ({navigation} : any) => {
+
+//pull to refresh
+    const wait = (timeout : any) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+    const [Refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
 
     const [isSaved, setIsSaved] = useState(false);
 
@@ -143,6 +156,17 @@ const SavedScores = ({navigation} : any) => {
                 </Modal>
             </Portal>
             <View>
+                <Animatable.View animation='bounceInDown' style={{ flexDirection: 'row', height: 90, borderBottomRightRadius: 20, borderBottomLeftRadius: 20,
+                                backgroundColor: '#155843', alignItems: 'flex-end', paddingBottom: 20, paddingLeft: 20}}>
+                    <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Feather name='chevron-left' color='#fff' size={25}/>
+                            <Text style={{fontFamily: 'chalkboard-regular', color: '#fff', fontSize: 18, marginLeft: 10 }}>
+                                Saved Scorecards
+                            </Text> 
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Animatable.View>
                 <View style={{}}>
                     
                     <View style={{marginHorizontal: 10}}>
@@ -155,20 +179,15 @@ const SavedScores = ({navigation} : any) => {
                                 data={SavedCards}
                                 renderItem={renderSavedCards}
                                 showsVerticalScrollIndicator={false}
-                                ListHeaderComponent={() => (
-                                    <View style={{ alignItems: 'center', marginVertical: 20, flexDirection: 'row'}}>
-                                        <Feather 
-                                            name='chevron-left'
-                                            color='#000'
-                                            size={25}
-                                            style={{paddingRight: 15}}
-                                            onPress={() => navigation.goBack()}
-                                        />
-                                        <Text style={{fontSize: 22, fontFamily: 'chalkboard-regular', textAlign: 'center'}}>
-                                            Saved Scorecards
-                                        </Text>
-                                    </View>
-                                )}
+                                keyExtractor={item => item}
+                                refreshControl={
+                                    <RefreshControl
+                                      refreshing={Refreshing}
+                                      onRefresh={onRefresh}
+                                    />
+                                }
+                                style={{marginTop: 20}}
+                                
                                 ListFooterComponent={() => (
                                     <View style={{ alignItems: 'center', marginVertical: 20}}>
                                         

@@ -18,6 +18,7 @@ import ConfirmEmailScreen from '../Screens/AuthFlow/ConfirmEmail';
 import RedirectScreen from '../Screens/AuthFlow/RedirectScreen';
 import FavoritesScreen from '../Screens/FavoritesScreen';
 import ArchivedScreen from '../Screens/Archived';
+import SavedScores from '../Screens/SavedScoresScreen';
 
 
 import { AppContext } from '../AppContext';
@@ -88,6 +89,11 @@ const AppNavigation = () => {
                     <Drawer.Screen
                         name='Redirect'
                         component={RedirectScreen}
+                    />
+                    <Drawer.Screen
+                        name='SavedScores'
+                        component={SavedScores}
+                        options={{ headerShown: false }}
                     />
                 </Drawer.Navigator>
             </NavigationContainer>

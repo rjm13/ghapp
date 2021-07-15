@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Dimensions, View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { RefreshControl, Dimensions, View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Provider } from 'react-native-paper';
@@ -15,6 +15,18 @@ const Archived = ({navigation} : any) => {
     const [removedItem, setRemovedItem] = useState('');
 
     const SCREEN_WIDTH = Dimensions.get('window').width
+
+//pull to refresh
+    const wait = (timeout : any) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+    const [Refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => setRefreshing(false));
+      }, []);
 
 //fetch saved scorecards to set the dataset for the flatlist
     useEffect(() => {
@@ -167,15 +179,21 @@ const SavedItems = ({item} : any) => {
                                 data={SavedCards}
                                 renderItem={renderSavedCards}
                                 showsVerticalScrollIndicator={false}
+                                keyExtractor={item => item}
+                                refreshControl={
+                                    <RefreshControl
+                                      refreshing={Refreshing}
+                                      onRefresh={onRefresh}
+                                    />
+                                }
                                 ListFooterComponent={() => (
                                     <View style={{ alignItems: 'center', marginVertical: 20}}>
                                         
                                     </View>
                                 )}
                             />
-                        }
-                        
-                    </View>
+                        } 
+                </View>
             </View>
         </Provider>
         

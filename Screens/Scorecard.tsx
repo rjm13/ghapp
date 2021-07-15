@@ -447,6 +447,12 @@ useEffect(() => {
         } catch (e) {
             // saving error
         }
+
+        try {
+            await AsyncStorage.removeItem(oldID);
+          } catch(e) {
+            // remove error
+          }
     }
 
     const SaveSettings = () => {
