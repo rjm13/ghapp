@@ -55,14 +55,19 @@ const EditProfile = ({navigation} : any) => {
     async function handleSignOut() {
         try {
             await Auth.signOut()
-            .then(() => navigation.reset({
-                //index: 0,
-                routes: [{ name: 'SignIn' }],
-            }))
+            // .then(navigation.reset({
+            //     //index: 0,
+            //     routes: [{ name: 'SignIn' }],
+            // }))
+            
         } catch (error) {
             console.log('error signing out: ', error);
         }
         hideSignOutModal();
+        navigation.reset({
+            //index: 0,
+            routes: [{ name: 'SignIn' }],
+        })
     }
 
 //give the camera roll perissions

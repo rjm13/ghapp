@@ -38,6 +38,7 @@ const Redirect = ({route, navigation} : any) => {
                 if (userData.data.getUser) {
                     console.log(userData.data.getUser);
                     setUserID(userData.data.getUser);
+                    setScorecardID(null);
                     navigation.reset({
                         //index: 0,
                         routes: [{ name: 'HomeDrawer' }],
@@ -46,6 +47,7 @@ const Redirect = ({route, navigation} : any) => {
                     
                 } else {
                     setUserID(null);
+                    setScorecardID(null);
                     navigation.reset({
                         //index: 0,
                         routes: [{ name: 'HomeDrawer' }],
