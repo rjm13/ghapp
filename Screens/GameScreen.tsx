@@ -101,6 +101,11 @@ const GameScreen = ({ navigation } : any) => {
         outputRange: [130, 0],
         extrapolate: 'clamp',
         });
+    const animatedMargin = animation.interpolate({
+        inputRange: [0, 100],
+        outputRange: [10, 0],
+        extrapolate: 'clamp',
+        });
 
     const animatedColor = animation.interpolate({
         inputRange: [0, 300],
@@ -163,10 +168,10 @@ const GameScreen = ({ navigation } : any) => {
                     </View>
                 </Animated.View>
 
-                <Animated.View style={{ position: 'absolute', top: 30, width: Dimensions.get('window').width, opacity: animatedAppearOpacity, backgroundColor: '#fff', paddingVertical: 10, paddingHorizontal: 20}}>
+                <Animated.View style={{  justifyContent: 'center', height: 64, marginTop: -4, position: 'absolute', top: 30, width: Dimensions.get('window').width, opacity: animatedAppearOpacity, backgroundColor: '#fff', paddingVertical: 0, paddingHorizontal: 20}}>
                     <View style={styles.titlebox}>
                         <View style={styles.titleblock}>
-                            <Text style={styles.title}>
+                            <Text style={[styles.title, {fontSize: 18}]}>
                                 {Game.name}
                             </Text>
                         </View>
@@ -183,10 +188,10 @@ const GameScreen = ({ navigation } : any) => {
             </Animatable.View>
 
             
-            <Animated.View style={[styles.headerbox, {height: animatedHeaderHeight, opacity: 1}]}>
-                <View style={[styles.titlebox, {marginVertical: 10}]}>
+            <Animated.View style={[styles.headerbox, { marginBottom: animatedMargin, height: animatedHeaderHeight, opacity: 1}]}>
+                <View style={[styles.titlebox, {marginTop: 10}]}>
                     <View style={[styles.titleblock, {marginLeft: 16}]}>
-                        <Text style={styles.title}>
+                        <Text style={[styles.title, {fontSize: 20}]}>
                             {Game.name}
                         </Text> 
                         <Text style={styles.category}>
@@ -228,61 +233,23 @@ const GameScreen = ({ navigation } : any) => {
                 sections={Game.sections}
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item }) => <Item title={item} />}
-                //stickySectionHeadersEnabled={true}
+                stickySectionHeadersEnabled={true}
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: animation } } }],
                     { useNativeDriver: false }
                   )}
                 scrollEventThrottle={1}
+                SectionSeparatorComponent={ () => (
+                    <View style={{height: 10}}>
+
+                    </View>
+                )}
                 
                 renderSectionHeader={({ section: { title } }) => (
                     <View style={styles.cardbox}>
                         <Text style={styles.title}>{title}</Text>
                     </View>
                 )}
-                // ListHeaderComponent={() => (
-                //     <View>
-                //         <View style={styles.headerbox}>
-                //             <View style={styles.titlebox}>
-                //                 <View style={styles.titleblock}>
-                //                     <Text style={styles.title}>
-                //                         {Game.name}
-                //                     </Text> 
-                //                     <Text style={styles.category}>
-                //                         {Game.category} Game
-                //                     </Text> 
-                //                 </View>
-                //                 <View style={{alignItems: 'center', marginVertical: 8}}>
-                //                     <AntDesign
-                //                         name={isLiked ? 'heart' : 'hearto'}
-                //                         color={isLiked ? 'red' : '#05375a'}
-                //                         size={20}
-                //                         onPress={onLikePress}
-                //                     /> 
-                //                 </View>
-                //             </View>
-                //             <View style={styles.footer}>
-                //                 <View style={{flexDirection: 'row'}}>
-                //                     <View style={[styles.playersbutton, {backgroundColor: 'lightblue', marginRight: 10}]}>
-                //                         <Text style={[styles.footertext, {fontFamily: 'chalkboard-bold'}]}>
-                //                             T
-                //                         </Text>
-                //                     </View>
-                //                     <View style={styles.playersbutton}>
-                //                         <Text style={styles.footertext}>
-                //                             {Game.players} players
-                //                         </Text>
-                //                     </View>
-                //                 </View>
-                //                 <View style={styles.variationsbutton}>
-                //                     <Text style={styles.footertext}>
-                //                         {Game.variations.length} house variations
-                //                     </Text>
-                //                 </View>
-                //             </View>
-                //         </View>
-                //     </View>
-                // )}
                 ListFooterComponent={ () => (
                     <View>
                         <SectionList
@@ -411,10 +378,10 @@ footertext: {
 //     justifyContent: 'space-between',
 //   },
   cardbox: {
-    marginHorizontal: 16,
-    marginTop: 16,
+    marginHorizontal: 0,
+    marginBottom: -10,
     backgroundColor: '#fff',
-    elevation: 1,
+    elevation: 0,
     paddingHorizontal: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -429,7 +396,7 @@ footertext: {
     justifyContent: 'space-between',
   },
   databox: {
-    marginHorizontal: 16,
+    marginBottom: 0,
     backgroundColor: '#fff',
     elevation: 1,
     paddingVertical: 8,
