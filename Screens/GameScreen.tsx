@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated, PanResponder, View, Dimensions, StyleSheet, Text, Image, ImageBackground, ScrollView, TouchableWithoutFeedback, TouchableOpacity, SectionList, SafeAreaView } from 'react-native';
+import { Animated, FlatList, PanResponder, View, Dimensions, StyleSheet, Text, Image, ImageBackground, ScrollView, TouchableWithoutFeedback, TouchableOpacity, SectionList, SafeAreaView } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -43,22 +43,54 @@ const Game = {
                     'The second player goes in the closet while everyone else hangs out awkwardly'
                 ]
           },
+          {
+            title: "House Variations",
+            data: [
+                ]
+          },
     ],
 
     variations: [
         {
             title: 'A user submitted house rule',
-            data: ['This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.'],
+            id: '0',
+            para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
             user: 'Game Haven'
         },
         {
+            id: '1',
             title: 'Another user house rule',
-            data: ['This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.'],
+            para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
             user: 'Game Haven'
         },
         {
+            id: '2',
             title: 'Yet a third user house rule',
-            data: ['This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.'],
+            para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
+            user: 'Game Haven'
+        },
+        {
+            id: '3',
+            title: 'Yet a third user house rule',
+            para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
+            user: 'Game Haven'
+        },
+        {
+            id: '4',
+            title: 'Yet a third user house rule',
+            para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
+            user: 'Game Haven'
+        },
+        {
+            id: '5',
+            title: 'Yet a third user house rule',
+            para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
+            user: 'Game Haven'
+        },
+        {
+            id: '6',
+            title: 'Yet a third user house rule',
+            para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
             user: 'Game Haven'
         },
     ],
@@ -73,6 +105,42 @@ const Item = ({ title } : any) => (
             </Text>
     </View>
 );
+
+const VariationItem = ({data, user, title} : {data: any, user: any}) => {
+    return (
+        <View style={{elevation: 6, backgroundColor: '#fff', marginHorizontal: 10, marginTop: 10}}>
+            <View style={[styles.cardbox, {marginHorizontal: 16}]}>
+                                    <Text style={styles.title}>{title}</Text>
+                                    <TouchableOpacity style={styles.housefavbutton} >
+                                        <Feather
+                                            name='heart'
+                                            color='#05375a'
+                                            size={20}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+            <View style={[styles.databox, {marginHorizontal: 16, elevation: 0}]}>
+                <Text style={styles.warningtext}>
+                    {data}
+                </Text>
+            </View> 
+            <View style={[styles.footerbox, {elevation: 0}]}>
+                <Text style={styles.submittedby}>Submitted by {user}</Text>
+            </View>
+        </View>
+    )
+}
+
+const renderVariationItem = ({item} : any) => {
+    return (
+        <VariationItem 
+            title = {item.title}
+            data = {item.para}
+            user = {item.user}
+            
+        />
+    )
+}
 
 
 const GameScreen = ({ navigation } : any) => {
@@ -234,6 +302,7 @@ const GameScreen = ({ navigation } : any) => {
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item }) => <Item title={item} />}
                 stickySectionHeadersEnabled={true}
+
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: animation } } }],
                     { useNativeDriver: false }
@@ -246,51 +315,47 @@ const GameScreen = ({ navigation } : any) => {
                 )}
                 
                 renderSectionHeader={({ section: { title } }) => (
-                    <View style={styles.cardbox}>
-                        <Text style={styles.title}>{title}</Text>
+                    <View style={[styles.cardbox, {backgroundColor: title === 'House Variations' ? '#f0f0f0' : '#fff',flexDirection: 'row', justifyContent: 'space-between'}]}>
+                        <Text style={[styles.title, {fontFamily: 'chalkboard-regular', fontSize: 16, marginVertical: 8, backgroundColor: title === 'House Variations' ? '#D9D1B2' : 'lightgray', paddingHorizontal: 10, borderRadius: 4}]}>{title}</Text>
+                        {title === 'House Variations' ? (
+                            <View style={styles.submitbutton}>
+                                <Text style={[styles.footertext, {color: '#fff'}]}>
+                                    Submit new
+                                </Text>
+                            </View>) : null}
                     </View>
                 )}
                 ListFooterComponent={ () => (
-                    <View>
-                        <SectionList
-                            sections={Game.variations}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => 
-                                <View style={styles.databox}>
-                                    <Text style={styles.warningtext}>
-                                        {item}
-                                    </Text>
-                                </View> }
-                            ListHeaderComponent={ () => (
-                                <View style={styles.flattitlebox }>
-                                    <Text style={styles.title}>
-                                        House Variations
-                                    </Text>
-
-                                    <View style={styles.submitbutton}>
-                                        <Text style={styles.footertext}>
-                                            Submit new
-                                        </Text>
-                                    </View>
-                                </View>
-                            )}
-                            renderSectionHeader={({ section: { title } }) => (
-                                <View style={styles.cardbox}>
-                                    <Text style={styles.title}>{title}</Text>
-                                    <TouchableOpacity style={styles.housefavbutton} >
-                                        <Feather
-                                            name='heart'
-                                            color='#05375a'
-                                            size={20}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            )}
-                            renderSectionFooter={() => (
-                                <View style={styles.footerbox}>
-                                    <Text style={styles.submittedby}>Submitted by Game Haven</Text>
-                                </View>
-                            )}
+                    <View style={{ backgroundColor: '#f0f0f0', paddingTop: 10}}>
+                        <FlatList
+                            data={Game.variations}
+                            keyExtractor={(item) => item + item.id}
+                            renderItem={renderVariationItem}
+                            // SectionSeparatorComponent={ () => (
+                            //     <View style={{height: 10}}>
+            
+                            //     </View>
+                            // )}
+                            // ListHeaderComponent={ () => (
+                            //     <View style={styles.flattitlebox }>
+                                    
+                            //     </View>
+                            // )}
+                            // renderSectionHeader={({ section: { title } }) => (
+                            //     <View style={[styles.cardbox, {marginHorizontal: 16}]}>
+                            //         <Text style={styles.title}>{title}</Text>
+                            //         <TouchableOpacity style={styles.housefavbutton} >
+                            //             <Feather
+                            //                 name='heart'
+                            //                 color='#05375a'
+                            //                 size={20}
+                            //             />
+                            //         </TouchableOpacity>
+                            //     </View>
+                            // )}
+                            // renderSectionFooter={() => (
+                                
+                            // )}
                             ListFooterComponent={ () => (
                                 <TouchableOpacity 
                                     style={styles.bottombuttonbox}
@@ -413,11 +478,11 @@ footertext: {
     marginTop: 16,
 },
 submitbutton: {
-    borderRadius: 4,
-    backgroundColor: '#D9D1B2',
-    paddingHorizontal: 8,
+    borderRadius: 15,
+    backgroundColor: '#155843',
+    paddingHorizontal: 14,
     paddingVertical: 2,
-    marginBottom: 8,
+    marginVertical: 8
 },
 housefavbutton: {
     marginVertical: 8,
