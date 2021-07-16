@@ -106,20 +106,11 @@ const Item = ({ title } : any) => (
     </View>
 );
 
-const VariationItem = ({data, user, title} : {data: any, user: any}) => {
+const VariationItem = ({data, user, title} : {data: any, user: any, title: any}) => {
     return (
         <View style={{elevation: 6, backgroundColor: '#fff', marginHorizontal: 10, marginTop: 10}}>
-            <View style={[styles.cardbox, {marginHorizontal: 16}]}>
-                                    <Text style={styles.title}>{title}</Text>
-                                    <TouchableOpacity style={styles.housefavbutton} >
-                                        <Feather
-                                            name='heart'
-                                            color='#05375a'
-                                            size={20}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-            <View style={[styles.databox, {marginHorizontal: 16, elevation: 0}]}>
+            <Text style={[styles.title, {fontSize: 16, marginLeft: 10, marginTop: 4}]}>{title}</Text>                         
+            <View style={[styles.databox, {marginTop: 4, backgroundColor: '#e0e0e0a5', borderRadius: 15, marginHorizontal: 16, elevation: 0}]}>
                 <Text style={styles.warningtext}>
                     {data}
                 </Text>
@@ -404,6 +395,7 @@ submittedby: {
     fontFamily: 'chalkboard-regular',
     color: '#155843',
     fontSize: 14,
+    marginLeft: -10,
   },
 iconbox: {
     flexDirection: 'row',
