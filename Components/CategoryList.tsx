@@ -74,6 +74,10 @@ const DATA = [
 
     const [selectedId, setSelectedId] = useState('1');
 
+    useEffect(() => {
+      
+    }, [selectedId])
+
     const renderItem = ({ item, index }) => {
       const opacity = item.id === selectedId ? 1 : 0.4;
       
@@ -92,6 +96,7 @@ const DATA = [
     function ScrollToThisThing (index, item) {
       setSelectedId(item.id)
       flatListRef.current.scrollToItem({ item: item, animated: true, viewPosition: 0.5 })
+
     };
   
     return (

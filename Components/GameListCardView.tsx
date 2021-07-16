@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, TouchableOpacity, StatusBar } from 'react-native';
+import { Dimensions, SafeAreaView, View, FlatList, StyleSheet, Text, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import OptionsMenu from "react-native-option-menu";
 
@@ -8,8 +8,13 @@ import { listGames } from '../src/graphql/queries';
 
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 const MoreIcon = ( <Feather name='more-vertical' color='#05375a' size={20}/> )
+const FilterIcon = (<MaterialCommunityIcons name='filter-variant' color='#05375a' size={20} />)
+const SortIcon = (<MaterialCommunityIcons name='sort' color='#05375a' size={20} />)
+
 
 const Card = ({ name, highlight, players } : {name : any, highlight: any, players: any}) => {
 
@@ -88,7 +93,7 @@ const Card = ({ name, highlight, players } : {name : any, highlight: any, player
     );
 }
 
-const GameListCardView = () => {
+const GameListCardView = ({category} : any) => {
 
     const [games, setGames] = useState([]);
 
@@ -114,11 +119,37 @@ const GameListCardView = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{height: Dimensions.get('window').height - 166}}>
       <FlatList
         data={games}
         renderItem={renderItem}
         keyExtractor={item => item.id}
+        stickyHeaderIndices={[0]}
+        style={{
+            //height: Dimensions.get('window').height - 130,
+            backgroundColor: '#f5f5f5'
+
+        }}
+        ListHeaderComponent={() => (
+            <View style={[styles.filterBox, {backgroundColor: '#f5f5f5'}]}>
+          <OptionsMenu
+            customButton={FilterIcon}
+            //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+            destructiveIndex={1}
+            options={["NSFW", "Favorites", "By Number of Players"]}
+            
+            //actions={[editPost, deletePost]}
+          />
+          <OptionsMenu
+            customButton={SortIcon}
+            //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+            destructiveIndex={1}
+            options={["A to Z", "Z to A", "Number of Players", "Most Popular"]}
+            
+            //actions={[editPost, deletePost]}
+          />
+        </View>
+        )}
       />
     </SafeAreaView>
   );
@@ -130,7 +161,7 @@ const styles = StyleSheet.create({
 //     marginTop: StatusBar.currentHeight || 0,
 //   },
   container: {
-    height: '87%'
+    height: Dimensions.get('window').height - 166
   },
   block: {
     //justifyContent: 'center',
@@ -141,6 +172,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 1,
 },
+filterBox: {
+    flexDirection: 'row',
+    paddingHorizontal: 32,
+    paddingBottom: 8,
+    justifyContent: 'space-between',
+  },
 titlebox: {
     marginHorizontal: 16,
     marginTop: 4,
