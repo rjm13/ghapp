@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Dimensions, StyleSheet, Text, Image, ImageBackground, ScrollView, TouchableWithoutFeedback, TouchableOpacity, SectionList, SafeAreaView } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { Animated, PanResponder, View, Dimensions, StyleSheet, Text, Image, ImageBackground, ScrollView, TouchableWithoutFeedback, TouchableOpacity, SectionList, SafeAreaView } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -77,6 +77,38 @@ const Item = ({ title } : any) => (
 
 const GameScreen = ({ navigation } : any) => {
 
+//animation controls
+    const animation = useRef(new Animated.Value(0)).current;
+
+    const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+
+    const [scrollOffset, setScrollOffset] = useState(0);
+
+    const animatedOpacity = animation.interpolate({
+        inputRange: [100, 150],
+        outputRange: [1, 0],
+        extrapolate: 'clamp',
+        });
+
+    const animatedAppearOpacity = animation.interpolate({
+        inputRange: [100, 300],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+        });
+
+    const animatedHeaderHeight = animation.interpolate({
+        inputRange: [0, 200],
+        outputRange: [130, 0],
+        extrapolate: 'clamp',
+        });
+
+    const animatedColor = animation.interpolate({
+        inputRange: [0, 300],
+        outputRange: ['#000000', '#ffffff'],
+        extrapolate: 'clamp',
+        });
+
+//like the game function
     const [isLiked, setIsLiked] = useState(false);
     
     const onLikePress = () => {
@@ -116,25 +148,44 @@ const GameScreen = ({ navigation } : any) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Animatable.View animation='bounceInDown' style={{ flexDirection: 'row', height: 90, borderBottomRightRadius: 20, borderBottomLeftRadius: 20,
-                            justifyContent: 'space-between', backgroundColor: '#155843', alignItems: 'flex-end', paddingBottom: 20, paddingHorizontal: 20}}>
-                
-                <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Feather name='chevron-left' color='#fff' size={25}/>
+            <Animatable.View animation='bounceInDown'>
+                <Animated.View style={{ opacity: animatedOpacity, flexDirection: 'row', height: 90, borderBottomRightRadius: 20, borderBottomLeftRadius: 20,
+                                justifyContent: 'space-between', backgroundColor: '#155843', alignItems: 'flex-end', paddingBottom: 20, paddingHorizontal: 20}}>
+                    
+                    <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Feather name='chevron-left' color='#fff' size={25}/>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <View style={{flexDirection: 'row'}}>
+                        <FontAwesome5 name='search' color='#fff' size={18} style={{marginRight: 30}}/>
+                        <FontAwesome5 name='share' color='#fff' size={20}/>
                     </View>
-                </TouchableWithoutFeedback>
-                <View style={{flexDirection: 'row'}}>
-                    <FontAwesome5 name='search' color='#fff' size={18} style={{marginRight: 30}}/>
-                    <FontAwesome5 name='share' color='#fff' size={20}/>
-                </View>
-                
+                </Animated.View>
+
+                <Animated.View style={{ position: 'absolute', top: 30, width: Dimensions.get('window').width, opacity: animatedAppearOpacity, backgroundColor: '#fff', paddingVertical: 10, paddingHorizontal: 20}}>
+                    <View style={styles.titlebox}>
+                        <View style={styles.titleblock}>
+                            <Text style={styles.title}>
+                                {Game.name}
+                            </Text>
+                        </View>
+                        <View style={{alignItems: 'center', marginVertical: 8}}>
+                            <AntDesign
+                                name={isLiked ? 'heart' : 'hearto'}
+                                color={isLiked ? 'red' : '#05375a'}
+                                size={20}
+                                onPress={onLikePress}
+                            /> 
+                        </View>
+                    </View>
+                </Animated.View>
             </Animatable.View>
 
-            <View style={styles.headerbox}>
-                <View style={styles.titlebox}>
-
-                    <View style={styles.titleblock}>
+            
+            <Animated.View style={[styles.headerbox, {height: animatedHeaderHeight, opacity: 1}]}>
+                <View style={[styles.titlebox, {marginVertical: 10}]}>
+                    <View style={[styles.titleblock, {marginLeft: 16}]}>
                         <Text style={styles.title}>
                             {Game.name}
                         </Text> 
@@ -142,53 +193,96 @@ const GameScreen = ({ navigation } : any) => {
                             {Game.category} Game
                         </Text> 
                     </View>
-
-                    <View style={{alignItems: 'center', marginVertical: 8}}>
+                    <View style={{alignItems: 'center', marginVertical: 8, marginRight: 16}}>
                         <AntDesign
                             name={isLiked ? 'heart' : 'hearto'}
                             color={isLiked ? 'red' : '#05375a'}
                             size={20}
                             onPress={onLikePress}
-                        />
-                        
+                        /> 
                     </View>
-
                 </View>
-
-                <View style={styles.footer}>
-
-                        <View style={{flexDirection: 'row'}}>
-                            <View style={[styles.playersbutton, {backgroundColor: 'lightblue', marginRight: 10}]}>
-                                <Text style={[styles.footertext, {fontFamily: 'chalkboard-bold'}]}>
-                                    T
-                                </Text>
-                            </View>
-                            <View style={styles.playersbutton}>
-                                <Text style={styles.footertext}>
-                                    {Game.players} players
-                                </Text>
-                            </View>
-                        </View>
-                        
-
-                        <View style={styles.variationsbutton}>
-                            <Text style={styles.footertext}>
-                                {Game.variations.length} house variations
+                <View style={[styles.footer, {marginHorizontal: 16, marginBottom: 16}]}>
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={[styles.playersbutton, {backgroundColor: 'lightblue', marginRight: 10}]}>
+                            <Text style={[styles.footertext, {fontFamily: 'chalkboard-bold'}]}>
+                                T
                             </Text>
                         </View>
+                        <View style={styles.playersbutton}>
+                            <Text style={styles.footertext}>
+                                {Game.players} players
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={styles.variationsbutton}>
+                        <Text style={styles.footertext}>
+                            {Game.variations.length} house variations
+                        </Text>
+                    </View>
                 </View>
-            </View>
+            </Animated.View>
+            
 
-        
-            <SectionList
+            <Animated.SectionList
                 sections={Game.sections}
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item }) => <Item title={item} />}
+                //stickySectionHeadersEnabled={true}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: animation } } }],
+                    { useNativeDriver: false }
+                  )}
+                scrollEventThrottle={1}
+                
                 renderSectionHeader={({ section: { title } }) => (
                     <View style={styles.cardbox}>
                         <Text style={styles.title}>{title}</Text>
                     </View>
                 )}
+                // ListHeaderComponent={() => (
+                //     <View>
+                //         <View style={styles.headerbox}>
+                //             <View style={styles.titlebox}>
+                //                 <View style={styles.titleblock}>
+                //                     <Text style={styles.title}>
+                //                         {Game.name}
+                //                     </Text> 
+                //                     <Text style={styles.category}>
+                //                         {Game.category} Game
+                //                     </Text> 
+                //                 </View>
+                //                 <View style={{alignItems: 'center', marginVertical: 8}}>
+                //                     <AntDesign
+                //                         name={isLiked ? 'heart' : 'hearto'}
+                //                         color={isLiked ? 'red' : '#05375a'}
+                //                         size={20}
+                //                         onPress={onLikePress}
+                //                     /> 
+                //                 </View>
+                //             </View>
+                //             <View style={styles.footer}>
+                //                 <View style={{flexDirection: 'row'}}>
+                //                     <View style={[styles.playersbutton, {backgroundColor: 'lightblue', marginRight: 10}]}>
+                //                         <Text style={[styles.footertext, {fontFamily: 'chalkboard-bold'}]}>
+                //                             T
+                //                         </Text>
+                //                     </View>
+                //                     <View style={styles.playersbutton}>
+                //                         <Text style={styles.footertext}>
+                //                             {Game.players} players
+                //                         </Text>
+                //                     </View>
+                //                 </View>
+                //                 <View style={styles.variationsbutton}>
+                //                     <Text style={styles.footertext}>
+                //                         {Game.variations.length} house variations
+                //                     </Text>
+                //                 </View>
+                //             </View>
+                //         </View>
+                //     </View>
+                // )}
                 ListFooterComponent={ () => (
                     <View>
                         <SectionList
@@ -260,7 +354,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     //height: 100,
     elevation: 1,
-    padding: 16, 
+    //padding: 16, 
     
 },
 titlebox: {
