@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import OptionsMenu from "react-native-option-menu";
+import {StatusBar} from 'expo-status-bar';
 
 // import GamesCardScroll from '../../components/GamesCardScroll';
 // import ScoreBanner from '../../components/ScoreBanner';
@@ -46,7 +47,7 @@ const HomeScreen = ({navigation}) => {
         </View>
 
 
-
+        <StatusBar style="light" backgroundColor ='#155843' />
       </View>
  
   );

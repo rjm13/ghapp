@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Feather from 'react-native-vector-icons/Feather';
+import { StatusBar } from 'expo-status-bar';
 
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../../src/graphql/queries';
@@ -209,7 +210,7 @@ const SignIn = ({navigation} : any) => {
 
                 
             </LinearGradient>
-            
+            <StatusBar style="light" backgroundColor ='#155843' />
         </View>
     );
 }
