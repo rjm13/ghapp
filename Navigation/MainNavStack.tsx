@@ -20,7 +20,6 @@ import GamesHome from '../Screens/GamesHome';
 // import UpdateEmail from '../authentication/screens/UpdateEmail';
 
 import ScoresHome from '../Screens/ScoresHome';
-// import GamePageScreen from '../screens/GameScreen';
 // import ProfileScreen from '../screens/ProfileScreen';
 // import EditProfile from '../screens/EditProfile';
 import SearchScreen from '../Screens/SearchScreen';
@@ -32,7 +31,7 @@ import SearchScreen from '../Screens/SearchScreen';
 const HomeStack = createStackNavigator();
 
 
-const MainNavStack = ({ navigation }) => {
+const MainNavStack = ({ navigation } : any) => {
 
     const [selectedId, setSelectedId] = useState(2)
 
@@ -244,6 +243,7 @@ function GameNavigator() {
         component={GamesHome}
         options={{ headerShown: false }}
       />
+     
     </GameStack.Navigator>
   );
 }

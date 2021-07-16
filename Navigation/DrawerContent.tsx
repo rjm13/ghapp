@@ -164,7 +164,7 @@ export function DrawerContent({navigation} : any) {
                                     </View>
                                 </TouchableHighlight>   */}
 
-                                <TouchableHighlight onPress={() => navigation.navigate('ScoresHome', {screen: 'SavedScores'})}>
+                                <TouchableHighlight onPress={() => navigation.navigate('SavedScores')}>
                                     <View style={styles.expandedbox}>
                                         <Text style={styles.expandedtext}>Saved</Text> 
                                     </View>

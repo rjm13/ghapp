@@ -19,6 +19,8 @@ import RedirectScreen from '../Screens/AuthFlow/RedirectScreen';
 import FavoritesScreen from '../Screens/FavoritesScreen';
 import ArchivedScreen from '../Screens/Archived';
 import SavedScores from '../Screens/SavedScoresScreen';
+import GameScreen from '../Screens/GameScreen';
+
 
 
 import { AppContext } from '../AppContext';
@@ -93,6 +95,11 @@ const AppNavigation = () => {
                     <Drawer.Screen
                         name='SavedScores'
                         component={SavedScores}
+                        options={{ headerShown: false }}
+                    />
+                     <Drawer.Screen
+                        name="Game"
+                        component={GameScreen}
                         options={{ headerShown: false }}
                     />
                 </Drawer.Navigator>

@@ -11,7 +11,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const MoreIcon = ( <Feather name='more-vertical' color='#05375a' size={20}/> )
 
-const Card = ({ name, highlight, players }) => {
+const Card = ({ name, highlight, players } : {name : any, highlight: any, players: any}) => {
 
     const [isLiked, setIsLiked] = useState(false);
 
@@ -32,7 +32,7 @@ const Card = ({ name, highlight, players }) => {
 
             <View style={styles.titlebox}>
                 <TouchableOpacity
-                    onPress={() => { navigation.navigate('GamePage') }}>
+                    onPress={() => { navigation.navigate('Game') }}>
                     <Text style={styles.title}>
                         {name}
                     </Text>
