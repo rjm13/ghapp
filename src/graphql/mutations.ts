@@ -13,6 +13,32 @@ export const createUser = /* GraphQL */ `
       email
       imageUri
       status
+      variation {
+        items {
+          id
+          title
+          para
+          userID
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      liked {
+        items {
+          id
+          name
+          category
+          players
+          highlight
+          teams
+          likedID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -29,6 +55,32 @@ export const updateUser = /* GraphQL */ `
       email
       imageUri
       status
+      variation {
+        items {
+          id
+          title
+          para
+          userID
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      liked {
+        items {
+          id
+          name
+          category
+          players
+          highlight
+          teams
+          likedID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -45,6 +97,32 @@ export const deleteUser = /* GraphQL */ `
       email
       imageUri
       status
+      variation {
+        items {
+          id
+          title
+          para
+          userID
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      liked {
+        items {
+          id
+          name
+          category
+          players
+          highlight
+          teams
+          likedID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -61,11 +139,37 @@ export const createGame = /* GraphQL */ `
       category
       players
       highlight
+      teams
+      likedID
+      liked {
+        items {
+          id
+          name
+          email
+          imageUri
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       sections {
         items {
           id
           title
           data
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      variations {
+        items {
+          id
+          title
+          para
+          userID
           gameID
           createdAt
           updatedAt
@@ -88,11 +192,37 @@ export const updateGame = /* GraphQL */ `
       category
       players
       highlight
+      teams
+      likedID
+      liked {
+        items {
+          id
+          name
+          email
+          imageUri
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       sections {
         items {
           id
           title
           data
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      variations {
+        items {
+          id
+          title
+          para
+          userID
           gameID
           createdAt
           updatedAt
@@ -115,11 +245,37 @@ export const deleteGame = /* GraphQL */ `
       category
       players
       highlight
+      teams
+      likedID
+      liked {
+        items {
+          id
+          name
+          email
+          imageUri
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       sections {
         items {
           id
           title
           data
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      variations {
+        items {
+          id
+          title
+          para
+          userID
           gameID
           createdAt
           updatedAt
@@ -147,7 +303,15 @@ export const createGameSection = /* GraphQL */ `
         category
         players
         highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
         sections {
+          nextToken
+        }
+        variations {
           nextToken
         }
         createdAt
@@ -174,7 +338,15 @@ export const updateGameSection = /* GraphQL */ `
         category
         players
         highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
         sections {
+          nextToken
+        }
+        variations {
           nextToken
         }
         createdAt
@@ -201,7 +373,168 @@ export const deleteGameSection = /* GraphQL */ `
         category
         players
         highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
         sections {
+          nextToken
+        }
+        variations {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createGameVariation = /* GraphQL */ `
+  mutation CreateGameVariation(
+    $input: CreateGameVariationInput!
+    $condition: ModelGameVariationConditionInput
+  ) {
+    createGameVariation(input: $input, condition: $condition) {
+      id
+      title
+      para
+      userID
+      user {
+        id
+        name
+        email
+        imageUri
+        status
+        variation {
+          nextToken
+        }
+        liked {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      gameID
+      game {
+        id
+        name
+        category
+        players
+        highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
+        sections {
+          nextToken
+        }
+        variations {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateGameVariation = /* GraphQL */ `
+  mutation UpdateGameVariation(
+    $input: UpdateGameVariationInput!
+    $condition: ModelGameVariationConditionInput
+  ) {
+    updateGameVariation(input: $input, condition: $condition) {
+      id
+      title
+      para
+      userID
+      user {
+        id
+        name
+        email
+        imageUri
+        status
+        variation {
+          nextToken
+        }
+        liked {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      gameID
+      game {
+        id
+        name
+        category
+        players
+        highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
+        sections {
+          nextToken
+        }
+        variations {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteGameVariation = /* GraphQL */ `
+  mutation DeleteGameVariation(
+    $input: DeleteGameVariationInput!
+    $condition: ModelGameVariationConditionInput
+  ) {
+    deleteGameVariation(input: $input, condition: $condition) {
+      id
+      title
+      para
+      userID
+      user {
+        id
+        name
+        email
+        imageUri
+        status
+        variation {
+          nextToken
+        }
+        liked {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      gameID
+      game {
+        id
+        name
+        category
+        players
+        highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
+        sections {
+          nextToken
+        }
+        variations {
           nextToken
         }
         createdAt

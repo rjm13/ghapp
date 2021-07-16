@@ -52,8 +52,8 @@ const Game = {
 
     variations: [
         {
-            title: 'A user submitted house rule',
             id: '0',
+            title: 'A user submitted house rule',
             para: 'This is a house rule submitted by a user of the app. It should be able to be written in paragraphs.',
             user: 'Game Haven'
         },

@@ -4,21 +4,36 @@ type User @model {
   email: String!
   imageUri: String
   status: String
+  variation: [GameVariation] @connection (keyName: "byUser", fields: ["id"])
+  liked: [Game] @connection (keyName: "byUser", fields: ["id"])
 }
 
-type Game @model {
+type Game @model @key(name: "byUser", fields: ["likedID"]) {
   id: ID!
   name: String!
   category: String!
   players: String!
   highlight: String!
+  teams: Boolean
+  likedID: ID
+  liked: [User] @connection (fields: ["likedID"])
   sections: [GameSection] @connection (keyName: "byGame", fields: ["id"])
+  variations: [GameVariation] @connection (keyName: "byGame", fields: ["id"])
 }
 
 type GameSection @model @key(name: "byGame", fields: ["gameID"]) {
   
   title: String!
   data: [String]
+  gameID: ID!
+  game: Game @connection (fields: ["gameID"])
+}
+
+type GameVariation @model @key(name: "byGame", fields: ["gameID"]) @key(name: "byUser", fields: ["userID"]){
+  title: String!
+  para: String!
+  userID: ID
+  user: User @connection (fields: ["userID"])
   gameID: ID!
   game: Game @connection (fields: ["gameID"])
 }

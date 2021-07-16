@@ -67,8 +67,74 @@ export type User = {
   email: string,
   imageUri?: string | null,
   status?: string | null,
+  variation?: ModelGameVariationConnection | null,
+  liked?: ModelGameConnection | null,
   createdAt: string,
   updatedAt: string,
+};
+
+export type ModelGameVariationConnection = {
+  __typename: "ModelGameVariationConnection",
+  items?:  Array<GameVariation | null > | null,
+  nextToken?: string | null,
+};
+
+export type GameVariation = {
+  __typename: "GameVariation",
+  id: string,
+  title: string,
+  para: string,
+  userID?: string | null,
+  user?: User | null,
+  gameID: string,
+  game?: Game | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type Game = {
+  __typename: "Game",
+  id: string,
+  name: string,
+  category: string,
+  players: string,
+  highlight: string,
+  teams?: boolean | null,
+  likedID?: string | null,
+  liked?: ModelUserConnection | null,
+  sections?: ModelGameSectionConnection | null,
+  variations?: ModelGameVariationConnection | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type ModelUserConnection = {
+  __typename: "ModelUserConnection",
+  items?:  Array<User | null > | null,
+  nextToken?: string | null,
+};
+
+export type ModelGameSectionConnection = {
+  __typename: "ModelGameSectionConnection",
+  items?:  Array<GameSection | null > | null,
+  nextToken?: string | null,
+};
+
+export type GameSection = {
+  __typename: "GameSection",
+  id: string,
+  title: string,
+  data?: Array< string | null > | null,
+  gameID: string,
+  game?: Game | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type ModelGameConnection = {
+  __typename: "ModelGameConnection",
+  items?:  Array<Game | null > | null,
+  nextToken?: string | null,
 };
 
 export type UpdateUserInput = {
@@ -89,6 +155,8 @@ export type CreateGameInput = {
   category: string,
   players: string,
   highlight: string,
+  teams?: boolean | null,
+  likedID?: string | null,
 };
 
 export type ModelGameConditionInput = {
@@ -96,38 +164,34 @@ export type ModelGameConditionInput = {
   category?: ModelStringInput | null,
   players?: ModelStringInput | null,
   highlight?: ModelStringInput | null,
+  teams?: ModelBooleanInput | null,
+  likedID?: ModelIDInput | null,
   and?: Array< ModelGameConditionInput | null > | null,
   or?: Array< ModelGameConditionInput | null > | null,
   not?: ModelGameConditionInput | null,
 };
 
-export type Game = {
-  __typename: "Game",
-  id: string,
-  name: string,
-  category: string,
-  players: string,
-  highlight: string,
-  sections?: ModelGameSectionConnection | null,
-  createdAt: string,
-  updatedAt: string,
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
 };
 
-export type ModelGameSectionConnection = {
-  __typename: "ModelGameSectionConnection",
-  items?:  Array<GameSection | null > | null,
-  nextToken?: string | null,
-};
-
-export type GameSection = {
-  __typename: "GameSection",
-  id: string,
-  title: string,
-  data?: Array< string | null > | null,
-  gameID: string,
-  game?: Game | null,
-  createdAt: string,
-  updatedAt: string,
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
 };
 
 export type UpdateGameInput = {
@@ -136,6 +200,8 @@ export type UpdateGameInput = {
   category?: string | null,
   players?: string | null,
   highlight?: string | null,
+  teams?: boolean | null,
+  likedID?: string | null,
 };
 
 export type DeleteGameInput = {
@@ -158,22 +224,6 @@ export type ModelGameSectionConditionInput = {
   not?: ModelGameSectionConditionInput | null,
 };
 
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
-
 export type UpdateGameSectionInput = {
   title?: string | null,
   data?: Array< string | null > | null,
@@ -181,6 +231,35 @@ export type UpdateGameSectionInput = {
 };
 
 export type DeleteGameSectionInput = {
+  id: string,
+};
+
+export type CreateGameVariationInput = {
+  id?: string | null,
+  title: string,
+  para: string,
+  userID?: string | null,
+  gameID: string,
+};
+
+export type ModelGameVariationConditionInput = {
+  title?: ModelStringInput | null,
+  para?: ModelStringInput | null,
+  userID?: ModelIDInput | null,
+  gameID?: ModelIDInput | null,
+  and?: Array< ModelGameVariationConditionInput | null > | null,
+  or?: Array< ModelGameVariationConditionInput | null > | null,
+  not?: ModelGameVariationConditionInput | null,
+};
+
+export type UpdateGameVariationInput = {
+  title?: string | null,
+  para?: string | null,
+  userID?: string | null,
+  gameID?: string | null,
+};
+
+export type DeleteGameVariationInput = {
   id: string,
 };
 
@@ -195,27 +274,17 @@ export type ModelUserFilterInput = {
   not?: ModelUserFilterInput | null,
 };
 
-export type ModelUserConnection = {
-  __typename: "ModelUserConnection",
-  items?:  Array<User | null > | null,
-  nextToken?: string | null,
-};
-
 export type ModelGameFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
   category?: ModelStringInput | null,
   players?: ModelStringInput | null,
   highlight?: ModelStringInput | null,
+  teams?: ModelBooleanInput | null,
+  likedID?: ModelIDInput | null,
   and?: Array< ModelGameFilterInput | null > | null,
   or?: Array< ModelGameFilterInput | null > | null,
   not?: ModelGameFilterInput | null,
-};
-
-export type ModelGameConnection = {
-  __typename: "ModelGameConnection",
-  items?:  Array<Game | null > | null,
-  nextToken?: string | null,
 };
 
 export type ModelGameSectionFilterInput = {
@@ -225,6 +294,16 @@ export type ModelGameSectionFilterInput = {
   and?: Array< ModelGameSectionFilterInput | null > | null,
   or?: Array< ModelGameSectionFilterInput | null > | null,
   not?: ModelGameSectionFilterInput | null,
+};
+
+export type ModelGameVariationFilterInput = {
+  title?: ModelStringInput | null,
+  para?: ModelStringInput | null,
+  userID?: ModelIDInput | null,
+  gameID?: ModelIDInput | null,
+  and?: Array< ModelGameVariationFilterInput | null > | null,
+  or?: Array< ModelGameVariationFilterInput | null > | null,
+  not?: ModelGameVariationFilterInput | null,
 };
 
 export type CreateUserMutationVariables = {
@@ -240,6 +319,36 @@ export type CreateUserMutation = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    variation?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    liked?:  {
+      __typename: "ModelGameConnection",
+      items?:  Array< {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -258,6 +367,36 @@ export type UpdateUserMutation = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    variation?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    liked?:  {
+      __typename: "ModelGameConnection",
+      items?:  Array< {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -276,6 +415,36 @@ export type DeleteUserMutation = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    variation?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    liked?:  {
+      __typename: "ModelGameConnection",
+      items?:  Array< {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -294,6 +463,22 @@ export type CreateGameMutation = {
     category: string,
     players: string,
     highlight: string,
+    teams?: boolean | null,
+    likedID?: string | null,
+    liked?:  {
+      __typename: "ModelUserConnection",
+      items?:  Array< {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     sections?:  {
       __typename: "ModelGameSectionConnection",
       items?:  Array< {
@@ -301,6 +486,20 @@ export type CreateGameMutation = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    variations?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -325,6 +524,22 @@ export type UpdateGameMutation = {
     category: string,
     players: string,
     highlight: string,
+    teams?: boolean | null,
+    likedID?: string | null,
+    liked?:  {
+      __typename: "ModelUserConnection",
+      items?:  Array< {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     sections?:  {
       __typename: "ModelGameSectionConnection",
       items?:  Array< {
@@ -332,6 +547,20 @@ export type UpdateGameMutation = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    variations?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -356,6 +585,22 @@ export type DeleteGameMutation = {
     category: string,
     players: string,
     highlight: string,
+    teams?: boolean | null,
+    likedID?: string | null,
+    liked?:  {
+      __typename: "ModelUserConnection",
+      items?:  Array< {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     sections?:  {
       __typename: "ModelGameSectionConnection",
       items?:  Array< {
@@ -363,6 +608,20 @@ export type DeleteGameMutation = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    variations?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -393,8 +652,18 @@ export type CreateGameSectionMutation = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -424,8 +693,18 @@ export type UpdateGameSectionMutation = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -455,8 +734,198 @@ export type DeleteGameSectionMutation = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateGameVariationMutationVariables = {
+  input: CreateGameVariationInput,
+  condition?: ModelGameVariationConditionInput | null,
+};
+
+export type CreateGameVariationMutation = {
+  createGameVariation?:  {
+    __typename: "GameVariation",
+    id: string,
+    title: string,
+    para: string,
+    userID?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name: string,
+      email: string,
+      imageUri?: string | null,
+      status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    gameID: string,
+    game?:  {
+      __typename: "Game",
+      id: string,
+      name: string,
+      category: string,
+      players: string,
+      highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
+      sections?:  {
+        __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateGameVariationMutationVariables = {
+  input: UpdateGameVariationInput,
+  condition?: ModelGameVariationConditionInput | null,
+};
+
+export type UpdateGameVariationMutation = {
+  updateGameVariation?:  {
+    __typename: "GameVariation",
+    id: string,
+    title: string,
+    para: string,
+    userID?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name: string,
+      email: string,
+      imageUri?: string | null,
+      status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    gameID: string,
+    game?:  {
+      __typename: "Game",
+      id: string,
+      name: string,
+      category: string,
+      players: string,
+      highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
+      sections?:  {
+        __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteGameVariationMutationVariables = {
+  input: DeleteGameVariationInput,
+  condition?: ModelGameVariationConditionInput | null,
+};
+
+export type DeleteGameVariationMutation = {
+  deleteGameVariation?:  {
+    __typename: "GameVariation",
+    id: string,
+    title: string,
+    para: string,
+    userID?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name: string,
+      email: string,
+      imageUri?: string | null,
+      status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    gameID: string,
+    game?:  {
+      __typename: "Game",
+      id: string,
+      name: string,
+      category: string,
+      players: string,
+      highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
+      sections?:  {
+        __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -479,6 +948,36 @@ export type GetUserQuery = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    variation?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    liked?:  {
+      __typename: "ModelGameConnection",
+      items?:  Array< {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -500,6 +999,14 @@ export type ListUsersQuery = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -519,6 +1026,22 @@ export type GetGameQuery = {
     category: string,
     players: string,
     highlight: string,
+    teams?: boolean | null,
+    likedID?: string | null,
+    liked?:  {
+      __typename: "ModelUserConnection",
+      items?:  Array< {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     sections?:  {
       __typename: "ModelGameSectionConnection",
       items?:  Array< {
@@ -526,6 +1049,20 @@ export type GetGameQuery = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    variations?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -553,8 +1090,18 @@ export type ListGamesQuery = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -582,8 +1129,18 @@ export type GetGameSectionQuery = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -616,6 +1173,112 @@ export type ListGameSectionsQuery = {
         category: string,
         players: string,
         highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null > | null,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetGameVariationQueryVariables = {
+  id: string,
+};
+
+export type GetGameVariationQuery = {
+  getGameVariation?:  {
+    __typename: "GameVariation",
+    id: string,
+    title: string,
+    para: string,
+    userID?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name: string,
+      email: string,
+      imageUri?: string | null,
+      status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    gameID: string,
+    game?:  {
+      __typename: "Game",
+      id: string,
+      name: string,
+      category: string,
+      players: string,
+      highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
+      sections?:  {
+        __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListGameVariationsQueryVariables = {
+  filter?: ModelGameVariationFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListGameVariationsQuery = {
+  listGameVariations?:  {
+    __typename: "ModelGameVariationConnection",
+    items?:  Array< {
+      __typename: "GameVariation",
+      id: string,
+      title: string,
+      para: string,
+      userID?: string | null,
+      user?:  {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
+      gameID: string,
+      game?:  {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
@@ -634,6 +1297,36 @@ export type OnCreateUserSubscription = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    variation?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    liked?:  {
+      __typename: "ModelGameConnection",
+      items?:  Array< {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -647,6 +1340,36 @@ export type OnUpdateUserSubscription = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    variation?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    liked?:  {
+      __typename: "ModelGameConnection",
+      items?:  Array< {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -660,6 +1383,36 @@ export type OnDeleteUserSubscription = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    variation?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    liked?:  {
+      __typename: "ModelGameConnection",
+      items?:  Array< {
+        __typename: "Game",
+        id: string,
+        name: string,
+        category: string,
+        players: string,
+        highlight: string,
+        teams?: boolean | null,
+        likedID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -673,6 +1426,22 @@ export type OnCreateGameSubscription = {
     category: string,
     players: string,
     highlight: string,
+    teams?: boolean | null,
+    likedID?: string | null,
+    liked?:  {
+      __typename: "ModelUserConnection",
+      items?:  Array< {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     sections?:  {
       __typename: "ModelGameSectionConnection",
       items?:  Array< {
@@ -680,6 +1449,20 @@ export type OnCreateGameSubscription = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    variations?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -699,6 +1482,22 @@ export type OnUpdateGameSubscription = {
     category: string,
     players: string,
     highlight: string,
+    teams?: boolean | null,
+    likedID?: string | null,
+    liked?:  {
+      __typename: "ModelUserConnection",
+      items?:  Array< {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     sections?:  {
       __typename: "ModelGameSectionConnection",
       items?:  Array< {
@@ -706,6 +1505,20 @@ export type OnUpdateGameSubscription = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    variations?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -725,6 +1538,22 @@ export type OnDeleteGameSubscription = {
     category: string,
     players: string,
     highlight: string,
+    teams?: boolean | null,
+    likedID?: string | null,
+    liked?:  {
+      __typename: "ModelUserConnection",
+      items?:  Array< {
+        __typename: "User",
+        id: string,
+        name: string,
+        email: string,
+        imageUri?: string | null,
+        status?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     sections?:  {
       __typename: "ModelGameSectionConnection",
       items?:  Array< {
@@ -732,6 +1561,20 @@ export type OnDeleteGameSubscription = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        gameID: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    variations?:  {
+      __typename: "ModelGameVariationConnection",
+      items?:  Array< {
+        __typename: "GameVariation",
+        id: string,
+        title: string,
+        para: string,
+        userID?: string | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -757,8 +1600,18 @@ export type OnCreateGameSectionSubscription = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -783,8 +1636,18 @@ export type OnUpdateGameSectionSubscription = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -809,8 +1672,183 @@ export type OnDeleteGameSectionSubscription = {
       category: string,
       players: string,
       highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
       sections?:  {
         __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateGameVariationSubscription = {
+  onCreateGameVariation?:  {
+    __typename: "GameVariation",
+    id: string,
+    title: string,
+    para: string,
+    userID?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name: string,
+      email: string,
+      imageUri?: string | null,
+      status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    gameID: string,
+    game?:  {
+      __typename: "Game",
+      id: string,
+      name: string,
+      category: string,
+      players: string,
+      highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
+      sections?:  {
+        __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateGameVariationSubscription = {
+  onUpdateGameVariation?:  {
+    __typename: "GameVariation",
+    id: string,
+    title: string,
+    para: string,
+    userID?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name: string,
+      email: string,
+      imageUri?: string | null,
+      status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    gameID: string,
+    game?:  {
+      __typename: "Game",
+      id: string,
+      name: string,
+      category: string,
+      players: string,
+      highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
+      sections?:  {
+        __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteGameVariationSubscription = {
+  onDeleteGameVariation?:  {
+    __typename: "GameVariation",
+    id: string,
+    title: string,
+    para: string,
+    userID?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name: string,
+      email: string,
+      imageUri?: string | null,
+      status?: string | null,
+      variation?:  {
+        __typename: "ModelGameVariationConnection",
+        nextToken?: string | null,
+      } | null,
+      liked?:  {
+        __typename: "ModelGameConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    gameID: string,
+    game?:  {
+      __typename: "Game",
+      id: string,
+      name: string,
+      category: string,
+      players: string,
+      highlight: string,
+      teams?: boolean | null,
+      likedID?: string | null,
+      liked?:  {
+        __typename: "ModelUserConnection",
+        nextToken?: string | null,
+      } | null,
+      sections?:  {
+        __typename: "ModelGameSectionConnection",
+        nextToken?: string | null,
+      } | null,
+      variations?:  {
+        __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,

@@ -10,6 +10,32 @@ export const getUser = /* GraphQL */ `
       email
       imageUri
       status
+      variation {
+        items {
+          id
+          title
+          para
+          userID
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      liked {
+        items {
+          id
+          name
+          category
+          players
+          highlight
+          teams
+          likedID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -28,6 +54,12 @@ export const listUsers = /* GraphQL */ `
         email
         imageUri
         status
+        variation {
+          nextToken
+        }
+        liked {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -43,11 +75,37 @@ export const getGame = /* GraphQL */ `
       category
       players
       highlight
+      teams
+      likedID
+      liked {
+        items {
+          id
+          name
+          email
+          imageUri
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       sections {
         items {
           id
           title
           data
+          gameID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      variations {
+        items {
+          id
+          title
+          para
+          userID
           gameID
           createdAt
           updatedAt
@@ -72,7 +130,15 @@ export const listGames = /* GraphQL */ `
         category
         players
         highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
         sections {
+          nextToken
+        }
+        variations {
           nextToken
         }
         createdAt
@@ -95,7 +161,15 @@ export const getGameSection = /* GraphQL */ `
         category
         players
         highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
         sections {
+          nextToken
+        }
+        variations {
           nextToken
         }
         createdAt
@@ -124,6 +198,96 @@ export const listGameSections = /* GraphQL */ `
           category
           players
           highlight
+          teams
+          likedID
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getGameVariation = /* GraphQL */ `
+  query GetGameVariation($id: ID!) {
+    getGameVariation(id: $id) {
+      id
+      title
+      para
+      userID
+      user {
+        id
+        name
+        email
+        imageUri
+        status
+        variation {
+          nextToken
+        }
+        liked {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      gameID
+      game {
+        id
+        name
+        category
+        players
+        highlight
+        teams
+        likedID
+        liked {
+          nextToken
+        }
+        sections {
+          nextToken
+        }
+        variations {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listGameVariations = /* GraphQL */ `
+  query ListGameVariations(
+    $filter: ModelGameVariationFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listGameVariations(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        para
+        userID
+        user {
+          id
+          name
+          email
+          imageUri
+          status
+          createdAt
+          updatedAt
+        }
+        gameID
+        game {
+          id
+          name
+          category
+          players
+          highlight
+          teams
+          likedID
           createdAt
           updatedAt
         }
