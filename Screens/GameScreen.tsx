@@ -160,6 +160,11 @@ const GameScreen = ({ navigation } : any) => {
         outputRange: [130, 0],
         extrapolate: 'clamp',
         });
+    const animatedHeight = animation.interpolate({
+        inputRange: [100, 150],
+        outputRange: [0, 64],
+        extrapolate: 'clamp',
+        });
     const animatedMargin = animation.interpolate({
         inputRange: [0, 100],
         outputRange: [10, 0],
@@ -213,6 +218,7 @@ const GameScreen = ({ navigation } : any) => {
     return (
         <SafeAreaView style={styles.container}>
             <Animatable.View animation='bounceInDown'>
+                
                 <Animated.View style={{ opacity: animatedOpacity, flexDirection: 'row', height: 90, borderBottomRightRadius: 20, borderBottomLeftRadius: 20,
                                 justifyContent: 'space-between', backgroundColor: '#155843', alignItems: 'flex-end', paddingBottom: 20, paddingHorizontal: 20}}>
                     
@@ -226,8 +232,7 @@ const GameScreen = ({ navigation } : any) => {
                         <FontAwesome5 name='share' color='#fff' size={20}/>
                     </View>
                 </Animated.View>
-
-                <Animated.View style={{  justifyContent: 'center', height: 64, marginTop: -4, position: 'absolute', top: 30, width: Dimensions.get('window').width, opacity: animatedAppearOpacity, backgroundColor: '#fff', paddingVertical: 0, paddingHorizontal: 20}}>
+                <Animated.View style={{  justifyContent: 'center', height: animatedHeight, marginTop: -4, position: 'absolute', top: 30, width: Dimensions.get('window').width, opacity: animatedAppearOpacity, backgroundColor: '#fff', paddingVertical: 0, paddingHorizontal: 20}}>
                     <View style={styles.titlebox}>
                         <View style={styles.titleblock}>
                             <Text style={[styles.title, {fontSize: 18}]}>
@@ -244,6 +249,8 @@ const GameScreen = ({ navigation } : any) => {
                         </View>
                     </View>
                 </Animated.View>
+
+                
             </Animatable.View>
 
             
