@@ -152,12 +152,48 @@ const HomeScreen = ({navigation} : any) => {
       tile: require('../assets/GameButtons/playgroundgames.png')
     },
   ];
-  
-  
 
-  
 
   const [Category, setCategory] = useState('cards');
+
+//sort and filter states
+  const [filterFavs, setFilterFavs] = useState(false);
+  const [filter2, setFilter2] = useState(false);
+  const [filter3, setFilter3] = useState(false);
+  const [filter4, setFilter4] = useState(false);
+  const [filter5, setFilter5] = useState(false);
+  const [filter6, setFilter6] = useState(false);
+  const [filter8, setFilter8] = useState(false);
+  const [filter9, setFilter9] = useState(false);
+  const [filterTeams, setFilterTeams] = useState(false);
+
+  const FilterList = ['Testing', '2 Players', '3 Players']
+
+  const FilterItem = ({item} : any) => (
+    <View style={{marginRight: 10, }}>
+        <TouchableOpacity>
+          <Text style={{fontFamily: 'chalkboard-light', fontSize: 12, paddingVertical: 2, width: '100%', paddingHorizontal: 10, borderColor: '#000', borderWidth: 0.4, borderRadius: 15}}>
+            {item}
+          </Text>
+        </TouchableOpacity>
+      </View>
+  );
+
+  const renderFilterItem = ({item} : any) => {
+    return (
+      <FilterItem 
+        item = {item}
+      />
+    )
+  }
+
+  const [sortAZ, setSortAZ] = useState(false);
+  const [sortZA, setSortZA] = useState(false);
+  const [sortPopular, setSortPopular] = useState(false);
+  const [sortHouse, setSortHouse] = useState(false);
+  const [sortNew, setSortNew] = useState(false);
+  
+
 
     
 
@@ -180,7 +216,7 @@ const HomeScreen = ({navigation} : any) => {
       setCategory('cards')
     }, [selectedId])
 
-    const Item2 = ({ category, tile, onPress, style }) => (
+    const Item2 = ({ category, tile, onPress, style } : {category: any, tile: any, onPress: any, style: any}) => (
 
       <TouchableWithoutFeedback 
         onPress={onPress}
@@ -195,7 +231,7 @@ const HomeScreen = ({navigation} : any) => {
       
     );
 
-    const renderItem2 = ({ item, index }) => {
+    const renderItem2 = ({ item, index } : {item: any, index: any}) => {
       const opacity = item.id === selectedId ? 1 : 0.4;
       
       return (
@@ -210,26 +246,11 @@ const HomeScreen = ({navigation} : any) => {
 
     const flatListRef = useRef();
 
-    function ScrollToThisThing (index, item) {
+    function ScrollToThisThing (index: any, item: any) {
       setSelectedId(item.id);
       flatListRef.current.scrollToItem({ item: item, animated: true, viewPosition: 0.5 });
     };
   
-    // return (
-    //   <SafeAreaView style={styles.container}>
-    //     <FlatList
-    //       data={DATA}
-    //       renderItem={renderItem}
-    //       ref={flatListRef}
-    //       keyExtractor={item => item.id}
-    //       horizontal={true}
-    //       showsHorizontalScrollIndicator={false}
-    //       getItemLayout={(item, index) => { return {length: 166, index: index, offset: 166 * index} }}
-
-    //     />
-    //   </SafeAreaView>
-    // );
-  //}
 
   const [games, setGames] = useState([]);
 
@@ -252,7 +273,7 @@ const HomeScreen = ({navigation} : any) => {
         fetchGames();
     }, [Category]);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: any) => (
     <Card 
         name={item.name} 
         highlight={item.highlight} 
@@ -311,24 +332,35 @@ const HomeScreen = ({navigation} : any) => {
 
             }}
             ListHeaderComponent={() => (
-                <View style={[styles.filterBox, {backgroundColor: '#f5f5f5'}]}>
-              <OptionsMenu
-                customButton={FilterIcon}
-                //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
-                destructiveIndex={1}
-                options={["NSFW", "Favorites", "By Number of Players"]}
-                
-                //actions={[editPost, deletePost]}
-              />
-              <OptionsMenu
-                customButton={SortIcon}
-                //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
-                destructiveIndex={1}
-                options={["A to Z", "Z to A", "Number of Players", "Most Popular"]}
-                
-                //actions={[editPost, deletePost]}
-              />
-            </View>
+                <View>
+                  <View style={[styles.filterBox, {backgroundColor: '#f5f5f5'}]}>
+                    <OptionsMenu
+                      customButton={FilterIcon}
+                      //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+                      destructiveIndex={1}
+                      options={["Favorites", "2 Players", "3 Players", "4 Players", "5 Players", "6 Players", "8 Players", "9+ Players", "With Teams"]}
+                      actions={[() => setFilterFavs(true), () => setFilter2(true), () => setFilter4(true), () => setFilter5(true), () => setFilter6(true), () => setFilter8(true),() => setFilter9(true), () => setFilterTeams]}
+                    />
+                    <OptionsMenu
+                      customButton={SortIcon}
+                      //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+                      destructiveIndex={1}
+                      options={["A to Z", "Z to A", "Number of Players", "Most Popular"]}
+                      
+                      //actions={[editPost, deletePost]}
+                    />
+                  </View>
+                  {/* marginHorizontal: 20, marginBottom: 5, justifyContent: 'space-betweeen' */}
+                  {filterFavs === true || filter2 || filter3 || filter4 || filter5 || filter6 || filter8 || filter9 || filterTeams ? (
+                    <FlatList 
+                      data={FilterList}
+                      renderItem={renderFilterItem}
+                      keyExtractor={(item : any) => item}
+                      horizontal={true}
+                      style={{width: Dimensions.get('window').width, marginHorizontal: 20, marginBottom: 5}}
+                    />
+                  ) : null}
+                </View>
             )}
           />
         </View>
