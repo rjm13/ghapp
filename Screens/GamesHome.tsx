@@ -167,10 +167,10 @@ const HomeScreen = ({navigation} : any) => {
   const [filter9, setFilter9] = useState(false);
   const [filterTeams, setFilterTeams] = useState(false);
 
-  const FilterList = ['Testing', '2 Players', '3 Players']
+  const FilterList = ['Testing', '2 Players', '3 Players', '4 Players', '5 Players', 'How Many']
 
   const FilterItem = ({item} : any) => (
-    <View style={{marginRight: 10, }}>
+    <View style={{marginLeft: 10, }}>
         <TouchableOpacity>
           <Text style={{fontFamily: 'chalkboard-light', fontSize: 12, paddingVertical: 2, width: '100%', paddingHorizontal: 10, borderColor: '#000', borderWidth: 0.4, borderRadius: 15}}>
             {item}
@@ -356,8 +356,9 @@ const HomeScreen = ({navigation} : any) => {
                       data={FilterList}
                       renderItem={renderFilterItem}
                       keyExtractor={(item : any) => item}
+                      showsHorizontalScrollIndicator={false}
                       horizontal={true}
-                      style={{width: Dimensions.get('window').width, marginHorizontal: 20, marginBottom: 5}}
+                      style={{paddingHorizontal: 10, marginBottom: 8, marginTop: 4}}
                     />
                   ) : null}
                 </View>
