@@ -157,6 +157,9 @@ const HomeScreen = ({navigation} : any) => {
   const [Category, setCategory] = useState('cards');
 
 //sort and filter states
+  const [filter, setFilter] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState([''])
+
   const [filterFavs, setFilterFavs] = useState(false);
   const [filter2, setFilter2] = useState(false);
   const [filter3, setFilter3] = useState(false);
@@ -165,23 +168,41 @@ const HomeScreen = ({navigation} : any) => {
   const [filter6, setFilter6] = useState(false);
   const [filter8, setFilter8] = useState(false);
   const [filter9, setFilter9] = useState(false);
-  const [filterTeams, setFilterTeams] = useState(false);
+  const [filterTeams, setFilterTeams] = useState(false);  
 
-  const FilterList = ['Testing', '2 Players', '3 Players', '4 Players', '5 Players', 'How Many']
+  useEffect(() => {
+    if (selectedFilter.includes('0')) {() => setFilterFavs(true)}
+    if (selectedFilter.includes('1')) {() => setFilter2(true)}
+    if (selectedFilter.includes('2')) {() => setFilter3(true)}
+    if (selectedFilter.includes('3')) {() => setFilter4(true)}
+    if (selectedFilter.includes('4')) {() => setFilter5(true)}
+    if (selectedFilter.includes('5')) {() => setFilter6(true)}
+    if (selectedFilter.includes('6')) {() => setFilter8(true)}
+    if (selectedFilter.includes('7')) {() => setFilter9(true)}
+    if (selectedFilter.includes('8')) {() => setFilterTeams(true)}
+  }, [selectedFilter])
 
-  const FilterItem = ({item} : any) => (
-    <View style={{marginLeft: 10, }}>
-        <TouchableOpacity>
-          <Text style={{fontFamily: 'chalkboard-light', fontSize: 12, paddingVertical: 2, width: '100%', paddingHorizontal: 10, borderColor: '#000', borderWidth: 0.4, borderRadius: 15}}>
+
+  const FilterList = ['Favorites', '2 Players', '3 Players', '4 Players', '5 Players', '6 Players', '8 Players', '9+ Players', 'With Teams']
+
+  const FilterItem = ({item, index} : any) => (
+    <View style={{marginLeft: index === 0 ? 20 : 10, marginRight: index === 8 ? 20 : 0 }}>
+        <TouchableOpacity onPress={
+          () => setSelectedFilter(selectedFilter => [...selectedFilter, index.toString()])
+          
+        }>
+          <Text style={{fontFamily: 'chalkboard-light', fontSize: 12, paddingVertical: 2, width: '100%', paddingHorizontal: 10, borderWidth: 0.4, borderRadius: 15,
+            borderColor: '#000', backgroundColor: selectedFilter.includes(index.toString()) ? '#155843' : '#f5f5f5', color: selectedFilter.includes(index.toString()) ? '#fff' : '#000'}}>
             {item}
           </Text>
         </TouchableOpacity>
       </View>
   );
 
-  const renderFilterItem = ({item} : any) => {
+  const renderFilterItem = ({item, index} : any) => {
     return (
       <FilterItem 
+        index={index}
         item = {item}
       />
     )
@@ -334,13 +355,16 @@ const HomeScreen = ({navigation} : any) => {
             ListHeaderComponent={() => (
                 <View>
                   <View style={[styles.filterBox, {backgroundColor: '#f5f5f5'}]}>
-                    <OptionsMenu
+                    <TouchableWithoutFeedback onPress={()=> setFilter(!filter)}>
+                      <MaterialCommunityIcons name='filter-variant' color='#05375a' size={20}/>
+                    </TouchableWithoutFeedback>
+                    {/* <OptionsMenu
                       customButton={FilterIcon}
                       //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
                       destructiveIndex={1}
                       options={["Favorites", "2 Players", "3 Players", "4 Players", "5 Players", "6 Players", "8 Players", "9+ Players", "With Teams"]}
                       actions={[() => setFilterFavs(true), () => setFilter2(true), () => setFilter4(true), () => setFilter5(true), () => setFilter6(true), () => setFilter8(true),() => setFilter9(true), () => setFilterTeams]}
-                    />
+                    /> */}
                     <OptionsMenu
                       customButton={SortIcon}
                       //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
@@ -350,16 +374,17 @@ const HomeScreen = ({navigation} : any) => {
                       //actions={[editPost, deletePost]}
                     />
                   </View>
-                  {/* marginHorizontal: 20, marginBottom: 5, justifyContent: 'space-betweeen' */}
-                  {filterFavs === true || filter2 || filter3 || filter4 || filter5 || filter6 || filter8 || filter9 || filterTeams ? (
-                    <FlatList 
-                      data={FilterList}
-                      renderItem={renderFilterItem}
-                      keyExtractor={(item : any) => item}
-                      showsHorizontalScrollIndicator={false}
-                      horizontal={true}
-                      style={{paddingHorizontal: 10, marginBottom: 8, marginTop: 4}}
-                    />
+                  {filter === true ? (
+                    <Animatable.View animation='flipInX'  >
+                      <FlatList 
+                        data={FilterList}
+                        renderItem={renderFilterItem}
+                        keyExtractor={(item, index) => item + index}
+                        showsHorizontalScrollIndicator={false}
+                        horizontal={true}
+                        style={{ backgroundColor: '#f5f5f5', paddingLeft: 0, paddingBottom: 8, paddingTop: 4, paddingRight: 0, }}
+                      />
+                    </Animatable.View>
                   ) : null}
                 </View>
             )}
@@ -384,12 +409,13 @@ const styles = StyleSheet.create({
   },
   scrollBox: {
     marginVertical: 8,
-    marginHorizontal: 16,
+    paddingHorizontal: 32,
+    marginHorizontal: -16
   },
   filterBox: {
     flexDirection: 'row',
-    marginHorizontal: 32,
-    marginBottom: 8,
+    paddingHorizontal: 32,
+    paddingBottom: 8,
     justifyContent: 'space-between',
   },
   filterText: {
