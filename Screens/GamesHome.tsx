@@ -18,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 
 import { API, graphqlOperation } from 'aws-amplify';
 import { getGame, listGameSections, listGames } from '../src/graphql/queries';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 const MoreIcon = ( <Feather name='more-vertical' color='#05375a' size={20}/> )
 const FilterIcon = (<MaterialCommunityIcons name='filter-variant' color='#05375a' size={20} />)
@@ -171,33 +172,54 @@ const HomeScreen = ({navigation} : any) => {
   const [filterTeams, setFilterTeams] = useState(false);  
 
   useEffect(() => {
-    selectedFilter.includes('0') ? setFilterFavs(true) : setFilterFavs(false);
-    selectedFilter.includes('1') ? setFilter2(true) : setFilter2(false);
-    selectedFilter.includes('2') ? setFilter3(true) : setFilter3(false);
-    selectedFilter.includes('3') ? setFilter4(true) : setFilter4(false);
-    selectedFilter.includes('4') ? setFilter5(true) : setFilter5(false);
-    selectedFilter.includes('5') ? setFilter6(true) : setFilter6(false);
-    selectedFilter.includes('6') ? setFilter8(true) : setFilter8(false);
-    selectedFilter.includes('7') ? setFilter9(true) : setFilter9(false);
+    //selectedFilter.includes('0') ? setFilterFavs(true) : setFilterFavs(false);
+    if (selectedFilter.includes('1')) {setFilter2(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter9(false);} else {setFilter2(false)}
+    if (selectedFilter.includes('2')) {setFilter3(true);  setFilter2(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter9(false);} else {setFilter3(false)}
+    if (selectedFilter.includes('3')) {setFilter4(true);  setFilter3(false); setFilter2(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter9(false);} else {setFilter4(false)}
+    if (selectedFilter.includes('4')) {setFilter5(true);  setFilter3(false); setFilter4(false); setFilter2(false); setFilter6(false); setFilter8(false); setFilter9(false);} else {setFilter5(false)}
+    if (selectedFilter.includes('5')) {setFilter6(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter2(false); setFilter8(false); setFilter9(false);} else {setFilter6(false)}
+    if (selectedFilter.includes('6')) {setFilter8(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter2(false); setFilter9(false);} else {setFilter8(false)}
+    if (selectedFilter.includes('7')) {setFilter9(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter2(false);} else {setFilter9(false)}
+
+    // selectedFilter.includes('1') ? setFilter2(true) : setFilter2(false);
+    // selectedFilter.includes('2') ? setFilter3(true) : setFilter3(false);
+    // selectedFilter.includes('3') ? setFilter4(true) : setFilter4(false);
+    // selectedFilter.includes('4') ? setFilter5(true) : setFilter5(false);
+    // selectedFilter.includes('5') ? setFilter6(true) : setFilter6(false);
+    // selectedFilter.includes('6') ? setFilter8(true) : setFilter8(false);
+    // selectedFilter.includes('7') ? setFilter9(true) : setFilter9(false);
     selectedFilter.includes('8') ? setFilterTeams(true) : setFilterTeams(false);
     console.log('filterteams is ' + filterTeams )
     console.log(selectedFilter)
   }, [selectedFilter])
 
 
-  const FilterList = ['Favorites', '2 Players', '3 Players', '4 Players', '5 Players', '6 Players', '8 Players', '9+ Players', 'With Teams']
+  const FilterList = ['Players', '2', '3', '4', '5', '6', '8', '9+', 'With Teams']
 
   const HandleSelect = (index : any) => {
     if (selectedFilter.includes(index.toString())) {
       let newArray = selectedFilter.filter(item => item !== index.toString())
       setSelectedFilter(newArray);
     } else {
-      setSelectedFilter(selectedFilter => [...selectedFilter, index.toString()])
+      //setSelectedFilter([''])
+      if (selectedFilter.includes('8')) {
+        //setSelectedFilter([])
+        setSelectedFilter([index.toString(), '8'])
+      } else {
+        //setSelectedFilter([])
+        setSelectedFilter([index.toString()])
+        //setSelectedFilter(selectedFilter => [...selectedFilter, index.toString()])
+      }
     }
     console.log('index is ' + index)
   }
 
   const FilterItem = ({item, index} : any) => (
+    item === 'Players' ? (
+      <View style={{marginLeft: index === 0 ? 20 : 10, marginRight: index === 8 ? 20 : 0 }}>
+        <Text style={{fontFamily: 'chalkboard-light', color: 'gray'}}>{item} :</Text>
+      </View>
+    ) : (
     <View style={{marginLeft: index === 0 ? 20 : 10, marginRight: index === 8 ? 20 : 0 }}>
         <TouchableWithoutFeedback onPress={() => HandleSelect(index)}>
           <Text style={{fontFamily: 'chalkboard-light', fontSize: 12, paddingVertical: 2, width: '100%', paddingHorizontal: 10, borderWidth: 0.4, borderRadius: 15,
@@ -206,7 +228,9 @@ const HomeScreen = ({navigation} : any) => {
           </Text>
         </TouchableWithoutFeedback>
       </View>
-  );
+    )
+    
+  )
 
   const renderFilterItem = ({item, index} : any) => {
     return (
@@ -394,9 +418,17 @@ const HomeScreen = ({navigation} : any) => {
             ListHeaderComponent={() => (
                 <View>
                   <View style={[styles.filterBox, {backgroundColor: '#f5f5f5'}]}>
-                    <TouchableWithoutFeedback onPress={()=> setFilter(!filter)}>
-                      <MaterialCommunityIcons name='filter-variant' color='#05375a' size={20}/>
-                    </TouchableWithoutFeedback>
+                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                      <TouchableWithoutFeedback onPress={()=> setFilter(!filter)}>
+                        <MaterialCommunityIcons name='filter-variant' color='#05375a' size={20}/>
+                      </TouchableWithoutFeedback>
+                      {filter === true ? (
+                        <Text style={{ marginLeft: 10, fontFamily: 'chalkboard-light', color: 'gray'}}>
+                          Filter
+                        </Text>
+                      ) : null}
+                      
+                    </View>
                     {/* <OptionsMenu
                       customButton={FilterIcon}
                       //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
