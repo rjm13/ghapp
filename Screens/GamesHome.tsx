@@ -157,9 +157,72 @@ const HomeScreen = ({navigation} : any) => {
 
   const [Category, setCategory] = useState('cards');
 
+//sort functions
+  const [sortRandomstate, setSortRandom] = useState(false);
+  const [sortAZstate, setSortAZ] = useState(false);
+  const [sortZAstate, setSortZA] = useState(false);
+  const [sortPopularstate, setSortPopular] = useState(false);
+  const [sortHousestate, setSortHouse] = useState(false);
+  const [sortNewstate, setSortNew] = useState(false);
+
+  const sortRandom = () => {
+    setSortRandom(true);
+    setSortAZ(false);
+    setSortZA(false);
+    setSortPopular(false);
+    setSortHouse(false);
+    setSortNew(false);
+  }
+
+  const sortAZ = () => {
+    setSortRandom(false);
+    setSortAZ(true);
+    setSortZA(false);
+    setSortPopular(false);
+    setSortHouse(false);
+    setSortNew(false);
+  }
+
+  const sortZA = () => {
+    setSortRandom(false);
+    setSortAZ(false);
+    setSortZA(true);
+    setSortPopular(false);
+    setSortHouse(false);
+    setSortNew(false);
+  }
+
+  const sortPopular = () => {
+    setSortRandom(false);
+    setSortAZ(false);
+    setSortZA(false);
+    setSortPopular(true);
+    setSortHouse(false);
+    setSortNew(false);
+  }
+
+  const sortHouse = () => {
+    setSortRandom(false);
+    setSortAZ(false);
+    setSortZA(false);
+    setSortPopular(false);
+    setSortHouse(true);
+    setSortNew(false);
+  }
+
+  const sortNew = () => {
+    setSortRandom(false);
+    setSortAZ(false);
+    setSortZA(false);
+    setSortPopular(false);
+    setSortHouse(false);
+    setSortNew(true);
+  }
+
 //sort and filter states
   const [filter, setFilter] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState([''])
+  const [sorted, setSorted] = useState([''])
 
   const [filterFavs, setFilterFavs] = useState(false);
   const [filter2, setFilter2] = useState(false);
@@ -180,7 +243,7 @@ const HomeScreen = ({navigation} : any) => {
     if (selectedFilter.includes('5')) {setFilter6(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter2(false); setFilter8(false); setFilter9(false);} else {setFilter6(false)}
     if (selectedFilter.includes('6')) {setFilter8(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter2(false); setFilter9(false);} else {setFilter8(false)}
     if (selectedFilter.includes('7')) {setFilter9(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter2(false);} else {setFilter9(false)}
-
+    selectedFilter.includes('8') ? setFilterTeams(true) : setFilterTeams(false);
     // selectedFilter.includes('1') ? setFilter2(true) : setFilter2(false);
     // selectedFilter.includes('2') ? setFilter3(true) : setFilter3(false);
     // selectedFilter.includes('3') ? setFilter4(true) : setFilter4(false);
@@ -188,10 +251,9 @@ const HomeScreen = ({navigation} : any) => {
     // selectedFilter.includes('5') ? setFilter6(true) : setFilter6(false);
     // selectedFilter.includes('6') ? setFilter8(true) : setFilter8(false);
     // selectedFilter.includes('7') ? setFilter9(true) : setFilter9(false);
-    selectedFilter.includes('8') ? setFilterTeams(true) : setFilterTeams(false);
-    console.log('filterteams is ' + filterTeams )
-    console.log(selectedFilter)
   }, [selectedFilter])
+
+ 
 
 
   const FilterList = ['Players', '2', '3', '4', '5', '6', '8', '9+', 'With Teams']
@@ -241,11 +303,9 @@ const HomeScreen = ({navigation} : any) => {
     )
   }
 
-  const [sortAZ, setSortAZ] = useState(false);
-  const [sortZA, setSortZA] = useState(false);
-  const [sortPopular, setSortPopular] = useState(false);
-  const [sortHouse, setSortHouse] = useState(false);
-  const [sortNew, setSortNew] = useState(false);
+  
+
+
   
 
 
@@ -360,13 +420,24 @@ const HomeScreen = ({navigation} : any) => {
       }
       return true
     })
-    setFilteredGames(filteredArray);
+
+    const sortedArray = 
+      sortAZstate === true ? filteredArray.sort((a, b) => a.name.localeCompare(b.name)) : //sort A to Z
+      sortZAstate === true ? filteredArray.sort((a, b) => b.name.localeCompare(a.name)) : //sort Z to A
+      sortRandomstate === true ? filteredArray.sort(() => 0.5 - Math.random()) : //sort Random
+      //sortPopularstate === true ? filteredArray.sort((a, b) => b.name.localeCompare(a.name)) : //sort by most popular
+      sortNewstate === true ? filteredArray.sort((a, b) => (a.createdAt) - (b.createdAt)) : //sort by date created
+      sortHousestate === true ? filteredArray.sort((a, b) => (b.variations.length) - (a.variations.length)) : //sort by most house variations
+      filteredArray.sort((a, b) => a.name.localeCompare(b.name))
+  
+
+    setFilteredGames(sortedArray);
 
     // setFilteredGames(
     //   filterTeams === true ? games.filter(item => item.category === Category).filter(item => item.teams === true) :
     //   filter2 === true ? games.filter(item => item.category === Category).filter(item => item.players.includes('2'))
     //   : games.filter(item => item.category === Category))
-  }, [Category, filterTeams, filter2, filter3, filter4, filter5, filter6, filter8, filter9])
+  }, [Category, filterTeams, filter2, filter3, filter4, filter5, filter6, filter8, filter9, sortAZstate, sortZAstate, sortNewstate, sortHousestate, sortRandomstate])
     
 
   return (
@@ -440,9 +511,8 @@ const HomeScreen = ({navigation} : any) => {
                       customButton={SortIcon}
                       //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
                       destructiveIndex={1}
-                      options={["A to Z", "Z to A", "Number of Players", "Most Popular"]}
-                      
-                      //actions={[editPost, deletePost]}
+                      options={["Random", "A to Z", "Z to A", "Most Popular", "New", "Most Variations"]}
+                      actions={[sortRandom, sortAZ, sortZA, sortPopular, sortNew, sortHouse ]}
                     />
                   </View>
                   {filter === true ? (
