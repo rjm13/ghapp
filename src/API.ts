@@ -8,6 +8,7 @@ export type CreateUserInput = {
   email: string,
   imageUri?: string | null,
   status?: string | null,
+  isLiked?: Array< string | null > | null,
 };
 
 export type ModelUserConditionInput = {
@@ -15,6 +16,7 @@ export type ModelUserConditionInput = {
   email?: ModelStringInput | null,
   imageUri?: ModelStringInput | null,
   status?: ModelStringInput | null,
+  isLiked?: ModelIDInput | null,
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
   not?: ModelUserConditionInput | null,
@@ -60,6 +62,22 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
 export type User = {
   __typename: "User",
   id: string,
@@ -67,6 +85,7 @@ export type User = {
   email: string,
   imageUri?: string | null,
   status?: string | null,
+  isLiked?: Array< string | null > | null,
   variation?: ModelGameVariationConnection | null,
   liked?: ModelGameConnection | null,
   createdAt: string,
@@ -143,6 +162,7 @@ export type UpdateUserInput = {
   email?: string | null,
   imageUri?: string | null,
   status?: string | null,
+  isLiked?: Array< string | null > | null,
 };
 
 export type DeleteUserInput = {
@@ -176,22 +196,6 @@ export type ModelBooleanInput = {
   eq?: boolean | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
 };
 
 export type UpdateGameInput = {
@@ -269,6 +273,7 @@ export type ModelUserFilterInput = {
   email?: ModelStringInput | null,
   imageUri?: ModelStringInput | null,
   status?: ModelStringInput | null,
+  isLiked?: ModelIDInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
@@ -319,6 +324,7 @@ export type CreateUserMutation = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    isLiked?: Array< string | null > | null,
     variation?:  {
       __typename: "ModelGameVariationConnection",
       items?:  Array< {
@@ -367,6 +373,7 @@ export type UpdateUserMutation = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    isLiked?: Array< string | null > | null,
     variation?:  {
       __typename: "ModelGameVariationConnection",
       items?:  Array< {
@@ -415,6 +422,7 @@ export type DeleteUserMutation = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    isLiked?: Array< string | null > | null,
     variation?:  {
       __typename: "ModelGameVariationConnection",
       items?:  Array< {
@@ -474,6 +482,7 @@ export type CreateGameMutation = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -535,6 +544,7 @@ export type UpdateGameMutation = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -596,6 +606,7 @@ export type DeleteGameMutation = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -775,6 +786,7 @@ export type CreateGameVariationMutation = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
@@ -835,6 +847,7 @@ export type UpdateGameVariationMutation = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
@@ -895,6 +908,7 @@ export type DeleteGameVariationMutation = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
@@ -948,6 +962,7 @@ export type GetUserQuery = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    isLiked?: Array< string | null > | null,
     variation?:  {
       __typename: "ModelGameVariationConnection",
       items?:  Array< {
@@ -999,6 +1014,7 @@ export type ListUsersQuery = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
@@ -1037,6 +1053,7 @@ export type GetGameQuery = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -1203,6 +1220,7 @@ export type GetGameVariationQuery = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
@@ -1266,6 +1284,7 @@ export type ListGameVariationsQuery = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null,
@@ -1297,6 +1316,7 @@ export type OnCreateUserSubscription = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    isLiked?: Array< string | null > | null,
     variation?:  {
       __typename: "ModelGameVariationConnection",
       items?:  Array< {
@@ -1340,6 +1360,7 @@ export type OnUpdateUserSubscription = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    isLiked?: Array< string | null > | null,
     variation?:  {
       __typename: "ModelGameVariationConnection",
       items?:  Array< {
@@ -1383,6 +1404,7 @@ export type OnDeleteUserSubscription = {
     email: string,
     imageUri?: string | null,
     status?: string | null,
+    isLiked?: Array< string | null > | null,
     variation?:  {
       __typename: "ModelGameVariationConnection",
       items?:  Array< {
@@ -1437,6 +1459,7 @@ export type OnCreateGameSubscription = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -1493,6 +1516,7 @@ export type OnUpdateGameSubscription = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -1549,6 +1573,7 @@ export type OnDeleteGameSubscription = {
         email: string,
         imageUri?: string | null,
         status?: string | null,
+        isLiked?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -1708,6 +1733,7 @@ export type OnCreateGameVariationSubscription = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
@@ -1763,6 +1789,7 @@ export type OnUpdateGameVariationSubscription = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,
@@ -1818,6 +1845,7 @@ export type OnDeleteGameVariationSubscription = {
       email: string,
       imageUri?: string | null,
       status?: string | null,
+      isLiked?: Array< string | null > | null,
       variation?:  {
         __typename: "ModelGameVariationConnection",
         nextToken?: string | null,

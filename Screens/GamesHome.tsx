@@ -1,24 +1,20 @@
-import React, {useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef, useContext } from 'react';
 import { Animated, Text, Dimensions, SafeAreaView, View, FlatList, StyleSheet, ImageBackground, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import OptionsMenu from "react-native-option-menu";
 import {StatusBar} from 'expo-status-bar';
 
-// import GamesCardScroll from '../../components/GamesCardScroll';
-// import ScoreBanner from '../../components/ScoreBanner';
-// import GameCard from '../../components/GameCard';
-//import CategoryList from '../Components/CategoryList';
-import GameListCardView from '../Components/GameListCardView';
-
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import * as Animatable from 'react-native-animatable';
 
-import { API, graphqlOperation } from 'aws-amplify';
-import { getGame, listGameSections, listGames } from '../src/graphql/queries';
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { getGame, listGameSections, listGames, listGameVariations } from '../src/graphql/queries';
+import { updateUser } from '../src/graphql/mutations';
+
+import {AppContext} from '../AppContext';
 
 const MoreIcon = ( <Feather name='more-vertical' color='#05375a' size={20}/> )
 const FilterIcon = (<MaterialCommunityIcons name='filter-variant' color='#05375a' size={20} />)
@@ -26,18 +22,38 @@ const SortIcon = (<MaterialCommunityIcons name='sort' color='#05375a' size={20} 
 
 const HomeScreen = ({navigation} : any) => {
 
-  const Card = ({ name, highlight, players } : {name : any, highlight: any, players: any}) => {
+  const { userID } = useContext(AppContext);
+  const { setUserID } = useContext(AppContext);
+
+  const Card = ({ name, highlight, players, variations, teams, liked, id } : {name : any, highlight: any, players: any, variations: any, teams: any, liked: any, id: any}) => {
 
     const [isLiked, setIsLiked] = useState(false);
+
+    useEffect(() => {
+            if (userID.isLiked.includes(id)) {
+              setIsLiked(true);
+            }
+    }, [])
     
-    const onLikePress = () => {
-        if ( isLiked === false ) {
-            setIsLiked(true);
-        }
-        if ( isLiked === true ) {
-            setIsLiked(false);
-        }
-            
+    const onLikePress = async () => { 
+
+      const userInfo = await Auth.currentAuthenticatedUser();
+
+      if (userID.isLiked.includes(id)) {
+        setIsLiked(false);
+      } else {setIsLiked(true);}
+      //setIsLiked(!isLiked) 
+
+      const updatedUser = {
+        id: userInfo.attributes.sub,
+        isLiked: userID.isLiked.includes(id) ? userID.isLiked.filter(item => item !== id) :
+        userID.isLiked.length > 0 ? [...userID.isLiked, id] : [id]
+    }
+
+    let result = await API.graphql(graphqlOperation(updateUser, { input: updatedUser }))
+
+    setUserID(result.data.updateUser);
+    console.log(result.data.updateUser)
     };
 
     return(
@@ -57,14 +73,12 @@ const HomeScreen = ({navigation} : any) => {
                         size={20}
                         onPress={onLikePress }
                     />
-                    <OptionsMenu
+                    {/* <OptionsMenu
                         customButton={MoreIcon}
-                        //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
                         destructiveIndex={1}
                         options={["Share", "Hide", "Favorite", "Details"]}
-                        
                         //actions={[editPost, deletePost]}
-                    />
+                    /> */}
                     {/* <TouchableOpacity>
                         <Feather
                             name='more-vertical'
@@ -83,18 +97,30 @@ const HomeScreen = ({navigation} : any) => {
 
             <View style={styles.footer}>
 
-                <View style={styles.playersbutton}>
-                    <Text style={styles.footertext}>
-                        {players} players
-                    </Text>
+                <View style={{ flexDirection: 'row'}}>
+                  {teams === true ? (
+                    <View style={[styles.playersbutton, {backgroundColor: 'lightblue', marginRight: 0}]}>
+                      <Text style={[styles.footertext, {fontFamily: 'chalkboard-bold'}]}>
+                          T
+                      </Text>
+                  </View>
+                  ) : null}
+                    <View style={styles.playersbutton}>
+                      <Text style={styles.footertext}>
+                          {players} players
+                      </Text>
+                    </View>
+                  
                 </View>
+                
 
-                <View style={styles.variationsbutton}>
+                {variations.length > 0 ? (
+                  <View style={styles.variationsbutton}>
                     <Text style={styles.footertext}>
-                        0 house variations
+                      {variations.length} house variations
                     </Text>
-                </View>
-
+                  </View>
+                ) : null }
             </View>
 
         </View>
@@ -392,6 +418,10 @@ const HomeScreen = ({navigation} : any) => {
         name={item.name} 
         highlight={item.highlight} 
         players={item.players} 
+        variations={item.variations}
+        teams={item.teams}
+        liked={item.liked}
+        id={item.id}
     />
   );
 
@@ -613,7 +643,7 @@ iconbox: {
     //backgroundColor: 'green',
     marginVertical: 8,
     justifyContent: 'space-between',
-    width: 64,
+    //width: 64,
 },
 summarybox: {
     backgroundColor: '#E9E9EA',

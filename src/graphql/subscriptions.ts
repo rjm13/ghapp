@@ -10,6 +10,7 @@ export const onCreateUser = /* GraphQL */ `
       email
       imageUri
       status
+      isLiked
       variation {
         items {
           id
@@ -49,6 +50,7 @@ export const onUpdateUser = /* GraphQL */ `
       email
       imageUri
       status
+      isLiked
       variation {
         items {
           id
@@ -88,6 +90,7 @@ export const onDeleteUser = /* GraphQL */ `
       email
       imageUri
       status
+      isLiked
       variation {
         items {
           id
@@ -136,6 +139,7 @@ export const onCreateGame = /* GraphQL */ `
           email
           imageUri
           status
+          isLiked
           createdAt
           updatedAt
         }
@@ -186,6 +190,7 @@ export const onUpdateGame = /* GraphQL */ `
           email
           imageUri
           status
+          isLiked
           createdAt
           updatedAt
         }
@@ -236,6 +241,7 @@ export const onDeleteGame = /* GraphQL */ `
           email
           imageUri
           status
+          isLiked
           createdAt
           updatedAt
         }
@@ -378,6 +384,7 @@ export const onCreateGameVariation = /* GraphQL */ `
         email
         imageUri
         status
+        isLiked
         variation {
           nextToken
         }
@@ -426,6 +433,7 @@ export const onUpdateGameVariation = /* GraphQL */ `
         email
         imageUri
         status
+        isLiked
         variation {
           nextToken
         }
@@ -474,6 +482,7 @@ export const onDeleteGameVariation = /* GraphQL */ `
         email
         imageUri
         status
+        isLiked
         variation {
           nextToken
         }

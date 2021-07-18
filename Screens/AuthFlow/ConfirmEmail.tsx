@@ -61,7 +61,8 @@ const ConfirmEmail = ({navigation, route} : {navigation: any, route : any}) => {
                     name: userInfo.attributes.name,
                     imageUri: userInfo.attributes.imageUri,
                     email: userInfo.attributes.email,
-                    bio: userInfo.attributes.bio,
+                    status: userInfo.attributes.status,
+                    
                 }
           
                 //if there is no user in DB with the id, then create one

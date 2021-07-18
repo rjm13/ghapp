@@ -4,6 +4,7 @@ type User @model {
   email: String!
   imageUri: String
   status: String
+  isLiked: [ID]
   variation: [GameVariation] @connection (keyName: "byUser", fields: ["id"])
   liked: [Game] @connection (keyName: "byUser", fields: ["id"])
 }

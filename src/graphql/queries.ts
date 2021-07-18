@@ -10,6 +10,7 @@ export const getUser = /* GraphQL */ `
       email
       imageUri
       status
+      isLiked
       variation {
         items {
           id
@@ -54,6 +55,7 @@ export const listUsers = /* GraphQL */ `
         email
         imageUri
         status
+        isLiked
         variation {
           nextToken
         }
@@ -84,6 +86,7 @@ export const getGame = /* GraphQL */ `
           email
           imageUri
           status
+          isLiked
           createdAt
           updatedAt
         }
@@ -223,6 +226,7 @@ export const getGameVariation = /* GraphQL */ `
         email
         imageUri
         status
+        isLiked
         variation {
           nextToken
         }
@@ -276,6 +280,7 @@ export const listGameVariations = /* GraphQL */ `
           email
           imageUri
           status
+          isLiked
           createdAt
           updatedAt
         }
