@@ -185,17 +185,23 @@ const HomeScreen = ({navigation} : any) => {
 
   const FilterList = ['Favorites', '2 Players', '3 Players', '4 Players', '5 Players', '6 Players', '8 Players', '9+ Players', 'With Teams']
 
+  const HandleSelect = (index : any) => {
+    if (selectedFilter.includes(index.toString())) {
+      let newArray = selectedFilter.filter(item => item !== index.toString())
+      setSelectedFilter(newArray);
+    } else {
+      setSelectedFilter(selectedFilter => [...selectedFilter, index.toString()])
+    }
+  }
+
   const FilterItem = ({item, index} : any) => (
     <View style={{marginLeft: index === 0 ? 20 : 10, marginRight: index === 8 ? 20 : 0 }}>
-        <TouchableOpacity onPress={
-          () => setSelectedFilter(selectedFilter => [...selectedFilter, index.toString()])
-          
-        }>
+        <TouchableWithoutFeedback onPress={() => HandleSelect(index)}>
           <Text style={{fontFamily: 'chalkboard-light', fontSize: 12, paddingVertical: 2, width: '100%', paddingHorizontal: 10, borderWidth: 0.4, borderRadius: 15,
             borderColor: '#000', backgroundColor: selectedFilter.includes(index.toString()) ? '#155843' : '#f5f5f5', color: selectedFilter.includes(index.toString()) ? '#fff' : '#000'}}>
             {item}
           </Text>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
       </View>
   );
 
@@ -279,11 +285,11 @@ const HomeScreen = ({navigation} : any) => {
         const fetchGames = async () => {
             try {
                 const response = await API.graphql(graphqlOperation(listGames, {
-                  filter: {
-                      category: {
-                          eq: Category
-                      }
-                  }
+                  // filter: {
+                  //     category: {
+                  //         eq: Category
+                  //     },
+                  // }
               } ))
                 setGames(response.data.listGames.items);
             } catch (e) {
@@ -343,7 +349,9 @@ const HomeScreen = ({navigation} : any) => {
         
         <View style={{height: Dimensions.get('window').height - 166}}>
           <FlatList
-            data={games}
+            data={
+              Category ? games.filter(item => item.category === Category) : null
+            }
             renderItem={renderItem}
             keyExtractor={item => item.id}
             stickyHeaderIndices={[0]}
@@ -375,7 +383,7 @@ const HomeScreen = ({navigation} : any) => {
                     />
                   </View>
                   {filter === true ? (
-                    <Animatable.View animation='flipInX'  >
+                    <View >
                       <FlatList 
                         data={FilterList}
                         renderItem={renderFilterItem}
@@ -384,7 +392,7 @@ const HomeScreen = ({navigation} : any) => {
                         horizontal={true}
                         style={{ backgroundColor: '#f5f5f5', paddingLeft: 0, paddingBottom: 8, paddingTop: 4, paddingRight: 0, }}
                       />
-                    </Animatable.View>
+                    </View>
                   ) : null}
                 </View>
             )}
