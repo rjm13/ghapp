@@ -171,15 +171,17 @@ const HomeScreen = ({navigation} : any) => {
   const [filterTeams, setFilterTeams] = useState(false);  
 
   useEffect(() => {
-    if (selectedFilter.includes('0')) {() => setFilterFavs(true)}
-    if (selectedFilter.includes('1')) {() => setFilter2(true)}
-    if (selectedFilter.includes('2')) {() => setFilter3(true)}
-    if (selectedFilter.includes('3')) {() => setFilter4(true)}
-    if (selectedFilter.includes('4')) {() => setFilter5(true)}
-    if (selectedFilter.includes('5')) {() => setFilter6(true)}
-    if (selectedFilter.includes('6')) {() => setFilter8(true)}
-    if (selectedFilter.includes('7')) {() => setFilter9(true)}
-    if (selectedFilter.includes('8')) {() => setFilterTeams(true)}
+    selectedFilter.includes('0') ? setFilterFavs(true) : setFilterFavs(false);
+    selectedFilter.includes('1') ? setFilter2(true) : setFilter2(false);
+    selectedFilter.includes('2') ? setFilter3(true) : setFilter3(false);
+    selectedFilter.includes('3') ? setFilter4(true) : setFilter4(false);
+    selectedFilter.includes('4') ? setFilter5(true) : setFilter5(false);
+    selectedFilter.includes('5') ? setFilter6(true) : setFilter6(false);
+    selectedFilter.includes('6') ? setFilter8(true) : setFilter8(false);
+    selectedFilter.includes('7') ? setFilter9(true) : setFilter9(false);
+    selectedFilter.includes('8') ? setFilterTeams(true) : setFilterTeams(false);
+    console.log('filterteams is ' + filterTeams )
+    console.log(selectedFilter)
   }, [selectedFilter])
 
 
@@ -192,6 +194,7 @@ const HomeScreen = ({navigation} : any) => {
     } else {
       setSelectedFilter(selectedFilter => [...selectedFilter, index.toString()])
     }
+    console.log('index is ' + index)
   }
 
   const FilterItem = ({item, index} : any) => (
@@ -298,7 +301,7 @@ const HomeScreen = ({navigation} : any) => {
         };
 
         fetchGames();
-    }, [Category]);
+    }, []);
 
   const renderItem = ({ item }: any) => (
     <Card 
@@ -307,6 +310,40 @@ const HomeScreen = ({navigation} : any) => {
         players={item.players} 
     />
   );
+
+  const [filterdGames, setFilteredGames] = useState([])
+
+  useEffect(() => {
+
+    const filterMethods = [
+      (item => item.category === Category),
+    ]
+
+    if (filterTeams === true) {filterMethods.push((item => item.teams === true))}
+    if (filter2 === true) {filterMethods.push((item => item.players.includes('2')))}
+    if (filter3 === true) {filterMethods.push((item => item.players.includes('3')))}
+    if (filter4 === true) {filterMethods.push((item => item.players.includes('4')))}
+    if (filter5 === true) {filterMethods.push((item => item.players.includes('5')))}
+    if (filter6 === true) {filterMethods.push((item => item.players.includes('6')))}
+    if (filter8 === true) {filterMethods.push((item => item.players.includes('8')))}
+    if (filter9 === true) {filterMethods.push((item => item.players.includes('9')))}
+    
+    const filteredArray = games.filter((item) => {
+      for (let i = 0; i < filterMethods.length; i++) {
+        if (!filterMethods[i](item)) {
+          return false
+        }
+      }
+      return true
+    })
+    setFilteredGames(filteredArray);
+
+    // setFilteredGames(
+    //   filterTeams === true ? games.filter(item => item.category === Category).filter(item => item.teams === true) :
+    //   filter2 === true ? games.filter(item => item.category === Category).filter(item => item.players.includes('2'))
+    //   : games.filter(item => item.category === Category))
+  }, [Category, filterTeams, filter2, filter3, filter4, filter5, filter6, filter8, filter9])
+    
 
   return (
 
@@ -349,17 +386,11 @@ const HomeScreen = ({navigation} : any) => {
         
         <View style={{height: Dimensions.get('window').height - 166}}>
           <FlatList
-            data={
-              Category ? games.filter(item => item.category === Category) : null
-            }
+            data={filterdGames}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             stickyHeaderIndices={[0]}
-            style={{
-                //height: Dimensions.get('window').height - 130,
-                backgroundColor: '#f5f5f5'
-
-            }}
+            style={{backgroundColor: '#f5f5f5'}}
             ListHeaderComponent={() => (
                 <View>
                   <View style={[styles.filterBox, {backgroundColor: '#f5f5f5'}]}>
@@ -371,7 +402,7 @@ const HomeScreen = ({navigation} : any) => {
                       //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
                       destructiveIndex={1}
                       options={["Favorites", "2 Players", "3 Players", "4 Players", "5 Players", "6 Players", "8 Players", "9+ Players", "With Teams"]}
-                      actions={[() => setFilterFavs(true), () => setFilter2(true), () => setFilter4(true), () => setFilter5(true), () => setFilter6(true), () => setFilter8(true),() => setFilter9(true), () => setFilterTeams]}
+                      actions={[HandleSelect]}
                     /> */}
                     <OptionsMenu
                       customButton={SortIcon}
