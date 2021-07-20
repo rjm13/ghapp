@@ -31,15 +31,16 @@ const HomeScreen = ({navigation} : any) => {
     const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
-            if (userID.isLiked.includes(id)) {
+      if (userID.isLiked) {
+        if (userID.isLiked.includes(id)) {
               setIsLiked(true);
             }
+      } else {null}   
     }, [])
     
     const onLikePress = async () => { 
 
       //const userInfo = await Auth.currentAuthenticatedUser();
-
       if (userID.isLiked.includes(id)) {
         setIsLiked(false);
       } else {setIsLiked(true);}
