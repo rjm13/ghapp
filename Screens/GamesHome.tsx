@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useContext } from 'react';
-import { Animated, Text, Dimensions, SafeAreaView, View, FlatList, StyleSheet, ImageBackground, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { Animated, TouchableHighlight, Text, Modal, Dimensions, SafeAreaView, View, FlatList, StyleSheet, ImageBackground, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import OptionsMenu from "react-native-option-menu";
@@ -15,6 +15,7 @@ import { getGame, listGameSections, listGames, listGameVariations } from '../src
 import { updateUser } from '../src/graphql/mutations';
 
 import {AppContext} from '../AppContext';
+import { UIImagePickerControllerQualityType } from 'expo-image-picker/build/ImagePicker.types';
 
 const MoreIcon = ( <Feather name='more-vertical' color='#05375a' size={20}/> )
 const FilterIcon = (<MaterialCommunityIcons name='filter-variant' color='#05375a' size={20} />)
@@ -37,7 +38,7 @@ const HomeScreen = ({navigation} : any) => {
     
     const onLikePress = async () => { 
 
-      const userInfo = await Auth.currentAuthenticatedUser();
+      //const userInfo = await Auth.currentAuthenticatedUser();
 
       if (userID.isLiked.includes(id)) {
         setIsLiked(false);
@@ -45,7 +46,7 @@ const HomeScreen = ({navigation} : any) => {
       //setIsLiked(!isLiked) 
 
       const updatedUser = {
-        id: userInfo.attributes.sub,
+        id: userID.id,
         isLiked: userID.isLiked.includes(id) ? userID.isLiked.filter(item => item !== id) :
         userID.isLiked.length > 0 ? [...userID.isLiked, id] : [id]
     }
@@ -183,6 +184,8 @@ const HomeScreen = ({navigation} : any) => {
 
   const [Category, setCategory] = useState('cards');
 
+  const [menuVisible, setMenuVisible] = useState(false);
+
 //sort functions
   const [sortRandomstate, setSortRandom] = useState(false);
   const [sortAZstate, setSortAZ] = useState(false);
@@ -198,6 +201,7 @@ const HomeScreen = ({navigation} : any) => {
     setSortPopular(false);
     setSortHouse(false);
     setSortNew(false);
+    setMenuVisible(false);
   }
 
   const sortAZ = () => {
@@ -207,6 +211,7 @@ const HomeScreen = ({navigation} : any) => {
     setSortPopular(false);
     setSortHouse(false);
     setSortNew(false);
+    setMenuVisible(false);
   }
 
   const sortZA = () => {
@@ -216,6 +221,7 @@ const HomeScreen = ({navigation} : any) => {
     setSortPopular(false);
     setSortHouse(false);
     setSortNew(false);
+    setMenuVisible(false);
   }
 
   const sortPopular = () => {
@@ -225,15 +231,17 @@ const HomeScreen = ({navigation} : any) => {
     setSortPopular(true);
     setSortHouse(false);
     setSortNew(false);
+    setMenuVisible(false);
   }
 
-  const sortHouse = () => {
+  const sortByHouse = () => {
     setSortRandom(false);
     setSortAZ(false);
     setSortZA(false);
     setSortPopular(false);
     setSortHouse(true);
     setSortNew(false);
+    setMenuVisible(false);
   }
 
   const sortNew = () => {
@@ -243,6 +251,7 @@ const HomeScreen = ({navigation} : any) => {
     setSortPopular(false);
     setSortHouse(false);
     setSortNew(true);
+    setMenuVisible(false);
   }
 
 //sort and filter states
@@ -261,7 +270,6 @@ const HomeScreen = ({navigation} : any) => {
   const [filterTeams, setFilterTeams] = useState(false);  
 
   useEffect(() => {
-    //selectedFilter.includes('0') ? setFilterFavs(true) : setFilterFavs(false);
     if (selectedFilter.includes('1')) {setFilter2(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter9(false);} else {setFilter2(false)}
     if (selectedFilter.includes('2')) {setFilter3(true);  setFilter2(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter9(false);} else {setFilter3(false)}
     if (selectedFilter.includes('3')) {setFilter4(true);  setFilter3(false); setFilter2(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter9(false);} else {setFilter4(false)}
@@ -270,13 +278,7 @@ const HomeScreen = ({navigation} : any) => {
     if (selectedFilter.includes('6')) {setFilter8(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter2(false); setFilter9(false);} else {setFilter8(false)}
     if (selectedFilter.includes('7')) {setFilter9(true);  setFilter3(false); setFilter4(false); setFilter5(false); setFilter6(false); setFilter8(false); setFilter2(false);} else {setFilter9(false)}
     selectedFilter.includes('8') ? setFilterTeams(true) : setFilterTeams(false);
-    // selectedFilter.includes('1') ? setFilter2(true) : setFilter2(false);
-    // selectedFilter.includes('2') ? setFilter3(true) : setFilter3(false);
-    // selectedFilter.includes('3') ? setFilter4(true) : setFilter4(false);
-    // selectedFilter.includes('4') ? setFilter5(true) : setFilter5(false);
-    // selectedFilter.includes('5') ? setFilter6(true) : setFilter6(false);
-    // selectedFilter.includes('6') ? setFilter8(true) : setFilter8(false);
-    // selectedFilter.includes('7') ? setFilter9(true) : setFilter9(false);
+    selectedFilter.includes('9') ? setFilterFavs(true) : setFilterFavs(false);
   }, [selectedFilter])
 
  
@@ -289,17 +291,22 @@ const HomeScreen = ({navigation} : any) => {
       let newArray = selectedFilter.filter(item => item !== index.toString())
       setSelectedFilter(newArray);
     } else {
-      //setSelectedFilter([''])
+      // if (filterFavs === true && filterTeams === false) {
+      //   setSelectedFilter([index.toString(), '8'])
+      // } else if (filterFavs === false && filterTeams === true) {
+      //   setSelectedFilter([index.toString(), '9'])
+      // } else if (filterFavs ===true && filterTeams === true ) {
+      //   setSelectedFilter([index.toString(), '8', '9'])
+      // }
       if (selectedFilter.includes('8')) {
-        //setSelectedFilter([])
         setSelectedFilter([index.toString(), '8'])
+      // if (selectedFilter.includes('9')) {
+      //   setSelectedFilter([index.toString(), '9'])
       } else {
-        //setSelectedFilter([])
         setSelectedFilter([index.toString()])
         //setSelectedFilter(selectedFilter => [...selectedFilter, index.toString()])
       }
     }
-    console.log('index is ' + index)
   }
 
   const FilterItem = ({item, index} : any) => (
@@ -434,6 +441,7 @@ const HomeScreen = ({navigation} : any) => {
     ]
 
     if (filterTeams === true) {filterMethods.push((item => item.teams === true))}
+    //if (filterFavs === true) {filterMethods.push((item => item.isLiked.includes(item.isLiked)))}
     if (filter2 === true) {filterMethods.push((item => item.players.includes('2')))}
     if (filter3 === true) {filterMethods.push((item => item.players.includes('3')))}
     if (filter4 === true) {filterMethods.push((item => item.players.includes('4')))}
@@ -457,7 +465,7 @@ const HomeScreen = ({navigation} : any) => {
       sortRandomstate === true ? filteredArray.sort(() => 0.5 - Math.random()) : //sort Random
       //sortPopularstate === true ? filteredArray.sort((a, b) => b.name.localeCompare(a.name)) : //sort by most popular
       sortNewstate === true ? filteredArray.sort((a, b) => (a.createdAt) - (b.createdAt)) : //sort by date created
-      sortHousestate === true ? filteredArray.sort((a, b) => (b.variations.length) - (a.variations.length)) : //sort by most house variations
+      sortHousestate === true ? filteredArray.sort((a, b) => (a.variations.length) - (b.variations.length)) : //sort by most house variations
       filteredArray.sort((a, b) => a.name.localeCompare(b.name))
   
 
@@ -474,6 +482,49 @@ const HomeScreen = ({navigation} : any) => {
 
 
       <View>
+        <Modal
+        animationType="fade"
+        transparent={true}
+        visible={menuVisible}
+        onRequestClose={() => {setMenuVisible(!menuVisible);}}
+      >
+        <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
+        <View style={{backgroundColor: 'transparent', width: Dimensions.get('window').width, height: Dimensions.get('window').height}}>
+        <View style={{ elevation: 4, width: 180, height: 220, backgroundColor: '#fff', padding: 0, position: 'absolute', top: 190, right: 40}}>
+          <TouchableHighlight onPress={sortAZ} underlayColor="#f5f5f5">
+            <View style={{paddingTop: 10, paddingLeft: 10}}>
+              <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Sort A - Z</Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={sortZA} underlayColor="#f5f5f5">
+            <View style={{paddingTop: 10, paddingLeft: 10}}>
+              <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Sort Z - A</Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={sortRandom} underlayColor="#f5f5f5">
+            <View style={{paddingTop: 10, paddingLeft: 10}}>
+              <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Randomize</Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={sortNew} underlayColor="#f5f5f5">
+            <View style={{paddingTop: 10, paddingLeft: 10}}>
+              <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Sort Newest</Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={sortPopular} underlayColor="#f5f5f5">
+            <View style={{paddingTop: 10, paddingLeft: 10}}>
+              <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Top</Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={sortByHouse} underlayColor="#f5f5f5">
+            <View style={{paddingTop: 10, paddingLeft: 10}}>
+              <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Most Variations</Text>
+            </View>
+          </TouchableHighlight>
+        </View>
+        </View>
+        </TouchableWithoutFeedback>
+      </Modal>
 
         <View style={styles.scrollBox}>
          {/* <CategoryList /> */}
@@ -537,13 +588,31 @@ const HomeScreen = ({navigation} : any) => {
                       options={["Favorites", "2 Players", "3 Players", "4 Players", "5 Players", "6 Players", "8 Players", "9+ Players", "With Teams"]}
                       actions={[HandleSelect]}
                     /> */}
-                    <OptionsMenu
-                      customButton={SortIcon}
-                      //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
-                      destructiveIndex={1}
-                      options={["Random", "A to Z", "Z to A", "Most Popular", "New", "Most Variations"]}
-                      actions={[sortRandom, sortAZ, sortZA, sortPopular, sortNew, sortHouse ]}
-                    />
+                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={{ marginRight: 20, fontFamily: 'chalkboard-light', color: 'gray'}}>
+                          {sortZAstate === true ? 'Z to A' : 
+                          sortAZstate === true ? 'A to Z' :
+                          sortRandomstate === true ? 'Randomized' :
+                          sortPopularstate === true ? 'Top' :
+                          sortNewstate === true ? 'Most Recent' :
+                          sortHousestate === true ? 'Most Variations' :
+                          null}
+                        </Text>
+
+                        <View>
+                          <TouchableWithoutFeedback onPress={() => setMenuVisible(!menuVisible)}>
+                            <MaterialCommunityIcons name='sort' color='#05375a' size={20} />
+                          </TouchableWithoutFeedback>
+                        </View>
+
+                      {/* <OptionsMenu
+                        customButton={SortIcon}
+                        //buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+                        destructiveIndex={1}
+                        options={["Random", "A to Z", "Z to A", "Most Popular", "New", "Most Variations"]}
+                        actions={[sortRandom, sortAZ, sortZA, sortPopular, sortNew, sortByHouse, ]}
+                      /> */}
+                    </View>
                   </View>
                   {filter === true ? (
                     <View >
