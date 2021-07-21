@@ -134,7 +134,33 @@ const renderVariationItem = ({item} : any) => {
 }
 
 
-const GameScreen = ({ navigation } : any) => {
+const GameScreen = ({ navigation, route } : any) => {
+
+    const {gameid} = route.params;
+
+    const [game, setGame] = useState({});
+    const [gameSection, setGameSection] = useState([]);
+
+    useEffect(() => {
+        const fetchGame = async () => {
+          const gameInfo = {id: gameid};
+            if (!gameInfo) {
+              return;
+            }
+          try {
+            const response = await API.graphql(graphqlOperation(
+              getGame, {id: gameid}))
+              if (response) {
+                setGame(response.data.getGame);
+                setGameSection(response.data.getGame.sections.items)
+                console.log(response.data.getGame);
+              }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        fetchGame();
+      }, [])
 
 //animation controls
     const animation = useRef(new Animated.Value(0)).current;
@@ -190,30 +216,6 @@ const GameScreen = ({ navigation } : any) => {
             
     };
 
-    const [game, setGame] = useState({});
-    const [gameSection, setGameSection] = useState([]);
-
-    useEffect(() => {
-        const fetchGame = async () => {
-          const gameInfo = {id: '0e2cb273-b535-4cf7-ab16-198c44a4991c'};
-            if (!gameInfo) {
-              return;
-            }
-          try {
-            const response = await API.graphql(graphqlOperation(
-              getGame, {id: gameInfo.id}))
-              if (response) {
-                setGame(response.data.getGame);
-                setGameSection(response.data.getGame.sections.items)
-                console.log(response.data.getGame);
-              }
-          } catch (e) {
-            console.log(e);
-          }
-        }
-        fetchGame();
-      }, [])
-
 
     return (
         <SafeAreaView style={styles.container}>
@@ -236,7 +238,7 @@ const GameScreen = ({ navigation } : any) => {
                     <View style={styles.titlebox}>
                         <View style={styles.titleblock}>
                             <Text style={[styles.title, {fontSize: 18}]}>
-                                {Game.name}
+                                {game.name}
                             </Text>
                         </View>
                         <View style={{alignItems: 'center', marginVertical: 8}}>
@@ -258,10 +260,10 @@ const GameScreen = ({ navigation } : any) => {
                 <View style={[styles.titlebox, {marginTop: 10}]}>
                     <View style={[styles.titleblock, {marginLeft: 16}]}>
                         <Text style={[styles.title, {fontSize: 20}]}>
-                            {Game.name}
+                            {game.name}
                         </Text> 
                         <Text style={styles.category}>
-                            {Game.category} Game
+                            {game.category} Game
                         </Text> 
                     </View>
                     <View style={{alignItems: 'center', marginVertical: 8, marginRight: 16}}>
@@ -282,7 +284,7 @@ const GameScreen = ({ navigation } : any) => {
                         </View>
                         <View style={styles.playersbutton}>
                             <Text style={styles.footertext}>
-                                {Game.players} players
+                                {game.players} players
                             </Text>
                         </View>
                     </View>
@@ -296,8 +298,8 @@ const GameScreen = ({ navigation } : any) => {
             
 
             <Animated.SectionList
-                sections={Game.sections}
-                keyExtractor={(item, index) => item + index}
+                sections={gameSection.sort((a, b) => (a.orderId) - (b.orderId))}
+                keyExtractor={(item, orderId) => item + orderId}
                 renderItem={({ item }) => <Item title={item} />}
                 stickySectionHeadersEnabled={true}
 

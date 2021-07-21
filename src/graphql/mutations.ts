@@ -162,6 +162,7 @@ export const createGame = /* GraphQL */ `
           id
           title
           data
+          orderId
           gameID
           createdAt
           updatedAt
@@ -216,6 +217,7 @@ export const updateGame = /* GraphQL */ `
           id
           title
           data
+          orderId
           gameID
           createdAt
           updatedAt
@@ -270,6 +272,7 @@ export const deleteGame = /* GraphQL */ `
           id
           title
           data
+          orderId
           gameID
           createdAt
           updatedAt
@@ -302,6 +305,7 @@ export const createGameSection = /* GraphQL */ `
       id
       title
       data
+      orderId
       gameID
       game {
         id
@@ -337,6 +341,7 @@ export const updateGameSection = /* GraphQL */ `
       id
       title
       data
+      orderId
       gameID
       game {
         id
@@ -372,6 +377,7 @@ export const deleteGameSection = /* GraphQL */ `
       id
       title
       data
+      orderId
       gameID
       game {
         id

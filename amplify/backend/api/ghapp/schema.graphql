@@ -26,6 +26,7 @@ type GameSection @model @key(name: "byGame", fields: ["gameID"]) {
   
   title: String!
   data: [String]
+  orderId: Int,
   gameID: ID!
   game: Game @connection (fields: ["gameID"])
 }

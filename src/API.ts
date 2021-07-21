@@ -144,6 +144,7 @@ export type GameSection = {
   id: string,
   title: string,
   data?: Array< string | null > | null,
+  orderId?: number | null,
   gameID: string,
   game?: Game | null,
   createdAt: string,
@@ -216,21 +217,36 @@ export type CreateGameSectionInput = {
   id?: string | null,
   title: string,
   data?: Array< string | null > | null,
+  orderId?: number | null,
   gameID: string,
 };
 
 export type ModelGameSectionConditionInput = {
   title?: ModelStringInput | null,
   data?: ModelStringInput | null,
+  orderId?: ModelIntInput | null,
   gameID?: ModelIDInput | null,
   and?: Array< ModelGameSectionConditionInput | null > | null,
   or?: Array< ModelGameSectionConditionInput | null > | null,
   not?: ModelGameSectionConditionInput | null,
 };
 
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type UpdateGameSectionInput = {
   title?: string | null,
   data?: Array< string | null > | null,
+  orderId?: number | null,
   gameID?: string | null,
 };
 
@@ -295,6 +311,7 @@ export type ModelGameFilterInput = {
 export type ModelGameSectionFilterInput = {
   title?: ModelStringInput | null,
   data?: ModelStringInput | null,
+  orderId?: ModelIntInput | null,
   gameID?: ModelIDInput | null,
   and?: Array< ModelGameSectionFilterInput | null > | null,
   or?: Array< ModelGameSectionFilterInput | null > | null,
@@ -495,6 +512,7 @@ export type CreateGameMutation = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        orderId?: number | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -557,6 +575,7 @@ export type UpdateGameMutation = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        orderId?: number | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -619,6 +638,7 @@ export type DeleteGameMutation = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        orderId?: number | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -655,6 +675,7 @@ export type CreateGameSectionMutation = {
     id: string,
     title: string,
     data?: Array< string | null > | null,
+    orderId?: number | null,
     gameID: string,
     game?:  {
       __typename: "Game",
@@ -696,6 +717,7 @@ export type UpdateGameSectionMutation = {
     id: string,
     title: string,
     data?: Array< string | null > | null,
+    orderId?: number | null,
     gameID: string,
     game?:  {
       __typename: "Game",
@@ -737,6 +759,7 @@ export type DeleteGameSectionMutation = {
     id: string,
     title: string,
     data?: Array< string | null > | null,
+    orderId?: number | null,
     gameID: string,
     game?:  {
       __typename: "Game",
@@ -1066,6 +1089,7 @@ export type GetGameQuery = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        orderId?: number | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -1138,6 +1162,7 @@ export type GetGameSectionQuery = {
     id: string,
     title: string,
     data?: Array< string | null > | null,
+    orderId?: number | null,
     gameID: string,
     game?:  {
       __typename: "Game",
@@ -1182,6 +1207,7 @@ export type ListGameSectionsQuery = {
       id: string,
       title: string,
       data?: Array< string | null > | null,
+      orderId?: number | null,
       gameID: string,
       game?:  {
         __typename: "Game",
@@ -1472,6 +1498,7 @@ export type OnCreateGameSubscription = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        orderId?: number | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -1529,6 +1556,7 @@ export type OnUpdateGameSubscription = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        orderId?: number | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -1586,6 +1614,7 @@ export type OnDeleteGameSubscription = {
         id: string,
         title: string,
         data?: Array< string | null > | null,
+        orderId?: number | null,
         gameID: string,
         createdAt: string,
         updatedAt: string,
@@ -1617,6 +1646,7 @@ export type OnCreateGameSectionSubscription = {
     id: string,
     title: string,
     data?: Array< string | null > | null,
+    orderId?: number | null,
     gameID: string,
     game?:  {
       __typename: "Game",
@@ -1653,6 +1683,7 @@ export type OnUpdateGameSectionSubscription = {
     id: string,
     title: string,
     data?: Array< string | null > | null,
+    orderId?: number | null,
     gameID: string,
     game?:  {
       __typename: "Game",
@@ -1689,6 +1720,7 @@ export type OnDeleteGameSectionSubscription = {
     id: string,
     title: string,
     data?: Array< string | null > | null,
+    orderId?: number | null,
     gameID: string,
     game?:  {
       __typename: "Game",

@@ -63,7 +63,7 @@ const HomeScreen = ({navigation} : any) => {
 
             <View style={styles.titlebox}>
                 <TouchableOpacity
-                    onPress={() => { navigation.navigate('Game') }}>
+                    onPress={() => { navigation.navigate('Game', {gameid: id}) }}>
                     <Text style={styles.title}>
                         {name}
                     </Text>
@@ -493,32 +493,32 @@ const HomeScreen = ({navigation} : any) => {
         <View style={{backgroundColor: 'transparent', width: Dimensions.get('window').width, height: Dimensions.get('window').height}}>
         <View style={{ elevation: 4, width: 180, height: 220, backgroundColor: '#fff', padding: 0, position: 'absolute', top: 190, right: 40}}>
           <TouchableHighlight onPress={sortAZ} underlayColor="#f5f5f5">
-            <View style={{paddingTop: 10, paddingLeft: 10}}>
+            <View style={{paddingVertical: 6, paddingLeft: 10}}>
               <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Sort A - Z</Text>
             </View>
           </TouchableHighlight>
           <TouchableHighlight onPress={sortZA} underlayColor="#f5f5f5">
-            <View style={{paddingTop: 10, paddingLeft: 10}}>
+            <View style={{paddingVertical: 6, paddingLeft: 10}}>
               <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Sort Z - A</Text>
             </View>
           </TouchableHighlight>
           <TouchableHighlight onPress={sortRandom} underlayColor="#f5f5f5">
-            <View style={{paddingTop: 10, paddingLeft: 10}}>
+            <View style={{paddingVertical: 6, paddingLeft: 10}}>
               <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Randomize</Text>
             </View>
           </TouchableHighlight>
           <TouchableHighlight onPress={sortNew} underlayColor="#f5f5f5">
-            <View style={{paddingTop: 10, paddingLeft: 10}}>
+            <View style={{paddingVertical: 6, paddingLeft: 10}}>
               <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Sort Newest</Text>
             </View>
           </TouchableHighlight>
           <TouchableHighlight onPress={sortPopular} underlayColor="#f5f5f5">
-            <View style={{paddingTop: 10, paddingLeft: 10}}>
+            <View style={{paddingVertical: 6, paddingLeft: 10}}>
               <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Top</Text>
             </View>
           </TouchableHighlight>
           <TouchableHighlight onPress={sortByHouse} underlayColor="#f5f5f5">
-            <View style={{paddingTop: 10, paddingLeft: 10}}>
+            <View style={{paddingVertical: 6, paddingLeft: 10}}>
               <Text style={{ fontFamily: 'chalkboard-regular', fontSize: 15}}>Most Variations</Text>
             </View>
           </TouchableHighlight>

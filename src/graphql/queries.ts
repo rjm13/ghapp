@@ -97,6 +97,7 @@ export const getGame = /* GraphQL */ `
           id
           title
           data
+          orderId
           gameID
           createdAt
           updatedAt
@@ -157,6 +158,7 @@ export const getGameSection = /* GraphQL */ `
       id
       title
       data
+      orderId
       gameID
       game {
         id
@@ -194,6 +196,7 @@ export const listGameSections = /* GraphQL */ `
         id
         title
         data
+        orderId
         gameID
         game {
           id
