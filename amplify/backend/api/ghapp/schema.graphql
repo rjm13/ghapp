@@ -16,6 +16,7 @@ type Game @model @key(name: "byUser", fields: ["likedID"]) {
   players: String!
   highlight: String!
   teams: Boolean
+  likeBy: [ID]
   likedID: ID
   liked: [User] @connection (fields: ["likedID"])
   sections: [GameSection] @connection (keyName: "byGame", fields: ["id"])

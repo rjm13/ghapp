@@ -31,6 +31,7 @@ export const onCreateUser = /* GraphQL */ `
           players
           highlight
           teams
+          likeBy
           likedID
           createdAt
           updatedAt
@@ -71,6 +72,7 @@ export const onUpdateUser = /* GraphQL */ `
           players
           highlight
           teams
+          likeBy
           likedID
           createdAt
           updatedAt
@@ -111,6 +113,7 @@ export const onDeleteUser = /* GraphQL */ `
           players
           highlight
           teams
+          likeBy
           likedID
           createdAt
           updatedAt
@@ -131,6 +134,7 @@ export const onCreateGame = /* GraphQL */ `
       players
       highlight
       teams
+      likeBy
       likedID
       liked {
         items {
@@ -183,6 +187,7 @@ export const onUpdateGame = /* GraphQL */ `
       players
       highlight
       teams
+      likeBy
       likedID
       liked {
         items {
@@ -235,6 +240,7 @@ export const onDeleteGame = /* GraphQL */ `
       players
       highlight
       teams
+      likeBy
       likedID
       liked {
         items {
@@ -293,6 +299,7 @@ export const onCreateGameSection = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -326,6 +333,7 @@ export const onUpdateGameSection = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -359,6 +367,7 @@ export const onDeleteGameSection = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -408,6 +417,7 @@ export const onCreateGameVariation = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -457,6 +467,7 @@ export const onUpdateGameVariation = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -506,6 +517,7 @@ export const onDeleteGameVariation = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken

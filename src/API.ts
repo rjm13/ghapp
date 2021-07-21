@@ -119,6 +119,7 @@ export type Game = {
   players: string,
   highlight: string,
   teams?: boolean | null,
+  likeBy?: Array< string | null > | null,
   likedID?: string | null,
   liked?: ModelUserConnection | null,
   sections?: ModelGameSectionConnection | null,
@@ -177,6 +178,7 @@ export type CreateGameInput = {
   players: string,
   highlight: string,
   teams?: boolean | null,
+  likeBy?: Array< string | null > | null,
   likedID?: string | null,
 };
 
@@ -186,6 +188,7 @@ export type ModelGameConditionInput = {
   players?: ModelStringInput | null,
   highlight?: ModelStringInput | null,
   teams?: ModelBooleanInput | null,
+  likeBy?: ModelIDInput | null,
   likedID?: ModelIDInput | null,
   and?: Array< ModelGameConditionInput | null > | null,
   or?: Array< ModelGameConditionInput | null > | null,
@@ -206,6 +209,7 @@ export type UpdateGameInput = {
   players?: string | null,
   highlight?: string | null,
   teams?: boolean | null,
+  likeBy?: Array< string | null > | null,
   likedID?: string | null,
 };
 
@@ -302,6 +306,7 @@ export type ModelGameFilterInput = {
   players?: ModelStringInput | null,
   highlight?: ModelStringInput | null,
   teams?: ModelBooleanInput | null,
+  likeBy?: ModelIDInput | null,
   likedID?: ModelIDInput | null,
   and?: Array< ModelGameFilterInput | null > | null,
   or?: Array< ModelGameFilterInput | null > | null,
@@ -366,6 +371,7 @@ export type CreateUserMutation = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -415,6 +421,7 @@ export type UpdateUserMutation = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -464,6 +471,7 @@ export type DeleteUserMutation = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -489,6 +497,7 @@ export type CreateGameMutation = {
     players: string,
     highlight: string,
     teams?: boolean | null,
+    likeBy?: Array< string | null > | null,
     likedID?: string | null,
     liked?:  {
       __typename: "ModelUserConnection",
@@ -552,6 +561,7 @@ export type UpdateGameMutation = {
     players: string,
     highlight: string,
     teams?: boolean | null,
+    likeBy?: Array< string | null > | null,
     likedID?: string | null,
     liked?:  {
       __typename: "ModelUserConnection",
@@ -615,6 +625,7 @@ export type DeleteGameMutation = {
     players: string,
     highlight: string,
     teams?: boolean | null,
+    likeBy?: Array< string | null > | null,
     likedID?: string | null,
     liked?:  {
       __typename: "ModelUserConnection",
@@ -685,6 +696,7 @@ export type CreateGameSectionMutation = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -727,6 +739,7 @@ export type UpdateGameSectionMutation = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -769,6 +782,7 @@ export type DeleteGameSectionMutation = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -830,6 +844,7 @@ export type CreateGameVariationMutation = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -891,6 +906,7 @@ export type UpdateGameVariationMutation = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -952,6 +968,7 @@ export type DeleteGameVariationMutation = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1010,6 +1027,7 @@ export type GetUserQuery = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -1066,6 +1084,7 @@ export type GetGameQuery = {
     players: string,
     highlight: string,
     teams?: boolean | null,
+    likeBy?: Array< string | null > | null,
     likedID?: string | null,
     liked?:  {
       __typename: "ModelUserConnection",
@@ -1132,6 +1151,7 @@ export type ListGamesQuery = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1172,6 +1192,7 @@ export type GetGameSectionQuery = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1217,6 +1238,7 @@ export type ListGameSectionsQuery = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -1267,6 +1289,7 @@ export type GetGameVariationQuery = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1323,6 +1346,7 @@ export type ListGameVariationsQuery = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -1367,6 +1391,7 @@ export type OnCreateUserSubscription = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -1411,6 +1436,7 @@ export type OnUpdateUserSubscription = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -1455,6 +1481,7 @@ export type OnDeleteUserSubscription = {
         players: string,
         highlight: string,
         teams?: boolean | null,
+        likeBy?: Array< string | null > | null,
         likedID?: string | null,
         createdAt: string,
         updatedAt: string,
@@ -1475,6 +1502,7 @@ export type OnCreateGameSubscription = {
     players: string,
     highlight: string,
     teams?: boolean | null,
+    likeBy?: Array< string | null > | null,
     likedID?: string | null,
     liked?:  {
       __typename: "ModelUserConnection",
@@ -1533,6 +1561,7 @@ export type OnUpdateGameSubscription = {
     players: string,
     highlight: string,
     teams?: boolean | null,
+    likeBy?: Array< string | null > | null,
     likedID?: string | null,
     liked?:  {
       __typename: "ModelUserConnection",
@@ -1591,6 +1620,7 @@ export type OnDeleteGameSubscription = {
     players: string,
     highlight: string,
     teams?: boolean | null,
+    likeBy?: Array< string | null > | null,
     likedID?: string | null,
     liked?:  {
       __typename: "ModelUserConnection",
@@ -1656,6 +1686,7 @@ export type OnCreateGameSectionSubscription = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1693,6 +1724,7 @@ export type OnUpdateGameSectionSubscription = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1730,6 +1762,7 @@ export type OnDeleteGameSectionSubscription = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1786,6 +1819,7 @@ export type OnCreateGameVariationSubscription = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1842,6 +1876,7 @@ export type OnUpdateGameVariationSubscription = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",
@@ -1898,6 +1933,7 @@ export type OnDeleteGameVariationSubscription = {
       players: string,
       highlight: string,
       teams?: boolean | null,
+      likeBy?: Array< string | null > | null,
       likedID?: string | null,
       liked?:  {
         __typename: "ModelUserConnection",

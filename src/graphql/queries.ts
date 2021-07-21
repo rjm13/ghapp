@@ -31,6 +31,7 @@ export const getUser = /* GraphQL */ `
           players
           highlight
           teams
+          likeBy
           likedID
           createdAt
           updatedAt
@@ -78,6 +79,7 @@ export const getGame = /* GraphQL */ `
       players
       highlight
       teams
+      likeBy
       likedID
       liked {
         items {
@@ -135,6 +137,7 @@ export const listGames = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -167,6 +170,7 @@ export const getGameSection = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -205,6 +209,7 @@ export const listGameSections = /* GraphQL */ `
           players
           highlight
           teams
+          likeBy
           likedID
           createdAt
           updatedAt
@@ -247,6 +252,7 @@ export const getGameVariation = /* GraphQL */ `
         players
         highlight
         teams
+        likeBy
         likedID
         liked {
           nextToken
@@ -295,6 +301,7 @@ export const listGameVariations = /* GraphQL */ `
           players
           highlight
           teams
+          likeBy
           likedID
           createdAt
           updatedAt
