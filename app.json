@@ -7,7 +7,7 @@
     "icon": "./assets/iconsq.png",
     "splash": {
       "image": "./assets/splashtile.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {

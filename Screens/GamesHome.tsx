@@ -183,7 +183,7 @@ const HomeScreen = ({navigation} : any) => {
   ];
 
 
-  const [Category, setCategory] = useState('cards');
+  const [Category, setCategory] = useState('Cards');
 
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -348,7 +348,7 @@ const HomeScreen = ({navigation} : any) => {
   
   //const CategoryList = () => {
 
-    const [selectedId, setSelectedId] = useState('1');
+    const [selectedId, setSelectedId] = useState('');
 
     useEffect(() => {
       selectedId === '1' ? setCategory('Cards') :
@@ -361,21 +361,21 @@ const HomeScreen = ({navigation} : any) => {
       selectedId === '8' ? setCategory('Pool') :
       selectedId === '9' ? setCategory('campfire') :
       selectedId === '10' ? setCategory('playground') :
-      setCategory('cards')
+      setCategory('Cards')
     }, [selectedId])
 
     const Item2 = ({ category, tile, onPress, style } : {category: any, tile: any, onPress: any, style: any}) => (
 
-      <TouchableWithoutFeedback 
-        onPress={onPress}
-      >
-        <View style={styles.content}>
-          <ImageBackground source={tile} style={[styles.imageContent, style]}>
-              <Text style={styles.category} >{category}</Text>
-            </ImageBackground>
-        </View>
-            
-      </TouchableWithoutFeedback>
+    
+        <TouchableWithoutFeedback 
+          onPress={onPress}
+        >
+          <View style={styles.content}>
+            <ImageBackground source={tile} style={[styles.imageContent, style]}>
+                <Text style={styles.category} >{category}</Text>
+              </ImageBackground>
+          </View>
+        </TouchableWithoutFeedback>
       
     );
 
@@ -476,7 +476,7 @@ const HomeScreen = ({navigation} : any) => {
     //   filterTeams === true ? games.filter(item => item.category === Category).filter(item => item.teams === true) :
     //   filter2 === true ? games.filter(item => item.category === Category).filter(item => item.players.includes('2'))
     //   : games.filter(item => item.category === Category))
-  }, [Category, filterTeams, filter2, filter3, filter4, filter5, filter6, filter8, filter9, sortAZstate, sortZAstate, sortNewstate, sortHousestate, sortRandomstate])
+  }, [selectedId, Category, filterTeams, filter2, filter3, filter4, filter5, filter6, filter8, filter9, sortAZstate, sortZAstate, sortNewstate, sortHousestate, sortRandomstate])
     
 
   return (
@@ -536,6 +536,7 @@ const HomeScreen = ({navigation} : any) => {
             keyExtractor={item => item.id}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
+            style={{backgroundColor: '#f5f5f5', marginTop: -16, paddingTop: 16, marginHorizontal: -20, paddingHorizontal: 20}}
             getItemLayout={(item, index) => { return {length: 166, index: index, offset: 166 * index} }}
 
           />
@@ -562,6 +563,13 @@ const HomeScreen = ({navigation} : any) => {
         
         
         <View style={{height: Dimensions.get('window').height - 166}}>
+          {selectedId === '' ? (
+            <View style={{margin: 20, alignItems: 'center', justifyContent: 'center', height: Dimensions.get('window').height - 166}}>
+              <Text style={{textAlign: 'center', fontFamily: 'chalkboard-regular', fontSize: 16}}>
+                Going to put an ad here for this initial state. Make me some moolah.
+              </Text>
+            </View>
+          ) : (
           <FlatList
             data={filterdGames}
             renderItem={renderItem}
@@ -630,6 +638,7 @@ const HomeScreen = ({navigation} : any) => {
                 </View>
             )}
           />
+          )}
         </View>
 
 

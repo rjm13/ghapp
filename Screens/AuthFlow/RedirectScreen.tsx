@@ -3,6 +3,7 @@ import { View, Text, ActivityIndicator, Dimensions } from "react-native";
 import { AppContext } from '../../AppContext';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../../src/graphql/queries';
+import { StatusBar } from 'expo-status-bar';
 
 
 
@@ -85,7 +86,9 @@ const Redirect = ({route, navigation} : any) => {
     return (
         <View style={{alignContent: 'center', justifyContent: 'center', width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: '#fff'}}>
             <ActivityIndicator size="large" color="#155843" />
+            <StatusBar style='light' backgroundColor="#155843"/>
         </View>
+        
     );
 }
 
