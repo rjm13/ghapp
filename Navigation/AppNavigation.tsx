@@ -20,6 +20,7 @@ import FavoritesScreen from '../Screens/FavoritesScreen';
 import ArchivedScreen from '../Screens/Archived';
 import SavedScores from '../Screens/SavedScoresScreen';
 import GameScreen from '../Screens/GameScreen';
+import HelpMenuScreen from '../Screens/HelpMenuScreen';
 
 
 
@@ -100,6 +101,11 @@ const AppNavigation = () => {
                      <Drawer.Screen
                         name="Game"
                         component={GameScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Drawer.Screen
+                        name="Help"
+                        component={HelpMenuScreen}
                         options={{ headerShown: false }}
                     />
                 </Drawer.Navigator>
